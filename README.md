@@ -1,3 +1,23 @@
+# Pro Tube - Lab Gamblers
+##Servidor(VPN) 192.168.0.141
+
+##📁 Estructura del Proyecto
+/home/lab/protube/Lab_Gamblers/
+├── backend/ # Spring Boot backend
+├── frontend/ # React/Vite frontend
+├── tooling/ # Herramientas (videoGrabber)
+├── docs/ # Documentación
+├── resources/ # Recursos del proyecto
+└── README.md # Este archivo
+'''bash
+#Configurar SIEMPRE antes de ejecutar el back
+export ENV_PROTUEB_STORE_DIR="/home/lab/protube_sotre"
+# Para añadirlo permanentemente añadir a ~/.bashrc
+echo 'export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"' >> ~/.bashrc
+source ~/.bashrc
+'''
+
+
 # Pro tube project
 
 ## Project

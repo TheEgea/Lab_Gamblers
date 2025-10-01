@@ -1,2 +1,15 @@
 .vscode/
 .idea/
+#entornos virtuales
+.venv/
+venv/
+env/
+#Directorio de videos(cada uno el suyo)
+#server
+protube_store/
+
+#Config local
+vars.py
+*.local
+#logs
+*.log

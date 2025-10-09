@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:16
+    container_name: lab_gamblers_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-protube}
+      POSTGRES_USER: ${DB_USER:-protube}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-protube}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-protube} -d ${DB_NAME:-protube}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: lab_gamblers_backend
+    working_dir: /workspace
+    command: mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run
+    volumes:
+      - ./backend:/workspace
+      - maven_repo:/root/.m2
+      - protube_store:/workspace/var/store
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-protube}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-protube}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-protube}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_THYMELEAF_PREFIX: classpath:/templates/
+      SPRING_THYMELEAF_CHECK_TEMPLATE_LOCATION: "false"
+      ENV_PROTUBE_STORE_DIR: /workspace/var/store
+      ENV_PROTUBE_GOOGLE_CLIENT_ID: ${ENV_PROTUBE_GOOGLE_CLIENT_ID:-}
+      ENV_PROTUBE_GOOGLE_CLIENT_SECRET: ${ENV_PROTUBE_GOOGLE_CLIENT_SECRET:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: node:20
+    container_name: lab_gamblers_frontend
+    working_dir: /workspace
+    command: sh -c "npm ci || npm i; npm run dev"
+    volumes:
+      - ./frontend:/workspace
+      - frontend_node_modules:/workspace/node_modules
+    environment:
+      VITE_API_URL: http://localhost:8080
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  protube_store:
+  maven_repo:
+  frontend_node_modules:

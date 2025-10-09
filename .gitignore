@@ -13,3 +13,4 @@ vars.py
 *.local
 #logs
 *.log
+.env

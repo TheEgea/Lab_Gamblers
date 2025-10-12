@@ -99,6 +99,17 @@
             <version>6.8.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Security base -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT (Nimbus) para encoder/decoder -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

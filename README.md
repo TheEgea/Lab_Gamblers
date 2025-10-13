@@ -79,3 +79,43 @@ npm run dev -- --host
 # Backend (en el servidor)
 # Ejecutar ProtubeBackApplication en IntelliJ con ENV_PROTUBE_STORE_DIR configurado
 ```
+## Git: cómo commitear y pushear rápido
+
+Pre-requisitos
+- Estar dentro del repo (en la carpeta del proyecto).
+- Tener configurado tu nombre y email (solo la primera vez):
+```bash
+git config user.name "Tu Nombre"
+git config user.email "tuemail@example.com"
+```
+
+Ver estado y cambios pendientes
+```bash
+git status
+```
+
+Commit y push de TODOS los cambios en la rama actual
+- Primera vez en rama nueva (sin upstream):
+```bash
+# Crea/activa rama si hace falta
+git switch -c feat/jwt-security-13   # o: git checkout -b feat/jwt-security-13
+
+# Añade todo (tracked + untracked), commitea y configura upstream en el primer push
+git add -A
+git commit -m "feat(security): configurar JWT y SecurityFilterChain (#13)"
+git push -u origin $(git rev-parse --abbrev-ref HEAD)
+```
+
+- Siguientes commits en la misma rama:
+```bash
+git add -A
+git commit -m "fix(security): ajustes de properties y UTF-8 (#13)"
+git push
+```
+
+Consejos rápidos
+- Ver qué se va a commitear: `git diff --cached`
+- Cambiar el último commit (sin modificar mensaje): `git commit --amend --no-edit`
+- Cambiar el último commit (editando mensaje): `git commit --amend`
+- Si ya hiciste push del último commit y lo enmiendas: `git push --force-with-lease`
+- Evita `#` en nombres de ramas (en bash `#` inicia comentarios). Usa `feat/jwt-security-13` en vez de `feat/jwt-security-#13`.

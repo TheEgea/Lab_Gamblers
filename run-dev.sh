@@ -69,7 +69,7 @@ start() {
   print_header "Levantando frontend"
   compose up -d frontend
 
-  print_header "Servicios levantados"
+  print_header "Servicios levantado"
   compose ps
 
   echo
@@ -88,8 +88,10 @@ stop() {
 
 restart() {
   ensure_prereqs
-  print_header "Reiniciando backend + frontend"
-  compose up -d backend frontend
+    print_header "Reiniciando backend + frontend"
+    # Asegura deps del frontend (npm ci || npm i) antes de levantar
+    install_frontend_deps
+    compose up -d backend frontend
 }
 
 logs() {

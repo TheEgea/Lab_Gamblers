@@ -23,6 +23,10 @@
         <node.version>v22.12.0</node.version>
         <npm.version>9.2.0</npm.version>
         <frontend-src-dir>${basedir}/../frontend</frontend-src-dir>
+
+        <!-- Asegurar UTF-8 en build y reporting -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -75,6 +79,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Nota: si no necesitas JUnit4 por Cucumber, considera eliminarlo para evitar mezclar con JUnit5 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -99,6 +104,7 @@
             <version>6.8.0</version>
             <scope>test</scope>
         </dependency>
+
         <!-- Spring Security base -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -128,11 +134,36 @@
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
+
+        <!-- Perfil vacío para quitar el warning del CI (-P coverage) -->
+        <profile>
+            <id>coverage</id>
+        </profile>
     </profiles>
 
     <build>
+        <!-- Filtrado de resources con delimitador @...@ y UTF-8 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.yaml</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.png</exclude>
+                    <exclude>**/*.jpg</exclude>
+                    <exclude>**/*.jpeg</exclude>
+                    <exclude>**/*.mp4</exclude>
+                    <exclude>**/*.webm</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <plugins>
-            <!-- Spring Boot plugin (global, siempre activo) -->
+            <!-- Spring Boot plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -151,6 +182,20 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Resources plugin: UTF-8 y delimitadores @...@ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
                 </configuration>
             </plugin>
 

@@ -9,6 +9,7 @@ import com.tecnocampus.LS2.protube_back.domain.user.Username;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class LoginService {
@@ -29,10 +30,11 @@ public class LoginService {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
+        Instant now = Instant.now();
         TokenClaims claims = new TokenClaims(
                 username.value(),
-                Instant.now(),
-                null, // Will be set by TokenService
+                now,
+                now.plus(10, ChronoUnit.HOURS),
                 user.roles()
         );
 

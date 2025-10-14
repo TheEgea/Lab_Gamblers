@@ -1,17 +1,19 @@
 import './App.css';
 import { useAllVideos } from './useAllVideos';
+import Login from './components/Login';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-        <ContentApp />
+        <Login />
       </header>
     </div>
   );
 }
 
+// @ts-ignore
 function ContentApp() {
   const { loading, message, value } = useAllVideos();
   switch (loading) {

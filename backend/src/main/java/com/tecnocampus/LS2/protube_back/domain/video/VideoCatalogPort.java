@@ -6,6 +6,6 @@ import java.util.Optional;
 public interface VideoCatalogPort {
     List<Video> listAll();
     Optional<Video> findById(VideoId id);
-    Video save(Video video);
+    void save(Video video);
     boolean existsByChecksum(String checksum);
 }

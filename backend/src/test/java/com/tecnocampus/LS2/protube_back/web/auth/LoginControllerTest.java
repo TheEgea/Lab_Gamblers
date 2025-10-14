@@ -1,9 +1,8 @@
 package com.tecnocampus.LS2.protube_back.web.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tecnocampus.LS2.protube_back.domain.user.Role;
-import com.tecnocampus.LS2.protube_back.infrastructure.persistence.UserEntity;
-import com.tecnocampus.LS2.protube_back.infrastructure.persistence.UserJpaRepository;
+import com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user.UserEntity;
+import com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +46,7 @@ class LoginControllerTest {
                 UUID.randomUUID(),
                 "testuser",
                 passwordEncoder.encode("testpass"),
-                Set.of(Role.USER)
+                Set.of("USER")
         );
         userRepository.save(testUser);
     }
@@ -61,7 +60,9 @@ class LoginControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token", notNullValue()))
-                .andExpect(jsonPath("$.token", not(emptyString())));
+                .andExpect(jsonPath("$.token", not(emptyString())))
+                .andExpect(header().exists("Authorization"))
+                .andExpect(header().string("Authorization", startsWith("Bearer ")));
     }
 
     @Test

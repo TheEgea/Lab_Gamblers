@@ -9,4 +9,8 @@ public record VideoId(UUID value) {
     }
     public static VideoId random() { return new VideoId(UUID.randomUUID()); }
     @Override public String toString() { return value.toString(); }
+    public boolean equals (Object o) {
+        if (!(o instanceof VideoId)) return false;
+        return ((VideoId) o).value.equals(this.value);
+    }
 }

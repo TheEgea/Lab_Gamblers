@@ -46,4 +46,9 @@ public final class Video {
         return new Video(id, newTitle, description, durationSeconds, sizeBytes,
                 mediaPath, thumbnailPath, checksum, createdAt, Instant.now());
     }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Video)) return false;
+        return ((Video) o).id.equals(this.id);
+    }
 }

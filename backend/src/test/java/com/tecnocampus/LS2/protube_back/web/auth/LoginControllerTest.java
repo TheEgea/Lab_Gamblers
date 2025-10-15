@@ -1,8 +1,8 @@
 package com.tecnocampus.LS2.protube_back.web.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user.UserEntity;
-import com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user.UserJpaRepository;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserEntity;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

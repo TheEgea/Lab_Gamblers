@@ -3,11 +3,10 @@ package com.tecnocampus.LS2.protube_back.services;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoRepository;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +14,9 @@ import java.util.Optional;
 public class VideoService implements VideoCatalogPort {
 
     // private final List<Video> videos = new ArrayList<>();
-    private final VideoRepository videoRepository;
+    private final VideoJpaRepository videoRepository;
 
-    public VideoService(VideoRepository videoRepository) {
+    public VideoService(VideoJpaRepository videoRepository) {
         this.videoRepository = videoRepository;
     }
 

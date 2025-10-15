@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user;
+package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

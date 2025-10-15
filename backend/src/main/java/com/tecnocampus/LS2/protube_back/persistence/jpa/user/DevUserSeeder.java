@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.infrastructure.persistence.jpa.user;
+package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.UUID;
+
 
 @Component
 @Profile("dev")

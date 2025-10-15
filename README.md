@@ -7,6 +7,29 @@
 ├── resources/ # Recursos del proyecto
 └── README.md # Este archivo
 
+## 🔐 Autenticación JWT
+
+El backend implementa autenticación JWT. Ver [docs/JWT_LOGIN.md](docs/JWT_LOGIN.md) para detalles completos.
+
+**Usuarios de prueba (dev):**
+- `admin` / `admin123` (roles: ADMIN, USER)
+- `user` / `user123` (role: USER)
+
+**Login:**
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+**Usar el token:**
+```bash
+curl -H "Authorization: Bearer <token>" \
+  http://localhost:8080/api/endpoint
+```
+
+## ⚙️ Configuración
+
 ```bash
 # Configurar SIEMPRE antes de ejecutar el back
 export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"

@@ -43,10 +43,10 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/auth/**",       // <- importante
+                                "/media/**"
                         ).permitAll()
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/media/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )

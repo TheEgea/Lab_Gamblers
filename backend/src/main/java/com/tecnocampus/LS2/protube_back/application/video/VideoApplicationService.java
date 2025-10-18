@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
+
 
 import java.time.Instant;
 import java.util.List;

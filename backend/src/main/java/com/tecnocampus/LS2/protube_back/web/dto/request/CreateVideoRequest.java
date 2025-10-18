@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.web.auth.dto;
+package com.tecnocampus.LS2.protube_back.web.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,11 +12,9 @@ public record CreateVideoRequest(
         String description
 ) {
     public CreateVideoRequest {
-        // Trim whitespace
         title = title != null ? title.trim() : null;
         description = description != null ? description.trim() : null;
 
-        // Convert empty description to null
         if (description != null && description.isEmpty()) {
             description = null;
         }

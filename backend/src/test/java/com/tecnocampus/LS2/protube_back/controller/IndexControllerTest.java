@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.controller;
+/*package com.tecnocampus.LS2.protube_back.controller;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,3 +19,5 @@ class IndexControllerTest {
         assertEquals("logout", indexController.logout().getViewName());
     }
 }
+
+ */

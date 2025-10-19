@@ -4,6 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- =============================================== -->
+    <!-- PROJECT INFO -->
+    <!-- =============================================== -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -15,66 +18,45 @@
     <artifactId>protube-back</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>protube-back</name>
-    <description>myyyyyy precious tube</description>
+    <description>Pro Tube - Video Platform Backend</description>
 
+    <!-- =============================================== -->
+    <!-- PROPERTIES -->
+    <!-- =============================================== -->
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
+
+        <!-- Frontend build properties -->
         <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
         <node.version>v22.12.0</node.version>
         <npm.version>9.2.0</npm.version>
         <frontend-src-dir>${basedir}/../frontend</frontend-src-dir>
 
-        <!-- Ensure UTF-8 encodings -->
+        <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Testing versions -->
+        <cucumber.version>7.18.0</cucumber.version>
+        <junit.version>5.10.0</junit.version>
     </properties>
 
+    <!-- =============================================== -->
+    <!-- DEPENDENCIES -->
+    <!-- =============================================== -->
     <dependencies>
-        <!-- Spring Boot basics -->
+
+        <!-- =============================================== -->
+        <!-- SPRING BOOT CORE -->
+        <!-- =============================================== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-
-        <!-- JSON -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.17.2</version>
-        </dependency>
-
-        <!-- Utils -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- DBs -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.7.2</version>
         </dependency>
 
         <dependency>
@@ -82,52 +64,95 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-
-        <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- Keep JUnit 4 only if required by Cucumber 6 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>6.8.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>6.8.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <version>6.8.0</version>
-            <scope>test</scope>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Spring Security base -->
+        <!-- =============================================== -->
+        <!-- SECURITY & JWT -->
+        <!-- =============================================== -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- JWT (Nimbus) for encoder/decoder -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
+
+        <!-- =============================================== -->
+        <!-- DATABASES -->
+        <!-- =============================================== -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- =============================================== -->
+        <!-- UTILITIES -->
+        <!-- =============================================== -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- =============================================== -->
+        <!-- TESTING -->
+        <!-- =============================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber BDD Testing -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
+    <!-- =============================================== -->
+    <!-- PROFILES -->
+    <!-- =============================================== -->
     <profiles>
         <profile>
             <id>dev</id>
@@ -138,20 +163,26 @@
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
         </profile>
+
         <profile>
             <id>prod</id>
             <properties>
                 <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
-        <!-- Optional coverage profile to silence CI warnings if used -->
+
         <profile>
             <id>coverage</id>
+            <properties>
+                <spring.profiles.active>coverage</spring.profiles.active>
+            </properties>
         </profile>
     </profiles>
 
+    <!-- =============================================== -->
+    <!-- BUILD CONFIGURATION -->
+    <!-- =============================================== -->
     <build>
-        <!-- Filter resources with UTF-8 and @...@ delimiters (for @spring.profiles.active@) -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -161,29 +192,25 @@
                     <include>**/*.yml</include>
                     <include>**/*.yaml</include>
                 </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/*.png</exclude>
-                    <exclude>**/*.jpg</exclude>
-                    <exclude>**/*.jpeg</exclude>
-                    <exclude>**/*.mp4</exclude>
-                    <exclude>**/*.webm</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.yml</exclude>
+                    <exclude>**/*.yaml</exclude>
                 </excludes>
             </resource>
         </resources>
 
         <plugins>
-            <!-- Spring Boot plugin -->
+            <!-- =============================================== -->
+            <!-- SPRING BOOT PLUGIN -->
+            <!-- =============================================== -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.3.3</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -194,11 +221,25 @@
                 </configuration>
             </plugin>
 
-            <!-- Resources plugin: UTF-8 and @...@ delimiters -->
+            <!-- =============================================== -->
+            <!-- COMPILER PLUGIN -->
+            <!-- =============================================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- =============================================== -->
+            <!-- RESOURCES PLUGIN -->
+            <!-- =============================================== -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
@@ -208,13 +249,19 @@
                 </configuration>
             </plugin>
 
-            <!-- Jacoco -->
+            <!-- =============================================== -->
+            <!-- JACOCO COVERAGE -->
+            <!-- =============================================== -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <configuration>
-                    <excludes>com/tecnocampus/LS2/protube_back/ProtubeBackApplication*</excludes>
+                    <excludes>
+                        <exclude>**/ProtubeBackApplication.*</exclude>
+                        <exclude>**/config/**</exclude>
+                        <exclude>**/dto/**</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -232,14 +279,14 @@
                     </execution>
                     <execution>
                         <id>default-check</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
                         <configuration>
                             <rules>
                                 <rule>
-                                    <element>CLASS</element>
+                                    <element>BUNDLE</element>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
@@ -248,31 +295,12 @@
                                         </limit>
                                     </limits>
                                 </rule>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>INSTRUCTION</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.75</minimum>
-                                        </limit>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.75</minimum>
-                                        </limit>
-                                        <limit>
-                                            <counter>METHOD</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.75</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>

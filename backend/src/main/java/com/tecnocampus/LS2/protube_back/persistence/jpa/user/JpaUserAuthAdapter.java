@@ -29,6 +29,7 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean verifyPassword(RawPassword raw, HashedPassword hashed) {
         return encoder.matches(raw.value(), hashed.value());
     }

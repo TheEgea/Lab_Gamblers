@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.web.auth;
+package com.tecnocampus.LS2.protube_back.web;
 
 import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
 import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
@@ -8,17 +8,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
 
 @RestController
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
 
     private final LoginService loginService;
 
     @Value("${application.security.jwt.token-prefix:Bearer}")
     private String tokenPrefix;
 
-    public LoginController(LoginService loginService) {
+    public AuthController(LoginService loginService) {
         this.loginService = loginService;
     }
 

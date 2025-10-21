@@ -1,5 +1,5 @@
 
-/*package com.tecnocampus.LS2.protube_back.controller;
+package com.tecnocampus.LS2.protube_back.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,4 +19,3 @@ class TestControllerTest {
         assertEquals("Hello, World!", s);
     }
 }
-*/

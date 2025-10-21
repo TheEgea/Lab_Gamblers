@@ -1,6 +1,6 @@
-/*package com.tecnocampus.LS2.protube_back.controller;
+package com.tecnocampus.LS2.protube_back.controller;
 
-import com.tecnocampus.LS2.protube_back.services.VideoService;
+import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,10 +16,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class VideosControllerTest {
 
-    @InjectMocks
-    VideosController videosController;
 
-    @Autowired
     @Mock
     VideoService videoService;
 
@@ -31,4 +28,3 @@ class VideosControllerTest {
     }
 }
 
- */

@@ -1,8 +1,10 @@
-package com.tecnocampus.LS2.protube_back.web.auth;
+package com.tecnocampus.LS2.protube_back.web;
 
 import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
 import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
 import com.tecnocampus.LS2.protube_back.domain.user.Username;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,7 @@ public class AuthController {
     @Value("${application.security.jwt.token-prefix:Bearer}")
     private String tokenPrefix;
 
-    public LoginController(LoginService loginService) {
+    public AuthController(LoginService loginService) {
         this.loginService = loginService;
     }
 

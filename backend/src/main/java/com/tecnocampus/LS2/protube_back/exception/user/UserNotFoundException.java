@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.exception.user;
 
-import com.tecnocampus.LS2.protube_back.exception.base.NotFoundException;
+import com.tecnocampus.LS2.protube_back.exception.NotFoundException;
 
 public class UserNotFoundException extends NotFoundException {
 

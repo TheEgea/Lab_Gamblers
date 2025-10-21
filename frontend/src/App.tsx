@@ -1,17 +1,27 @@
 import './App.css';
+import { useState } from 'react';
 import { useAllVideos } from './useAllVideos';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import AppBar from './components/AppBar';
 
 function App() {
+  const [showLogin, setShowLogin] = useState<boolean>(true);
+
   return (
     <div className="App">
-      <header className="App-header">
+      <AppBar showLogin={showLogin} setShowLogin={setShowLogin} />
+
+      <div className="App-content">
         <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-        <ContentApp />
-      </header>
+
+        {showLogin ? <Login /> : <Signup />}
+      </div>
     </div>
   );
 }
 
+// @ts-ignore
 function ContentApp() {
   const { loading, message, value } = useAllVideos();
   switch (loading) {

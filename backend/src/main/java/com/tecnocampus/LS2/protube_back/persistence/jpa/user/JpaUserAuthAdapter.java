@@ -4,6 +4,7 @@ import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
         return repo.findByUsername(username.value()).map(this::toDomain);
     }

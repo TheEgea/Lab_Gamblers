@@ -6,7 +6,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name = "videos")
+@Table(
+        name = "videos",
+        indexes = {
+                @Index(name = "idx_videos_title", columnList = "title"),
+                @Index(name = "idx_videos_created_at", columnList = "created_at")
+        }
+)
 public class VideoEntity {
 
     @Id
@@ -80,6 +86,15 @@ public class VideoEntity {
     public void setChecksum(String checksum) { this.checksum = checksum; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+    @PrePersist
+    public void onCreate() {
+        Instant now = Instant.now();
+        if (this.createdAt == null)
+            this.createdAt = now;
+        if (this.updatedAt == null)
+            this.updatedAt = now;
+    }
 
     @PreUpdate
     public void onUpdate() {

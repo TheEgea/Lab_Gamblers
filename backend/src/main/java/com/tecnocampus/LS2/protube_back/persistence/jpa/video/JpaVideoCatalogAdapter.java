@@ -4,6 +4,7 @@ import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,14 @@ public class JpaVideoCatalogAdapter implements VideoCatalogPort {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Video> listLatest(int page, int size) {
+        var pageable = PageRequest.of(page, size);
+        return repository.findAllByOrderByCreatedAtDesc(pageable)
+                .map(mapper::toDomain)
+                .getContent();
     }
 
     @Override
@@ -76,6 +85,14 @@ public class JpaVideoCatalogAdapter implements VideoCatalogPort {
                 .stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Video> searchByTitleOrDescription(String searchTerm, int page, int size) {
+        var pageable = PageRequest.of(page, size);
+        return repository.findByTitleOrDescriptionContaining(searchTerm, pageable)
+                .map(mapper::toDomain)
+                .getContent();
     }
 
     /**

@@ -22,19 +22,19 @@ public class VideoEntity {
     @Column(name = "title", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String title;
 
-    @Column(name = "description", nullable = true, columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "duration", nullable = true, columnDefinition = "INTEGER")
+    @Column(name = "duration", columnDefinition = "INTEGER")
     private Integer durationSeconds;
 
-    @Column(name = "size", nullable = true, columnDefinition = "BIGINT")
+    @Column(name = "size", columnDefinition = "BIGINT")
     private Long sizeBytes;
 
     @Column(name = "media_path", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String mediaPath;
 
-    @Column(name = "thumbnail_path", nullable = true, unique = false, columnDefinition = "VARCHAR(255)")
+    @Column(name = "thumbnail_path", columnDefinition = "VARCHAR(255)")
     private String thumbnailPath;
 
     @Column(name = "checksum", nullable = false, unique = true, columnDefinition = "VARCHAR(64)")

@@ -25,7 +25,7 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     @Override
     @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
-        return repo.findByUsername(username.value()).map(this::toDomain);
+        return repo.findByUsername(username.value());
     }
 
     @Override

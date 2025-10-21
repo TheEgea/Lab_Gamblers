@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { LoginRequest, LoginResponse, User } from '../types/auth.types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL = 'http://localhost:8080/api'; //TODO: gestionar environment variables i integrar cosillas
 
 //this thing = calls
 const api: AxiosInstance = axios.create({
@@ -25,7 +25,7 @@ api.interceptors.request.use(
   }
 );
 
-//Como el GlobalExceptionHandler de Spring
+//Como el GlobalExceptionHandler de Spring, con los errores de las respuestas
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
@@ -64,7 +64,27 @@ export const authService = {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
+  signup: async (username: string, email: string, password: string): Promise<LoginResponse> => {
+    try {
+      const response = await api.post<LoginResponse>('/auth/signup', {
+        username,
+        email,
+        password,
+      });
 
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || 'Error al registrarse');
+      }
+      throw error;
+    }
+  },
   getCurrentUser: async (): Promise<User> => {
     try {
       const response = await api.get<User>('/auth/me');

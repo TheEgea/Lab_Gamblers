@@ -35,17 +35,26 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px' }}>
-      <h2>Iniciar Sesión</h2>
+    <div style={{
+      maxWidth: '400px',
+      margin: '40px auto',
+      padding: '30px',
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      border: '1px solid #e0e0e0',
+    }}>
+      <h2 style={{ marginTop: 0, color: '#333' }}>Iniciar Sesión</h2>
 
       {error && (
         <div
           style={{
-            color: 'red',
-            marginBottom: '10px',
-            padding: '10px',
+            color: '#d32f2f',
+            marginBottom: '15px',
+            padding: '12px',
             backgroundColor: '#ffebee',
             borderRadius: '4px',
+            border: '1px solid #ef9a9a',
           }}
         >
           {error}
@@ -53,46 +62,48 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="username">
+        <div style={{ marginBottom: '20px' }}>
+          <label htmlFor="username" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
             Usuario:
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '5px',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-              }}
-            />
           </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              fontSize: '14px',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password">
+        <div style={{ marginBottom: '20px' }}>
+          <label htmlFor="password" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
             Contraseña:
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '8px',
-                marginTop: '5px',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-              }}
-            />
           </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              fontSize: '14px',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
 
         <button
@@ -100,13 +111,14 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           disabled={loading}
           style={{
             width: '100%',
-            padding: '10px',
-            backgroundColor: loading ? '#ccc' : '#007bff',
+            padding: '12px',
+            backgroundColor: loading ? '#ccc' : '#1976d2',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             cursor: loading ? 'not-allowed' : 'pointer',
             fontSize: '16px',
+            fontWeight: 'bold',
           }}
         >
           {loading ? 'Cargando...' : 'Iniciar Sesión'}

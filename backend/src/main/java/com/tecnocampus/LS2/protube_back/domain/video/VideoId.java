@@ -4,17 +4,17 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class VideoId {
-    private final String value;
+    private final UUID value;
 
-    public VideoId(String value) {
+    public VideoId(UUID value) {
         this.value = Objects.requireNonNull(value);
     }
 
     public static VideoId generate() {
-        return new VideoId(UUID.randomUUID().toString());
+        return new VideoId(UUID.randomUUID());
     }
 
-    public String value() {
+    public UUID value() {
         return value;
     }
 
@@ -33,6 +33,6 @@ public final class VideoId {
 
     @Override
     public String toString() {
-        return "VideoId{" + value + '}';
+        return "VideoId{" + value.toString() + '}';
     }
 }

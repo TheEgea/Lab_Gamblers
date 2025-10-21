@@ -1,41 +1,34 @@
 package com.tecnocampus.LS2.protube_back.web;
 
-import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
-import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
-import com.tecnocampus.LS2.protube_back.domain.user.Username;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
-import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
+import com.tecnocampus.LS2.protube_back.application.dto.AuthenticationRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.AuthenticationResponse;
+import com.tecnocampus.LS2.protube_back.security.jwt.JwtTokenService;
+import jakarta.validation.Valid;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final LoginService loginService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenService tokenService;
 
-    @Value("${application.security.jwt.token-prefix:Bearer}")
-    private String tokenPrefix;
-
-    public AuthController(LoginService loginService) {
-        this.loginService = loginService;
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenService tokenService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        try {
-            String token = loginService.login(
-                    new Username(request.username()),
-                    new RawPassword(request.password())
-            );
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)
-                    .body(new LoginResponse(token));
-        } catch (LoginService.InvalidCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public AuthenticationResponse login(@RequestBody @Valid AuthenticationRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+
+        return new AuthenticationResponse(tokenService.generateToken(authentication));
     }
 }

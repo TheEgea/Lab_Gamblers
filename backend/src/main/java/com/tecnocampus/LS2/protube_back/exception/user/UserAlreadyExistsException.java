@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.exception.user;
 
-import com.tecnocampus.LS2.protube_back.exception.base.ConflictException;
+import com.tecnocampus.LS2.protube_back.exception.ConflictException;
 
 public class UserAlreadyExistsException extends ConflictException {
 

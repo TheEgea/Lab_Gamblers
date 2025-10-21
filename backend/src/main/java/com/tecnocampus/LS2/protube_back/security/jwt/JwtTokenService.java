@@ -25,12 +25,12 @@ public class JwtTokenService implements TokenService {
 
     @Override
     public String issue(TokenClaims claims) {
-        JwtClaimsSet set = JwtClaimsSet.builder()
-                .subject(claims.subject())
-                .issuedAt(claims.issuedAt())
-                .expiresAt(claims.expiresAt())
-                .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
-                .build();
+            JwtClaimsSet set = JwtClaimsSet.builder()
+                    .subject(claims.subject())
+                    .issuedAt(claims.issuedAt())
+                    .expiresAt(claims.expiresAt())
+                    .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
+                    .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS512).build();
         return encoder.encode(JwtEncoderParameters.from(header, set)).getTokenValue();
     }

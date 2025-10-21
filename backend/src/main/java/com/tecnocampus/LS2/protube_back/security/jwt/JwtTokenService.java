@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.infrastructure.security.jwt;
+package com.tecnocampus.LS2.protube_back.security.jwt;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;

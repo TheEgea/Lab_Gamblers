@@ -1,12 +1,11 @@
 package com.tecnocampus.LS2.protube_back.web;
 
-import com.tecnocampus.LS2.protube_back.application.dto.AuthenticationRequest;
-import com.tecnocampus.LS2.protube_back.application.dto.AuthenticationResponse;
-import com.tecnocampus.LS2.protube_back.security.jwt.JwtTokenService;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
+import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
+import com.tecnocampus.LS2.protube_back.domain.user.Username;
+import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,19 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenService tokenService;
+    private final LoginService loginService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenService tokenService) {
-        this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
+    public AuthController(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody @Valid AuthenticationRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-
-        return new AuthenticationResponse(tokenService.generateToken(authentication));
+    public LoginResponse login(@RequestBody @Valid LoginRequest request) {
+        Username username = new Username(request.username());
+        RawPassword password = new RawPassword(request.password());
+        String token = loginService.login(username, password);
+        return new LoginResponse(token);
     }
 }

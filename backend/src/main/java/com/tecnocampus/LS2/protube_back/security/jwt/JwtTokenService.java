@@ -31,7 +31,7 @@ public class JwtTokenService implements TokenService {
                 .expiresAt(claims.expiresAt())
                 .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
                 .build();
-        JwsHeader header = JwsHeader.with(MacAlgorithm.HS512).build();
+        JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return encoder.encode(JwtEncoderParameters.from(header, set)).getTokenValue();
     }
 

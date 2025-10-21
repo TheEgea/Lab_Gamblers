@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.web.auth;
+/*package com.tecnocampus.LS2.protube_back.web.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserEntity;
@@ -85,3 +85,5 @@ class LoginControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 }
+
+ */

@@ -1,0 +1,89 @@
+### 1. Login - Obtener Token
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+    client.log("Token guardado: " + response.body.access_token);
+%}
+
+### 2. Health Check (Público)
+GET http://localhost:8080/videos/health
+
+### 3. Get All Videos - Simple List (Público)
+GET http://localhost:8080/videos/all
+
+### 4. Get All Videos - Paginated (Público)
+GET http://localhost:8080/videos?page=0&size=5&sort=createdAt,desc
+
+### 5. Video Count (Público)
+GET http://localhost:8080/videos/count
+
+### 6. Create Video (Privado - necesita token)
+POST http://localhost:8080/videos
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Mi Primer Video Pro Tube",
+  "description": "Descripción del video usando la nueva API"
+}
+
+> {%
+    if (response.status === 201) {
+        client.global.set("video_id", response.body.id);
+        client.log("Video creado con ID: " + response.body.id);
+    }
+%}
+
+### 7. Get Video by ID (Público)
+GET http://localhost:8080/videos/{{video_id}}
+
+### 8. Update Video (Privado - necesita token)
+PUT http://localhost:8080/videos/{{video_id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Título Actualizado Con Nueva API",
+  "description": "Nueva descripción del video actualizada"
+}
+
+### 9. Check if video exists (Privado)
+GET http://localhost:8080/videos/exists?checksum=test-checksum-123
+Authorization: Bearer {{auth_token}}
+
+### 10. Get All Videos Again - Verificar cambios (Público)
+GET http://localhost:8080/videos/all
+
+### 11. Try Create Without Token (Debería fallar con 401)
+POST http://localhost:8080/videos
+Content-Type: application/json
+
+{
+  "title": "Video Sin Token",
+  "description": "Esto debería fallar con 401"
+}
+
+### 12. Try Get Invalid Video ID (Debería fallar con 404)
+GET http://localhost:8080/videos/invalid-id-123
+
+### 13. Try Update Without Token (Debería fallar con 401)
+PUT http://localhost:8080/videos/{{video_id}}
+Content-Type: application/json
+
+{
+  "title": "Intento Sin Token"
+}
+
+### 14. Delete Video (Privado - necesita token)
+DELETE http://localhost:8080/videos/{{video_id}}
+Authorization: Bearer {{auth_token}}
+
+### 15. Try Get Deleted Video (Debería fallar con 404)
+GET http://localhost:8080/videos/{{video_id}}

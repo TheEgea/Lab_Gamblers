@@ -1,16 +1,14 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-import java.util.UUID;
+import jakarta.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "videos")
 public class VideoEntity {
+
     @Id
     @Column(nullable = false, updatable = false)
     private UUID id;
@@ -71,11 +69,43 @@ public class VideoEntity {
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 
-    public VideoEntity withTitle(String newTitle) {
-        return new VideoEntity(id, newTitle, description, durationSeconds, sizeBytes,
-                mediaPath, thumbnailPath, checksum, createdAt, Instant.now());
+    // Setters
+    public void setId(UUID id) { this.id = id; }
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setDurationSeconds(Integer durationSeconds) { this.durationSeconds = durationSeconds; }
+    public void setSizeBytes(Long sizeBytes) { this.sizeBytes = sizeBytes; }
+    public void setMediaPath(String mediaPath) { this.mediaPath = mediaPath; }
+    public void setThumbnailPath(String thumbnailPath) { this.thumbnailPath = thumbnailPath; }
+    public void setChecksum(String checksum) { this.checksum = checksum; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = Instant.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VideoEntity that = (VideoEntity) o;
+        return Objects.equals(id, that.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
+    @Override
+    public String toString() {
+        return "VideoEntity{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", mediaPath='" + mediaPath + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

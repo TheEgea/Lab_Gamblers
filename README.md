@@ -1,3 +1,50 @@
+# Lab Gamblers
+
+## 🚀 Quickstart
+
+Prerequisitos
+- Docker y Docker Compose instalados
+- Node 20 (solo si ejecutas el frontend fuera de Docker)
+- (Linux) Configurar el directorio de almacenamiento:
+  ```bash
+  export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"
+  echo 'export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"' >> ~/.bashrc
+  source ~/.bashrc
+  ```
+
+Arrancar todo en desarrollo (perfil dev)
+```bash
+# da permisos (una vez)
+chmod +x scripts/run.sh
+
+# inicia servicios
+./scripts/run.sh start dev
+
+# ver logs del backend
+./scripts/run.sh logs backend
+```
+
+Probar login (elige tu entorno)
+- Linux/macOS/Git Bash:
+  ```bash
+  curl -i -X POST http://localhost:8080/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"username":"admin","password":"admin123"}'
+  ```
+- Windows CMD (ojo comillas):
+  ```bat
+  curl -i -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d "{\"username\":\"admin\",\"password\":\"admin123\"}"
+  ```
+- PowerShell:
+  ```powershell
+  $body = @{ username = "admin"; password = "admin123" } | ConvertTo-Json
+  Invoke-WebRequest -Uri "http://localhost:8080/auth/login" -Method POST -ContentType "application/json" -Body $body
+  ```
+
+Esperado: 200 OK, con cabecera Authorization: Bearer <token> y body {"access_token":"<token>"}
+
+---
+
 ## 📁 Estructura del Proyecto
 /home/lab/protube/Lab_Gamblers/
 ├── backend/ # Spring Boot backend
@@ -15,23 +62,63 @@ El backend implementa autenticación JWT. Ver [docs/JWT_LOGIN.md](docs/JWT_LOGIN
 - `admin` / `admin123` (roles: ADMIN, USER)
 - `user` / `user123` (role: USER)
 
-**Login:**
-```bash
-curl -X POST http://localhost:8080/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-```
+**Login (ejemplos):**
+- Linux/macOS/Git Bash:
+  ```bash
+  curl -i -X POST http://localhost:8080/auth/login \
+    -H "Content-Type: application/json" \
+    -d '{"username":"admin","password":"admin123"}'
+  ```
+- Windows CMD:
+  ```bat
+  curl -i -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" -d "{\"username\":\"admin\",\"password\":\"admin123\"}"
+  ```
+- PowerShell:
+  ```powershell
+  $body = @{ username = "admin"; password = "admin123" } | ConvertTo-Json
+  Invoke-WebRequest -Uri "http://localhost:8080/auth/login" -Method POST -ContentType "application/json" -Body $body
+  ```
+- Con fichero JSON (evita problemas de comillas):
+  ```bash
+  echo '{"username":"admin","password":"admin123"}' > login.json
+  curl -i -X POST http://localhost:8080/auth/login -H "Content-Type: application/json" --data-binary "@login.json"
+  ```
 
 **Usar el token:**
 ```bash
-curl -H "Authorization: Bearer <token>" \
-  http://localhost:8080/api/endpoint
+curl -i -H "Authorization: Bearer <token>" http://localhost:8080/api/endpoint
 ```
+Nota: el token expira; si empiezas a recibir 401 pasado un tiempo, vuelve a loguearte.
+
+### Postman (opcional)
+- Method: POST
+- URL: http://localhost:8080/auth/login (o IP del servidor si accedes por red)
+- Headers: Content-Type: application/json, Accept: application/json
+- Body (raw → JSON):
+  ```json
+  {
+    "username": "admin",
+    "password": "admin123"
+  }
+  ```
+- Test para guardar el token en variables:
+  ```javascript
+  pm.test("status is 200", function () { pm.response.to.have.status(200); });
+  const json = pm.response.json();
+  const tok = json?.access_token ?? json?.token;
+  if (tok) {
+    pm.environment.set("access_token", tok);
+    pm.environment.set("authHeader", "Bearer " + tok);
+  }
+  ```
+- Luego usa Authorization: {{authHeader}} en endpoints protegidos.
+
+---
 
 ## ⚙️ Configuración
 
 ```bash
-# Configurar SIEMPRE antes de ejecutar el back
+# Configurar SIEMPRE antes de ejecutar el back (Linux)
 export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"
 
 # Para añadirlo permanentemente al usuario actual
@@ -39,7 +126,9 @@ echo 'export ENV_PROTUBE_STORE_DIR="/home/lab/protube_store"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## Acceso por red, puertos y CORS (dev)
+---
+
+## 🌐 Acceso por red, puertos y CORS (dev)
 
 Resumen de puertos por defecto:
 - Frontend (Vite): 5173
@@ -65,7 +154,7 @@ CORS en desarrollo
 
 Acceso desde otro equipo por IP (en la misma red)
 1. En el servidor (192.168.0.141):
-    - Backend: arráncalo desde IntelliJ (ProtubeBackApplication) con ENV_PROTUBE_STORE_DIR configurado.
+    - Backend: arráncalo con Docker (script) o desde IntelliJ (ProtubeBackApplication) con ENV_PROTUBE_STORE_DIR configurado.
     - Frontend: en la carpeta frontend
       ```bash
       npm install
@@ -92,7 +181,78 @@ Resolución de problemas
 - Fuerza recarga sin caché (Ctrl+F5) si no ves cambios del front.
 - Comprueba firewall/VPN si no puedes acceder a http://<IP>:5173 o :8080 desde tu PC.
 
-Comandos útiles
+---
+
+## 🧰 Run modes: dev and prod with a single compose
+
+Usamos un único Docker Compose y un script para ejecutar en modo desarrollo o producción.
+
+Servicios y puertos
+- Backend: http://localhost:8080
+- Frontend: http://localhost:5173
+- Postgres: localhost:5432 (credenciales en .env / docker-compose.dev.yml)
+
+Uso del script
+```bash
+# Forma general
+./scripts/run.sh {start|stop|restart|logs|ps} [dev|prod]
+```
+
+Dev mode (por defecto)
+- Profile: `dev`
+- JPA DDL: `update`
+- Dev seeder: habilitado e idempotente (crea admin/admin123 si no existe)
+- Comandos:
+  ```bash
+  ./scripts/run.sh start dev
+  ./scripts/run.sh logs backend
+  ./scripts/run.sh ps
+  ./scripts/run.sh stop
+  ```
+
+Prod mode
+- Profile: `prod`
+- JPA DDL: `validate` (no cambia el esquema)
+- Seeder: deshabilitado (no crea usuarios por defecto)
+- Requiere variables:
+    - `ENV_PROTUBE_JWT_SECRET` (secreto robusto)
+    - `DB_NAME`, `DB_USER`, `DB_PASSWORD` (que correspondan a tu Postgres)
+- Comandos:
+  ```bash
+  export ENV_PROTUBE_JWT_SECRET=change_me
+  export DB_NAME=protube
+  export DB_USER=protube
+  export DB_PASSWORD=protube
+
+  ./scripts/run.sh start prod
+  ./scripts/run.sh logs backend
+  ```
+
+Prueba de login (dev/prod)
+- POST /auth/login espera `{"username":"...","password":"..."}`
+- Respuesta esperada:
+    - 200 OK
+    - Header: `Authorization: Bearer <token>`
+    - Body: `{"access_token":"<token>"}`
+
+Troubleshooting
+- GET /auth/login:
+    - 405 Method Not Allowed → El POST existe y está expuesto (OK)
+    - 401 Unauthorized → Revisa la configuración de seguridad (permitAll en /auth/** para el login)
+    - 404 Not Found → Path o mapping incorrecto
+- “JSON parse error” en logs:
+    - En Windows CMD, recuerda escapar comillas del JSON o usa PowerShell/archivo .json
+- “Dev user already exists” al arrancar:
+    - El `DevUserSeeder` en dev debe ser idempotente (si existe, que “skippee”)
+- Forzar rebuild (si notas contenedores “stale”):
+  ```bash
+  docker compose -f docker-compose.dev.yml up -d --build --force-recreate backend
+  ```
+
+---
+
+## 🛠️ Comandos útiles
+
 ```bash
 # Frontend (en el servidor)
 cd frontend
@@ -102,15 +262,18 @@ npm run dev -- --host
 # Backend (en el servidor)
 # Ejecutar ProtubeBackApplication en IntelliJ con ENV_PROTUBE_STORE_DIR configurado
 ```
-## Git: cómo commitear y pushear rápido
+
+---
+
+## 🧑‍💻 Git: cómo commitear y pushear rápido
 
 Pre-requisitos
 - Estar dentro del repo (en la carpeta del proyecto).
 - Tener configurado tu nombre y email (solo la primera vez):
-```bash
-git config user.name "Tu Nombre"
-git config user.email "tuemail@example.com"
-```
+  ```bash
+  git config user.name "Tu Nombre"
+  git config user.email "tuemail@example.com"
+  ```
 
 Ver estado y cambios pendientes
 ```bash
@@ -118,7 +281,8 @@ git status
 ```
 
 Commit y push de TODOS los cambios en la rama actual
-- Primera vez en rama nueva (sin upstream):
+
+Primera vez en rama nueva (sin upstream):
 ```bash
 # Crea/activa rama si hace falta
 git switch -c feat/jwt-security-13   # o: git checkout -b feat/jwt-security-13
@@ -129,7 +293,7 @@ git commit -m "feat(security): configurar JWT y SecurityFilterChain (#13)"
 git push -u origin $(git rev-parse --abbrev-ref HEAD)
 ```
 
-- Siguientes commits en la misma rama:
+Siguientes commits en la misma rama:
 ```bash
 git add -A
 git commit -m "fix(security): ajustes de properties y UTF-8 (#13)"

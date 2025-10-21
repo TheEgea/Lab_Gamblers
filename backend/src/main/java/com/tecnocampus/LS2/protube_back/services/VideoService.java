@@ -38,8 +38,21 @@ public class VideoService implements VideoCatalogPort {
     }
 
     @Override
+    public void delete (VideoId id) {
+        videos.removeIf(video -> video.id().equals(id));
+    }
+
+    @Override
     public boolean existsByChecksum(String checksum) {
         // return videos.stream().filter(video -> video.checksum().equals(checksum)).findFirst().isPresent();
         return videoRepository.existsByChecksum(checksum);
+    }
+
+    public boolean equals (List<Video> otherVideos) {
+        if (otherVideos.size() != videos.size()) return false;
+        for (int i = 0; i < videos.size(); i++) {
+            if (!videos.get(i).equals(otherVideos.get(i))) return false;
+        }
+        return true;
     }
 }

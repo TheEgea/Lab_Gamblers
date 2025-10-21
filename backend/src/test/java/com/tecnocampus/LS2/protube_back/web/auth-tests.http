@@ -1,0 +1,43 @@
+### 1. Login - Obtener Token
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+> {%
+    client.global.set("auth_token", response.body.token);
+    client.log("Token guardado: " + response.body.token);
+%}
+
+### 2. Login con credenciales incorrectas (debería fallar)
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "wrong"
+}
+
+### 3. Acceder a endpoint protegido CON token
+GET http://localhost:8080/videos/getAll
+Authorization: Bearer {{auth_token}}
+
+### 4. Acceder a endpoint protegido SIN token (debería fallar)
+GET http://localhost:8080/api/videos
+
+### 5. Acceder con token inválido (debería fallar)
+GET http://localhost:8080/api/videos
+Authorization: Bearer token-falso
+
+### 6. Probar otro endpoint protegido
+POST http://localhost:8080/api/videos
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Test Video",
+  "description": "Testing with JWT"
+}

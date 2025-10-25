@@ -50,17 +50,12 @@ public class JpaVideoCatalogAdapter implements VideoCatalogPort {
         repository.deleteById(id.value());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsByChecksum(String checksum) {
-        return repository.existsByChecksum(checksum);
-    }
 
     // Additional methods for extended functionality
 
     /**
      * Find video by checksum
-     */
+
     @Transactional(readOnly = true)
     public Optional<Video> findByChecksum(String checksum) {
         return repository.findByChecksum(checksum)
@@ -82,8 +77,8 @@ public class JpaVideoCatalogAdapter implements VideoCatalogPort {
      * Update existing video
      */
     public void update(Video video) {
-        VideoEntity existingEntity = repository.findById(video.id().value())
-                .orElseThrow(() -> new IllegalArgumentException("Video not found: " + video.id().value()));
+        VideoEntity existingEntity = repository.findById(video.getId().value())
+                .orElseThrow(() -> new IllegalArgumentException("Video not found: " + video.getId().value()));
 
         mapper.updateEntity(existingEntity, video);
         repository.save(existingEntity);

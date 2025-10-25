@@ -3,10 +3,12 @@ package com.tecnocampus.LS2.protube_back.services;
 import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
+import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +61,7 @@ class VideoServiceTest {
         assertTrue(videoService.listAll().isEmpty());
     }
 
-    @Test
+    /*@Test
     void existsByChecksum_ShouldReturnTrueIfChecksumExists() {
         Video video = createSampleVideo("1");
         videoService.save(video);
@@ -72,17 +74,28 @@ class VideoServiceTest {
         assertFalse(videoService.existsByChecksum("checksum1"));
     }
 
+     */
+
     // Helper method to create a sample video
     private Video createSampleVideo(String id) {
         return new Video(
                 new VideoId(id),
+                "jsonId",
+                1920,
+                1080,
+                300,
                 "Sample Title",
+                "Sample User",
+                List.of(Instant.now()),
                 "Sample Description",
-                120,
-                1024L,
-                "/media/sample.mp4",
-                "/thumbnails/sample.jpg",
-                "checksum1",
+                List.of("Category1", "Category2"),
+                List.of("Tag1", "Tag2"),
+                1000,
+                100,
+                "Sample Channel",
+                List.of(new Comentario("User1", "Great video!",Instant.now(),0)),
+                "media/path/sample.mp4",
+                "thumbnails/sample.jpg",
                 Instant.now(),
                 Instant.now()
         );

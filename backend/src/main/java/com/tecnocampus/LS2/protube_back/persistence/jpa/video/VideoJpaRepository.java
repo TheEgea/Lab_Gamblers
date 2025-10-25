@@ -16,12 +16,12 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
     /**
      * Find video by checksum to avoid duplicates
      */
-    Optional<VideoEntity> findByChecksum(String checksum);
+    //Optional<VideoEntity> findByChecksum(String checksum);
 
     /**
      * Check if video exists by checksum
      */
-    boolean existsByChecksum(String checksum);
+    //boolean existsByChecksum(String checksum);
 
     /**
      * Find videos by title containing text (case insensitive)

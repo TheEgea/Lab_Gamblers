@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.web.dto.mapper;
 
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
+import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
 import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
 import org.springframework.stereotype.Component;
@@ -15,17 +16,25 @@ public class VideoMapper {
         if (video == null) return null;
 
         return new VideoResponse(
-                video.id().value(),
-                video.title(),
-                video.description(),
-                video.durationSeconds(),
-                formatDuration(video.durationSeconds()),
-                video.sizeBytes(),
-                formatFileSize(video.sizeBytes()),
-                buildMediaUrl(video.mediaPath()),
-                buildThumbnailUrl(video.thumbnailPath()),
-                video.createdAt(),
-                video.updatedAt()
+                video.getId().value(),
+                video.getJsonId(),
+                video.getWidth(),
+                video.getHeight(),
+                video.getDurationSeconds(),
+                video.getTitle(),
+                video.getUser(),
+                video.getTimestamp(),
+                video.getDescription(),
+                video.getCategories(),
+                video.getTags(),
+                video.getViewCount(),
+                video.getLikeCount(),
+                video.getChannel(),
+                video.getComments(),
+                buildMediaUrl(video.getMediaPath()),
+                buildThumbnailUrl(video.getThumbnailPath()),
+                video.getCreatedAt(),
+                video.getUpdatedAt()
         );
     }
 
@@ -35,14 +44,25 @@ public class VideoMapper {
         Instant now = Instant.now();
 
         return new Video(
-                VideoId.generate(),
+                VideoId.generate(), // New ID will be generated
+                request.jsonId(),
+                request.width(),
+                request.height(),
+                request.durationSeconds(),
                 request.title(),
+                request.user(),
+                request.timestamp(),
                 request.description(),
-                null, null,
-                "temp/path",
-                null,
-                "temp-checksum",
-                now, now
+                request.categories(),
+                request.tags(),
+                0, // Initial view count
+                0, // Initial like count
+                request.channel(),
+                request.comments(), // Initial empty comments
+                request.mediaPath(),
+                request.thumbnailPath(),
+                now,
+                now
         );
     }
 

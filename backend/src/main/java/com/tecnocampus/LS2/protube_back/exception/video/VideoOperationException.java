@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.exception.video;
 
-import com.tecnocampus.LS2.protube_back.exception.base.BusinessException;
+import com.tecnocampus.LS2.protube_back.exception.BusinessException;
 import org.springframework.http.HttpStatus;
 
 public class VideoOperationException extends BusinessException {

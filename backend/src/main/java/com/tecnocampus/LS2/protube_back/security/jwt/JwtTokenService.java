@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.infrastructure.security.jwt;
+package com.tecnocampus.LS2.protube_back.security.jwt;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
@@ -25,12 +25,12 @@ public class JwtTokenService implements TokenService {
 
     @Override
     public String issue(TokenClaims claims) {
-        JwtClaimsSet set = JwtClaimsSet.builder()
-                .subject(claims.subject())
-                .issuedAt(claims.issuedAt())
-                .expiresAt(claims.expiresAt())
-                .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
-                .build();
+            JwtClaimsSet set = JwtClaimsSet.builder()
+                    .subject(claims.subject())
+                    .issuedAt(claims.issuedAt())
+                    .expiresAt(claims.expiresAt())
+                    .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
+                    .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS512).build();
         return encoder.encode(JwtEncoderParameters.from(header, set)).getTokenValue();
     }

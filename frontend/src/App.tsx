@@ -13,7 +13,7 @@ function App() {
       <AppBar showLogin={showLogin} setShowLogin={setShowLogin} />
 
       <div className="App-content">
-        <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+        <img src="/src/utils/logo.png" className="App-logo" alt="logo" />
 
         {showLogin ? <Login /> : <Signup />}
       </div>

@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.exception.video;
 
-import com.tecnocampus.LS2.protube_back.exception.base.ValidationException;
+import com.tecnocampus.LS2.protube_back.exception.ValidationException;
 
 public class VideoValidationException extends ValidationException {
 

@@ -12,57 +12,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/videos")
-@RequiredArgsConstructor
-public class VideoController {
+@RequestMapping("/auth")
+public class AuthController {
 
-    private final VideoCatalogPort videoCatalogPort;
-    private final VideoMapper mapper;
+    private final LoginService loginService;
 
-    @GetMapping
-    public ResponseEntity<List<VideoDTO>> listAll() {
-        var dtos = videoCatalogPort.listAll().stream().map(mapper::toDto).toList();
-        return ResponseEntity.ok(dtos);
+    @Value("${application.security.jwt.token-prefix:Bearer}")
+    private String tokenPrefix;
+
+    public AuthController(LoginService loginService) {
+        this.loginService = loginService;
+
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<VideoDTO> getById(@PathVariable String id) {
-        return videoCatalogPort.findById(new VideoId(id))
-                .map(mapper::toDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<Void> create(@Valid @RequestBody CreateVideoRequest req, UriComponentsBuilder uri) {
-        var video = mapper.fromCreateRequest(req);
-        videoCatalogPort.save(video);
-        var location = uri.path("/videos/{id}").buildAndExpand(video.getId().value()).toUri();
-        return ResponseEntity.created(location).build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<VideoDTO> update(@PathVariable String id, @Valid @RequestBody UpdateVideoRequest req) {
-        var maybe = videoCatalogPort.findById(new VideoId(id));
-        if (maybe.isEmpty()) return ResponseEntity.notFound().build();
-        var updated = mapper.applyUpdate(maybe.get(), req);
-        // si el puerto soporta save como upsert o se añade update al puerto:
-        videoCatalogPort.save(updated);
-        return ResponseEntity.ok(mapper.toDto(updated));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        // opcional: comprobar existencia primero
-        videoCatalogPort.delete(new VideoId(id));
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/random")
-    public ResponseEntity<VideoDTO> random() {
-        return videoCatalogPort.getRandomVideo()
-                .map(mapper::toDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        try {
+            String token = loginService.login(
+                    new Username(request.username()),
+                    new RawPassword(request.password())
+            );
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)
+                    .body(new LoginResponse(token));
+        } catch (LoginService.InvalidCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

@@ -26,8 +26,8 @@ public class VideoController {
     }
 
     @PostMapping("/addVideo")
-    public ResponseEntity<String> addVideo() {
-        // Implementation for adding a video would go here
+    public ResponseEntity<String> addVideo(Video video) {
+                videoCatalogPort.save(video);
         return ResponseEntity.ok("Video added successfully");
     }
 
@@ -37,7 +37,7 @@ public class VideoController {
     }
 
     @GetMapping("/gambling")
-    public VideoController getGamblingVideos() {
+    public ResponseEntity<Video> getGamblingVideos() {
         // Implementatio for getting a random video
         return ResponseEntity.of(videoCatalogPort.getRandomVideo());
 

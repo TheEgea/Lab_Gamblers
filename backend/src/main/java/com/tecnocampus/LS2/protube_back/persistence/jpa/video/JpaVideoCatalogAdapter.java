@@ -50,6 +50,12 @@ public class JpaVideoCatalogAdapter implements VideoCatalogPort {
         repository.deleteById(id.value());
     }
 
+    @Override
+    public Optional<Video> getRandomVideo() {
+        //TODO
+        return Optional.empty();
+    }
+
 
     // Additional methods for extended functionality
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class VideoService implements VideoCatalogPort {
@@ -26,7 +27,10 @@ public class VideoService implements VideoCatalogPort {
 
     @Override
     public void save(Video video) {
-         videos.add(video);
+        if (video != null)
+            videos.add(video);
+        else
+            throw new IllegalArgumentException("Cannot save null video");
     }
 
     @Override
@@ -44,8 +48,8 @@ public class VideoService implements VideoCatalogPort {
     }
 
     @Override
-    public VideoService getRandomVideo(){
-        return this;
+    public Optional<Video> getRandomVideo(){
+        return Optional.ofNullable(videos.get(new Random().nextInt(0, videos.size())));
     }
 
 }

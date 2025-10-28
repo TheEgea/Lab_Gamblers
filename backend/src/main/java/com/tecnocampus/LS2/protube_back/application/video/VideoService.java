@@ -42,4 +42,10 @@ public class VideoService implements VideoCatalogPort {
         }
         return true;
     }
+
+    @Override
+    public VideoService getRandomVideo(){
+        return this;
+    }
+
 }

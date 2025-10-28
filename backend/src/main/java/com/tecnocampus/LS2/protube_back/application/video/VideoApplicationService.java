@@ -146,4 +146,14 @@ public class VideoApplicationService {
                 Instant.now() // updatedAt
         );
     }
-}
+
+    /**
+     * Endpoint that returns a random video from the catalog
+     */
+    @Transactional(readOnly = true)
+    public VideoResponse getRandomVideo() {
+        Video video = videoCatalogPort.getRandomVideo()
+                .orElseThrow(() -> new VideoNotFoundException("No videos available"));
+        return videoMapper.toResponse(video);
+
+    }

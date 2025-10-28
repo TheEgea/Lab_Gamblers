@@ -35,4 +35,12 @@ public class VideoController {
     public ResponseEntity<Video> findById(VideoId videoId) {
         return ResponseEntity.of(videoCatalogPort.findById(videoId));
     }
+
+    @GetMapping("/gambling")
+    public VideoController getGamblingVideos() {
+        // Implementatio for getting a random video
+        return ResponseEntity.of(videoCatalogPort.getRandomVideo());
+
+    }
+
 }

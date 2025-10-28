@@ -1,10 +1,14 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
-import com.tecnocampus.LS2.protube_back.domain.video.*
+import com.tecnocampus.LS2.protube_back.domain.video.*;
+import com.tecnocampus.LS2.protube_back.web.dto.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.tecnocampus.LS2.protube_back.web.dto.*;
-import com.tecnocampus.LS2.protube_back.persistence.jpa.video;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +21,24 @@ public class VideoService {
 
     private final VideoJpaRepository videoJpaRepository;
     private final VideoMapper videoMapper;
+    private final VideoEntityMapper videoEntityMapper;
 
 
     public void save(CreateVideoRequest request) {
 
         Video video = videoMapper.toDomain(request);
 
-        videoJpaRepository.save(video);
+        videoJpaRepository.save(videoEntityMapper.toEntity(video));
 
     }
 
     // Métodos de casos de uso que USAN el puerto
     public List<Video> listAll() {
-        return videoCatalogPort.listAll();
+        return videoJpaRepository.listAll();
     }
 
     public VideoResponse findById(String id) throws Exception {
-        return videoCatalogPort.findById(new VideoId(id));
+        return videoJpaRepository.findById(new VideoId(id));
     }
 
 
@@ -68,7 +73,7 @@ public class VideoService {
         );
 
         // Persistir usando el puerto
-        videoCatalogPort.save(video);
+        videoJpaRepository.save(video);
         return video;
     }
 
@@ -78,15 +83,15 @@ public class VideoService {
 
         // Lógica de actualización
         var updated = existing.get().withTitle(request.getTitle());
-        videoCatalogPort.save(updated);
+        videoJpaRepository.save(updated);
         return Optional.of(updated);
     }
 
     public void deleteVideo(String id) {
-        videoCatalogPort.delete(new VideoId(id));
+        videoJpaRepository.delete(new VideoId(id));
     }
 
     public Optional<Video> getRandomVideo() {
-        return videoCatalogPort.getRandomVideo();
+        return videoJpaRepository.getRandomVideo();
     }
 }

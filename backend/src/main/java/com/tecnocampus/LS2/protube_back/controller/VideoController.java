@@ -2,7 +2,10 @@ package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
+
+import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

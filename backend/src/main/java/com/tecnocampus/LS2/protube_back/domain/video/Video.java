@@ -5,7 +5,7 @@ import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
+
 
 public final class Video {
     private final VideoId id;

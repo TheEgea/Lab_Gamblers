@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
+import com.tecnocampus.LS2.protube_back.domain.video.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

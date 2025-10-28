@@ -1,5 +1,7 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
+import com.tecnocampus.LS2.protube_back.domain.video.Video;
+import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,16 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
-
-    /**
-     * Find video by checksum to avoid duplicates
-     */
-    //Optional<VideoEntity> findByChecksum(String checksum);
-
-    /**
-     * Check if video exists by checksum
-     */
-    //boolean existsByChecksum(String checksum);
 
     /**
      * Find videos by title containing text (case insensitive)
@@ -58,4 +50,18 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
      * Find videos with no thumbnail
      */
     List<VideoEntity> findByThumbnailPathIsNull();
+
+    @Query("SELECT v FROM VideoEntity v")
+    List<VideoEntity> findAll();
+
+    @Query("SELECT v FROM VideoEntity v WHERE v.id = :id")
+    Optional<VideoEntity> findById(VideoId id);
+
+    @Query("INSERT INTO VideoEntity (id, jsonId, width, height, durationSeconds, title, user, timestamp, " +
+            "description, categories, tags, viewCount, likeCount, channel, comments, mediaPath, thumbnailPath, createdAt, updatedAt) " +
+            "VALUES (:#{#video.id}, :#{#video.jsonId}, :#{#video.width}, :#{#video.height}, :#{#video.durationSeconds}, " +
+            ":#{#video.title}, :#{#video.user}, :#{#video.timestamp}, :#{#video.description}, :#{#video.categories}, " +
+            ":#{#video.tags}, :#{#video.viewCount}, :#{#video.likeCount}, :#{#video.channel}, :#{#video.comments}, " +
+            ":#{#video.mediaPath}, :#{#video.thumbnailPath}, :#{#video.createdAt}, :#{#video.updatedAt})")
+    void save(VideoEntity video);
 }

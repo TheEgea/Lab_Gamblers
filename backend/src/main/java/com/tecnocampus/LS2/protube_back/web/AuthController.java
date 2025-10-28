@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.web;
 
+<<<<<<< HEAD
 import com.tecnocampus.LS2.protube_back.web.dto.request.AuthenticationRequest;
 import com.tecnocampus.LS2.protube_back.web.dto.response.AuthenticationResponse;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
@@ -16,6 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.Set;
+=======
+import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
+import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
+import com.tecnocampus.LS2.protube_back.domain.user.Username;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> manual-auth-refactor-clean
 
 @RestController
 @RequestMapping("/auth")
@@ -24,9 +37,17 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+<<<<<<< HEAD
     public AuthController(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+=======
+    @Value("${application.security.jwt.token-prefix:Bearer}")
+    private String tokenPrefix;
+
+    public AuthController(LoginService loginService) {
+        this.loginService = loginService;
+>>>>>>> manual-auth-refactor-clean
     }
 
     @PostMapping("/login")

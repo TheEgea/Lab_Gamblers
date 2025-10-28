@@ -21,7 +21,7 @@ public class VideoService implements VideoCatalogPort {
 
     @Override
     public Optional<Video> findById(VideoId id) {
-        return videos.stream().filter(video -> video.id().equals(id)).findFirst();
+        return videos.stream().filter(video -> video.getId().equals(id)).findFirst();
     }
 
     @Override
@@ -31,13 +31,9 @@ public class VideoService implements VideoCatalogPort {
 
     @Override
     public void delete (VideoId id) {
-        videos.removeIf(video -> video.id().equals(id));
+        videos.removeIf(video -> video.getId().equals(id));
     }
 
-    @Override
-    public boolean existsByChecksum(String checksum) {
-        return videos.stream().filter(video -> video.checksum().equals(checksum)).findFirst().isPresent();
-    }
 
     public boolean equals (List<Video> otherVideos) {
         if (otherVideos.size() != videos.size()) return false;

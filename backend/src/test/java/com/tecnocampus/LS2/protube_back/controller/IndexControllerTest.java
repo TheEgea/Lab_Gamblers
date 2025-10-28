@@ -1,8 +1,10 @@
-/*package com.tecnocampus.LS2.protube_back.controller;
+package com.tecnocampus.LS2.protube_back.controller;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IndexControllerTest {
     IndexController indexController = new IndexController();
@@ -18,6 +20,11 @@ class IndexControllerTest {
 
         assertEquals("logout", indexController.logout().getViewName());
     }
+
+    @Test
+    void testing() {
+
+        Assertions.assertTrue(true);
+    }
 }
 
- */

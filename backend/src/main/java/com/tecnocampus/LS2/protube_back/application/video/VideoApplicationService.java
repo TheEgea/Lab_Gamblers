@@ -113,17 +113,6 @@ public class VideoApplicationService {
         videoCatalogPort.delete(videoId);
     }
 
-    /**
-     * Check if video exists by checksum (prevent duplicates)
-     */
-    @Transactional(readOnly = true)
-    public boolean existsByChecksum(String checksum) {
-        return videoCatalogPort.existsByChecksum(checksum);
-    }
-
-    /**
-     * Get total count of videos
-     */
     @Transactional(readOnly = true)
     public long getTotalVideoCount() {
         return videoCatalogPort.listAll().size();
@@ -132,20 +121,40 @@ public class VideoApplicationService {
     // Private helper methods
 
     private Video updateVideoFromRequest(Video existingVideo, UpdateVideoRequest request) {
-        String newTitle = request.title() != null ? request.title() : existingVideo.title();
-        String newDescription = request.description() != null ? request.description() : existingVideo.description();
+        String newTitle = request.title() != null ? request.title() : existingVideo.getTitle();
+        String newDescription = request.description() != null ? request.description() : existingVideo.getDescription();
 
         return new Video(
-                existingVideo.id(),
+                existingVideo.getId(),
+                existingVideo.getJsonId(),
+                existingVideo.getWidth(),
+                existingVideo.getHeight(),
+                existingVideo.getDurationSeconds(),
                 newTitle,
+                existingVideo.getUser(),
+                existingVideo.getTimestamp(),
                 newDescription,
-                existingVideo.durationSeconds(),
-                existingVideo.sizeBytes(),
-                existingVideo.mediaPath(),
-                existingVideo.thumbnailPath(),
-                existingVideo.checksum(),
-                existingVideo.createdAt(),
-                Instant.now() // Updated timestamp
+                existingVideo.getCategories(),
+                existingVideo.getTags(),
+                existingVideo.getViewCount(),
+                existingVideo.getLikeCount(),
+                existingVideo.getChannel(),
+                existingVideo.getComments(),
+                existingVideo.getMediaPath(),
+                existingVideo.getThumbnailPath(),
+                existingVideo.getCreatedAt(),
+                Instant.now() // updatedAt
         );
+    }
+
+    /**
+     * Endpoint that returns a random video from the catalog
+     */
+    @Transactional(readOnly = true)
+    public VideoResponse getRandomVideo() {
+        Video video = videoCatalogPort.getRandomVideo()
+                .orElseThrow(() -> new VideoNotFoundException("No videos available"));
+        return videoMapper.toResponse(video);
+
     }
 }

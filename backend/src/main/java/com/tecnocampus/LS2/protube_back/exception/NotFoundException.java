@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.exception.base;
+package com.tecnocampus.LS2.protube_back.exception;
 
 import org.springframework.http.HttpStatus;
 

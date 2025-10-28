@@ -9,20 +9,19 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface VideoJpaRepository extends JpaRepository<VideoEntity, UUID> {
+public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
 
     /**
      * Find video by checksum to avoid duplicates
      */
-    Optional<VideoEntity> findByChecksum(String checksum);
+    //Optional<VideoEntity> findByChecksum(String checksum);
 
     /**
      * Check if video exists by checksum
      */
-    boolean existsByChecksum(String checksum);
+    //boolean existsByChecksum(String checksum);
 
     /**
      * Find videos by title containing text (case insensitive)

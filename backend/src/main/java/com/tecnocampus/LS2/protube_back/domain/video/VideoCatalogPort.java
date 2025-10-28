@@ -8,5 +8,5 @@ public interface VideoCatalogPort {
     Optional<Video> findById(VideoId id);
     void save(Video video);
     void delete (VideoId id);
-    boolean existsByChecksum(String checksum);
+    Optional<Video> getRandomVideo();
 }

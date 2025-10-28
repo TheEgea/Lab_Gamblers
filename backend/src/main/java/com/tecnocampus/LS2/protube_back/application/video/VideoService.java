@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.services;
+package com.tecnocampus.LS2.protube_back.application.video;
 
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class VideoService implements VideoCatalogPort {
@@ -30,16 +31,21 @@ public class VideoService implements VideoCatalogPort {
     public Optional<Video> findById(VideoId id) {
         //return videos.stream().filter(video -> video.id().equals(id)).findFirst();
         return videoRepository.findById(id);
+        return videos.stream().filter(video -> video.getId().equals(id)).findFirst();
     }
 
     @Override
     public void save(Video video) {
          videoRepository.save(video);
+        if (video != null)
+            videos.add(video);
+        else
+            throw new IllegalArgumentException("Cannot save null video");
     }
 
     @Override
     public void delete (VideoId id) {
-        videos.removeIf(video -> video.id().equals(id));
+        videos.removeIf(video -> video.getId().equals(id));
     }
 
     @Override
@@ -55,4 +61,10 @@ public class VideoService implements VideoCatalogPort {
         }
         return true;
     }
+
+    @Override
+    public Optional<Video> getRandomVideo(){
+        return Optional.ofNullable(videos.get(new Random().nextInt(0, videos.size())));
+    }
+
 }

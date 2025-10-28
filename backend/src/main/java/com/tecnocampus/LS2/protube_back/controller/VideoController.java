@@ -1,46 +1,39 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
-
+import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/videos")
+@RequiredArgsConstructor
 public class VideoController {
 
-    private final VideoCatalogPort videoCatalogPort;
-
-    public VideoController(VideoCatalogPort videoCatalogPort) {
-        this.videoCatalogPort = videoCatalogPort;
-    }
+    private final VideoService videoService;
 
     @GetMapping("/getAll")
-    public Object getAllVideos() {
-        return videoCatalogPort.listAll();
+    public ResponseEntity<List<Video>> getAllVideos() {
+        List<Video> videos = videoService.listAll();
+        return ResponseEntity.ok(videos);
     }
 
-    @PostMapping("/addVideo")
-    public ResponseEntity<String> addVideo(Video video) {
-                videoCatalogPort.save(video);
+    @PostMapping("/add")
+    public ResponseEntity<String> addVideo(@RequestBody CreateVideoRequest video) {
+        videoService.videoCatalogPort.save(video);
         return ResponseEntity.ok("Video added successfully");
     }
 
-    @GetMapping("/findById")
-    public ResponseEntity<Video> findById(VideoId videoId) {
-        return ResponseEntity.of(videoCatalogPort.findById(videoId));
+    @GetMapping("/{id}")
+    public ResponseEntity<Video> findById(@PathVariable String id) {
+        return ResponseEntity.of(videoService.findById(id));
     }
 
-    @GetMapping("/gambling")
-    public ResponseEntity<Video> getGamblingVideos() {
-        // Implementatio for getting a random video
-        return ResponseEntity.of(videoCatalogPort.getRandomVideo());
-
+    @GetMapping("/random")
+    public ResponseEntity<Video> getRandomVideo() {
+        return ResponseEntity.of(videoService.getRandomVideo());
     }
-
 }

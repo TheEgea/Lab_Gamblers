@@ -23,8 +23,9 @@ public class VideoController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addVideo(@RequestBody CreateVideoRequest video) {
-        videoService.videoCatalogPort.save(video);
-        return ResponseEntity.ok("Video added successfully");
+        VideoResponse response = videoService.save(video);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping("/{id}")

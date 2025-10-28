@@ -1,10 +1,13 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.tecnocampus.LS2.protube_back.application.video.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.video.dto.response.VideoResponse;
+import com.tecnocampus.LS2.protube_back.application.video.dto.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,18 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class VideoService {
 
+    private final VideoJpaRepository videoJpaRepository;
     private final VideoCatalogPort videoCatalogPort;
+    private final VideoMapper videoMapper;
+
+
+    public void save(CreateVideoRequest request) {
+
+        Video video = videoMapper.toDomain(request);
+
+        videoCatalogPort.save(video);
+
+    }
 
     // Métodos de casos de uso que USAN el puerto
     public List<Video> listAll() {
@@ -26,33 +40,7 @@ public class VideoService {
         return videoCatalogPort.findById(new VideoId(id));
     }
 
-    public void save(CreateVideoRequest video) {
 
-        VideoEntity videoEntity = new VideoEntity(
-                VideoId.generate(),
-                video.getJsonId(),
-                video.getWidth(),
-                video.getHeight(),
-                video.getDurationSeconds(),
-                video.getTitle(),
-                video.getUser(),
-                video.getTimestamp(),
-                video.getDescription(),
-                video.getCategories(),
-                video.getTags(),
-                0, // viewCount inicial
-                0, // likeCount inicial
-                video.getChannel(),
-                new ArrayList<>(), // comments vacío
-                video.getMediaPath(),
-                video.getThumbnailPath(),
-                Instant.now(),
-                Instant.now()
-        );
-
-        videoCatalogPort.save(videoEntity);
-        
-    }
 
     public Video createVideo(CreateVideoRequest request) {
         // Validaciones de negocio

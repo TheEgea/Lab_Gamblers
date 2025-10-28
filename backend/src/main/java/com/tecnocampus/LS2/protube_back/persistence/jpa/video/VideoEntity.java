@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "videos")
+@Data
 public class VideoEntity {
 
     @Id
@@ -100,86 +101,6 @@ public class VideoEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    // Getters
-    public String getId() {return id;}
-
-    public Instant getCreatedAt() {return createdAt;}
-
-    public Instant getUpdatedAt() {return updatedAt;}
-
-    public String getThumbnailPath() {return thumbnailPath;}
-
-    public String getMediaPath() {return mediaPath;}
-
-    public List<ComentarioEntity>  getComments() {return comments;}
-
-    public String getChannel() {return channel;}
-
-    public int getLikeCount() {return likeCount;}
-
-    public int getViewCount() {return viewCount;}
-
-    public List<String>  getTags() {return tags;}
-
-    public List<String>  getCategories() {return categories;}
-
-    public String getDescription() {return description;}
-
-    public List<Instant>  getTimestamp() {return timestamp;}
-
-    public String getUser() {return user;}
-
-    public String getTitle() {return title;}
-
-    public Integer getDurationSeconds() {return durationSeconds;}
-
-    public int getHeight() {return height;}
-
-    public int getWidth() {return width;}
-
-    public String getJsonId() {return jsonId;}
-
-    // Setters
-
-
-    public void setId(String id) {this.id = id;}
-
-    public void setJsonId(String jsonId) {this.jsonId = jsonId;}
-
-    public void setUpdatedAt(Instant updatedAt) {this.updatedAt = updatedAt;}
-
-    public void setCreatedAt(Instant createdAt) {this.createdAt = createdAt;}
-
-    public void setThumbnailPath(String thumbnailPath) {this.thumbnailPath = thumbnailPath;}
-
-    public void setMediaPath(String mediaPath) {this.mediaPath = mediaPath;}
-
-    public void setComments(List<ComentarioEntity>  comments) {this.comments = comments;}
-
-    public void setChannel(String channel) {this.channel = channel;}
-
-    public void setLikeCount(int likeCount) {this.likeCount = likeCount;}
-
-    public void setViewCount(int viewCount) {this.viewCount = viewCount;}
-
-    public void setTags(List<String>  tags) {this.tags = tags;}
-
-    public void setCategories(List<String>  categories) {this.categories = categories;}
-
-    public void setDescription(String description) {this.description = description;}
-
-    public void setTimestamp(List<Instant>  timestamp) {this.timestamp = timestamp;}
-
-    public void setUser(String user) {this.user = user;}
-
-    public void setTitle(String title) {this.title = title;}
-
-    public void setDurationSeconds(Integer durationSeconds) {this.durationSeconds = durationSeconds;}
-
-    public void setHeight(int height) {this.height = height;}
-
-    public void setWidth(int width) {this.width = width;}
 
 
 

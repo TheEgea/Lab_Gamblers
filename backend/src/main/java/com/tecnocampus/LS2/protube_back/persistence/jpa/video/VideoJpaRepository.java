@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
+public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> {
 
     /**
      * Find video by checksum to avoid duplicates

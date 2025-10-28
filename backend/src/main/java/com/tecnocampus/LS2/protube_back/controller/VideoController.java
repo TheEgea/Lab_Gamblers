@@ -23,13 +23,12 @@ public class VideoController {
 
     @PostMapping("/add")
     public ResponseEntity<String> addVideo(@RequestBody CreateVideoRequest video) {
-        VideoResponse response = videoService.save(video);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(response);
+        videoService.save(video);
+        return ResponseEntity.status(HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Video> findById(@PathVariable String id) {
+    public ResponseEntity<String> findById(@PathVariable String id) {
         return ResponseEntity.of(videoService.findById(id));
     }
 

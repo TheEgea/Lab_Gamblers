@@ -1,12 +1,9 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
-import com.tecnocampus.LS2.protube_back.domain.video.Video;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
+import com.tecnocampus.LS2.protube_back.domain.video.*
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.tecnocampus.LS2.protube_back.application.video.dto.request.CreateVideoRequest;
-import com.tecnocampus.LS2.protube_back.application.video.dto.response.VideoResponse;
-import com.tecnocampus.LS2.protube_back.application.video.dto.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.web.dto.*;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
 import java.util.ArrayList;
@@ -19,7 +16,6 @@ import java.util.Random;
 public class VideoService {
 
     private final VideoJpaRepository videoJpaRepository;
-    private final VideoCatalogPort videoCatalogPort;
     private final VideoMapper videoMapper;
 
 
@@ -27,7 +23,7 @@ public class VideoService {
 
         Video video = videoMapper.toDomain(request);
 
-        videoCatalogPort.save(video);
+        videoJpaRepository.save(video);
 
     }
 
@@ -36,7 +32,7 @@ public class VideoService {
         return videoCatalogPort.listAll();
     }
 
-    public Optional<Video> findById(String id) {
+    public VideoResponse findById(String id) throws Exception {
         return videoCatalogPort.findById(new VideoId(id));
     }
 

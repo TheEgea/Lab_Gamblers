@@ -11,7 +11,7 @@ public class VideoEntityMapper {
     /**
      * Convert JPA Entity to Domain Model
      */
-    public Video toDomain(VideoEntity entity) {
+    public static Video toDomain(VideoEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -42,7 +42,7 @@ public class VideoEntityMapper {
     /**
      * Convert Domain Model to JPA Entity
      */
-    public VideoEntity toEntity(Video video) {
+    public static VideoEntity toEntity(Video video) {
         if (video == null) {
             return null;
         }
@@ -73,10 +73,12 @@ public class VideoEntityMapper {
     /**
      * Update existing entity with domain data
      */
-    public void updateEntity(VideoEntity entity, Video video) {
+    public static void updateEntity(VideoEntity entity, Video video) {
         if (entity == null || video == null) {
             return;
         }
+
+        //TODO:
 
         entity.setWidth(video.getWidth());
         entity.setHeight(video.getHeight());

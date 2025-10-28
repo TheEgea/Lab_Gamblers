@@ -59,4 +59,7 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> 
      * Find videos with no thumbnail
      */
     List<VideoEntity> findByThumbnailPathIsNull();
+
+    @Query(value = "SELECT * FROM VideoEntity ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    VideoEntity getRandomVideo();
 }

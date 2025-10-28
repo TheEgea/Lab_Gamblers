@@ -12,7 +12,7 @@ import java.time.Instant;
 @Component
 public class VideoMapper {
 
-    public VideoResponse toResponse(Video video) {
+    public static VideoResponse toResponse(Video video) {
         if (video == null) return null;
 
         return new VideoResponse(
@@ -66,7 +66,7 @@ public class VideoMapper {
         );
     }
 
-    private String formatDuration(Integer seconds) {
+    private static String formatDuration(Integer seconds) {
         if (seconds == null || seconds <= 0) return "00:00";
 
         int minutes = seconds / 60;
@@ -74,16 +74,16 @@ public class VideoMapper {
         return String.format("%02d:%02d", minutes, remainingSeconds);
     }
 
-    private String formatFileSize(Long bytes) {
+    private static String formatFileSize(Long bytes) {
         if (bytes == null || bytes <= 0) return null;
         return String.format("%.1f MB", bytes / 1024.0 / 1024.0);
     }
 
-    private String buildMediaUrl(String path) {
+    private static String buildMediaUrl(String path) {
         return path != null ? "/media/videos/" + path : null;
     }
 
-    private String buildThumbnailUrl(String path) {
+    private static String buildThumbnailUrl(String path) {
         return path != null ? "/media/thumbnails/" + path : null;
     }
 }

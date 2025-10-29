@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.services;
+package com.tecnocampus.LS2.protube_back.application.video;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.HashedPassword;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserAuthPort {
+public class UserService {
 
     private final UserJpaRepository userJpaRepository;
 
@@ -19,12 +19,10 @@ public class UserService implements UserAuthPort {
         this.userJpaRepository = userJpaRepository;
     }
 
-    @Override
     public Optional<User> loadByUsername(Username username) {
         return userJpaRepository.loadByUsername(username.toString());
     }
 
-    @Override
     public boolean verifyPassword(RawPassword raw, HashedPassword hashed) {
         return userJpaRepository.verifyPassword(raw, hashed);
     }

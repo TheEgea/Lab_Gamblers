@@ -29,7 +29,7 @@ public class VideoEntity {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "user", length = 32)
+    @Column(name = "username", length = 32)
     private String user;
 
     @ElementCollection

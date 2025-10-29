@@ -9,7 +9,6 @@ import com.tecnocampus.LS2.protube_back.web.dto.request.UpdateVideoRequest;
 import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
 import lombok.RequiredArgsConstructor;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
@@ -42,18 +41,19 @@ public class VideoService {
     }
 
     // Métodos de casos de uso que USAN el puerto
+    @Transactional
     public List<Video> listAll() {
-        //TODO: crear metodo return all en el jparepository
-        //return videoJpaRepository.listAll();
-        return List.of();
+        return videoJpaRepository.findAll()
+                .stream()
+                .map(VideoEntityMapper::toDomain)
+                .toList();
     }
 
     public VideoResponse findById(String id) {
-        return VideoMapper.toResponse(
-                VideoEntityMapper.toDomain(
-                        videoJpaRepository.findById(
-                                new VideoId(id)).orElseThrow(()-> new VideoNotFoundException(id))));
-        //return Optional.ofNullable(VideoMapper.toResponse(VideoEntityMapper.toDomain(videoJpaRepository.findById(new VideoId(id)).orElseThrow(() -> new VideoNotFoundException(id)))));
+        VideoEntity entity = videoJpaRepository.findById(id)
+                .orElseThrow(() -> new VideoNotFoundException(id));
+        Video video = VideoEntityMapper.toDomain(entity);
+        return VideoMapper.toResponse(video);
     }
 
 
@@ -88,29 +88,48 @@ public class VideoService {
         );
 
         // Persistir usando el puerto
-        videoJpaRepository.save(VideoEntityMapper.toEntity(video));
+        VideoEntity entity = VideoEntityMapper.toEntity(video);
+        videoJpaRepository.save(entity);
         return video;
     }
 
+    @Transactional
     public Optional<Video> updateVideo(String id, UpdateVideoRequest request) {
-        var existing = videoJpaRepository.findById(new VideoId(id));
-        if (existing.isEmpty()) return Optional.empty();
+        var existing = videoJpaRepository.findById(id);
+        if (existing.isEmpty())
+            return Optional.empty();
 
         // Lógica de actualización
         //TODO:Comprobar si esta bien (que se ha de cambiar?? solo llega el title y description, pero el mapper lo actualiza todo?)
         //var updated = existing.get().withTitle(request.title());
-        var updated = existing.get();
-        videoJpaRepository.save(updated);
+        VideoEntity entity = existing.get();
+        if (request.title() != null)
+            entity.setTitle(request.title());
+
+        if (request.description() != null)
+            entity.setDescription(request.description());
+        entity.setUpdatedAt(Instant.now());
+
+        VideoEntity updated = videoJpaRepository.save(entity);
         return Optional.of(VideoEntityMapper.toDomain(updated));
     }
 
     public void deleteVideo(String id) {
         //TODO: chekear si para decidir si borrarlo unicamente cuenta el id
-        videoJpaRepository.delete(VideoEntityMapper.toEntity(new Video (new VideoId(id))));
+        if (!videoJpaRepository.existsById(id))
+            throw new VideoNotFoundException(id);
+        videoJpaRepository.deleteById(id);
     }
 
+    @Transactional
     public Optional<Video> getRandomVideo() {
         //TODO: chekear si esto esta bien (unicamente delega la llamada al jpaRepository)
-        return Optional.of(VideoEntityMapper.toDomain(videoJpaRepository.getRandomVideo()));
+        //return Optional.of(VideoEntityMapper.toDomain(videoJpaRepository.getRandomVideo()));
+        try {
+            VideoEntity entity = videoJpaRepository.getRandomVideo();
+            return Optional.ofNullable(VideoEntityMapper.toDomain(entity));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

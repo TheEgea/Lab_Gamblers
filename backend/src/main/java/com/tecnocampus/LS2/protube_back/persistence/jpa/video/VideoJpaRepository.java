@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> {
+public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
 
     /**
      * Find videos by title containing text (case insensitive)
@@ -52,6 +52,6 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> 
      */
     List<VideoEntity> findByThumbnailPathIsNull();
 
-    @Query(value = "SELECT * FROM VideoEntity ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM videos ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     VideoEntity getRandomVideo();
 }

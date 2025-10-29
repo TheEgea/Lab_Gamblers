@@ -11,72 +11,74 @@ public class VideoEntityMapper {
     /**
      * Convert JPA Entity to Domain Model
      */
-    public Video toDomain(VideoEntity entity) {
+    public static Video toDomain(VideoEntity entity) {
         if (entity == null) {
             return null;
         }
 
         return new Video(
-            new VideoId(entity.getId()),
-            entity.getJsonId(),
-            entity.getWidth(),
-            entity.getHeight(),
-            entity.getDurationSeconds(),
-            entity.getTitle(),
-            entity.getUser(),
-            entity.getTimestamp(),
-            entity.getDescription(),
-            entity.getCategories(),
-            entity.getTags(),
-            entity.getViewCount(),
-            entity.getLikeCount(),
-            entity.getChannel(),
-            ComentarioEntityMapper.toDomainList(entity.getComments()),
-            entity.getMediaPath(),
-            entity.getThumbnailPath(),
-            entity.getCreatedAt(),
-            entity.getUpdatedAt()
+                new VideoId(entity.getId()),
+                entity.getJsonId(),
+                entity.getWidth(),
+                entity.getHeight(),
+                entity.getDurationSeconds(),
+                entity.getTitle(),
+                entity.getUser(),
+                entity.getTimestamp(),
+                entity.getDescription(),
+                entity.getCategories(),
+                entity.getTags(),
+                entity.getViewCount(),
+                entity.getLikeCount(),
+                entity.getChannel(),
+                ComentarioEntityMapper.toDomainList(entity.getComments()),
+                entity.getMediaPath(),
+                entity.getThumbnailPath(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 
     /**
      * Convert Domain Model to JPA Entity
      */
-    public VideoEntity toEntity(Video video) {
+    public static VideoEntity toEntity(Video video) {
         if (video == null) {
             return null;
         }
 
         return new VideoEntity(
-            video.getId().value(),
-            video.getJsonId(),
-            video.getWidth(),
-            video.getHeight(),
-            video.getDurationSeconds(),
-            video.getTitle(),
-            video.getUser(),
-            video.getTimestamp(),
-            video.getDescription(),
-            video.getCategories(),
-            video.getTags(),
-            video.getViewCount(),
-            video.getLikeCount(),
-            video.getChannel(),
-            ComentarioEntityMapper.toEntityList(video.getComments()),
-            video.getMediaPath(),
-            video.getThumbnailPath(),
-            video.getCreatedAt(),
-            video.getUpdatedAt()
+                video.getId().value(),
+                video.getJsonId(),
+                video.getWidth(),
+                video.getHeight(),
+                video.getDurationSeconds(),
+                video.getTitle(),
+                video.getUser(),
+                video.getTimestamp(),
+                video.getDescription(),
+                video.getCategories(),
+                video.getTags(),
+                video.getViewCount(),
+                video.getLikeCount(),
+                video.getChannel(),
+                ComentarioEntityMapper.toEntityList(video.getComments()),
+                video.getMediaPath(),
+                video.getThumbnailPath(),
+                video.getCreatedAt(),
+                video.getUpdatedAt()
         );
     }
 
     /**
      * Update existing entity with domain data
      */
-    public void updateEntity(VideoEntity entity, Video video) {
+    public static void updateEntity(VideoEntity entity, Video video) {
         if (entity == null || video == null) {
             return;
         }
+
+        //TODO:
 
         entity.setWidth(video.getWidth());
         entity.setHeight(video.getHeight());

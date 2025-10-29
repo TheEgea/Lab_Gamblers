@@ -22,8 +22,8 @@ public class AuthController {
 
     public AuthController(LoginService loginService) {
         this.loginService = loginService;
-    }
 
+    }
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         try {

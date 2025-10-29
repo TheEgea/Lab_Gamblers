@@ -1,5 +1,13 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
+import com.tecnocampus.LS2.protube_back.domain.video.*;
+import com.tecnocampus.LS2.protube_back.exception.NotFoundException;
+import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
+import com.tecnocampus.LS2.protube_back.web.dto.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.request.UpdateVideoRequest;
+import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
+import lombok.RequiredArgsConstructor;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
@@ -7,54 +15,102 @@ import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.*;
 
+
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class VideoService implements VideoCatalogPort {
+@RequiredArgsConstructor
+public class VideoService {
 
-    // private final List<Video> videos = new ArrayList<>();
-    private final VideoJpaRepository videoRepository;
+    private final VideoJpaRepository videoJpaRepository;
+    private final VideoMapper videoMapper;
+    private final VideoEntityMapper videoEntityMapper;
 
-    public VideoService(VideoJpaRepository videoRepository) {
-        this.videoRepository = videoRepository;
+
+    public void save(CreateVideoRequest request) {
+
+        Video video = videoMapper.toDomain(request);
+
+        videoJpaRepository.save(videoEntityMapper.toEntity(video));
+
     }
 
-    @Override
-    public List<VideoEntity> listAll() {
-        return videoRepository.findAll();
+    // Métodos de casos de uso que USAN el puerto
+    public List<Video> listAll() {
+        //TODO: crear metodo return all en el jparepository
+        //return videoJpaRepository.listAll();
+        return List.of();
     }
 
-    @Override
-    @Transactional
-    public Optional<VideoEntity> findById(VideoId id) {
-        //return videos.stream().filter(video -> video.id().equals(id)).findFirst();
-        return videoRepository.findById(id);
+    public VideoResponse findById(String id) {
+        return VideoMapper.toResponse(
+                VideoEntityMapper.toDomain(
+                        videoJpaRepository.findById(
+                                new VideoId(id)).orElseThrow(()-> new VideoNotFoundException(id))));
+        //return Optional.ofNullable(VideoMapper.toResponse(VideoEntityMapper.toDomain(videoJpaRepository.findById(new VideoId(id)).orElseThrow(() -> new VideoNotFoundException(id)))));
     }
 
-    @Override
-    public void save(VideoEntity video) {
-         videoRepository.save(video);
-    }
 
-    @Override
-    public void delete (VideoId id) {
-        videos.removeIf(video -> video.getId().equals(id));
-    }
 
-    public boolean equals (List<Video> otherVideos) {
-        if (otherVideos.size() != videos.size()) return false;
-        for (int i = 0; i < videos.size(); i++) {
-            if (!videos.get(i).equals(otherVideos.get(i))) return false;
+    public Video createVideo(CreateVideoRequest request) {
+        // Validaciones de negocio
+        if (request.title() == null || request.title().isBlank()) {
+            throw new IllegalArgumentException("Title is required");
         }
-        return true;
+
+        // Construir dominio
+        Video video = new Video(
+                VideoId.generate(),
+                request.jsonId(),
+                request.width(),
+                request.height(),
+                request.durationSeconds(),
+                request.title(),
+                request.user(),
+                request.timestamp(),
+                request.description(),
+                request.categories(),
+                request.tags(),
+                0, // viewCount inicial
+                0, // likeCount inicial
+                request.channel(),
+                List.of(), // comments vacío
+                request.mediaPath(),
+                request.thumbnailPath(),
+                Instant.now(),
+                Instant.now()
+        );
+
+        // Persistir usando el puerto
+        videoJpaRepository.save(VideoEntityMapper.toEntity(video));
+        return video;
     }
 
-    @Override
-    public Optional<Video> getRandomVideo(){
-        return Optional.ofNullable(videos.get(new Random().nextInt(0, videos.size())));
+    public Optional<Video> updateVideo(String id, UpdateVideoRequest request) {
+        var existing = videoJpaRepository.findById(new VideoId(id));
+        if (existing.isEmpty()) return Optional.empty();
+
+        // Lógica de actualización
+        //TODO:Comprobar si esta bien (que se ha de cambiar?? solo llega el title y description, pero el mapper lo actualiza todo?)
+        //var updated = existing.get().withTitle(request.title());
+        var updated = existing.get();
+        videoJpaRepository.save(updated);
+        return Optional.of(VideoEntityMapper.toDomain(updated));
     }
 
+    public void deleteVideo(String id) {
+        //TODO: chekear si para decidir si borrarlo unicamente cuenta el id
+        videoJpaRepository.delete(VideoEntityMapper.toEntity(new Video (new VideoId(id))));
+    }
+
+    public Optional<Video> getRandomVideo() {
+        //TODO: chekear si esto esta bien (unicamente delega la llamada al jpaRepository)
+        return Optional.of(VideoEntityMapper.toDomain(videoJpaRepository.getRandomVideo()));
+    }
 }

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
+
 
 public final class Video {
     private final VideoId id;
@@ -53,6 +53,28 @@ public final class Video {
         this.thumbnailPath = thumbnailPath;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public Video(VideoId id) {
+        this.id = id;
+        this.jsonId = "";
+        this.width = 0;
+        this.height = 0;
+        this.durationSeconds = null;
+        this.title = "";
+        this.user = "";
+        this.timestamp = List.of();
+        this.description = "";
+        this.categories = List.of();
+        this.tags = List.of();
+        this.viewCount = 0;
+        this.likeCount = 0;
+        this.channel = "";
+        this.comments = List.of();
+        this.mediaPath = "";
+        this.thumbnailPath = "";
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 
     public VideoId getId() {

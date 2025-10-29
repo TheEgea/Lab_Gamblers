@@ -18,7 +18,7 @@ public class UserService {
     public UserService(UserJpaRepository userJpaRepository) {
         this.userJpaRepository = userJpaRepository;
     }
-
+    /*
     public Optional<User> loadByUsername(Username username) {
         return userJpaRepository.loadByUsername(username.toString());
     }
@@ -26,4 +26,5 @@ public class UserService {
     public boolean verifyPassword(RawPassword raw, HashedPassword hashed) {
         return userJpaRepository.verifyPassword(raw, hashed);
     }
+     */
 }

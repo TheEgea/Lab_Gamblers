@@ -44,6 +44,21 @@ Probar login (elige tu entorno)
 Esperado: 200 OK, con cabecera Authorization: Bearer <token> y body {"access_token":"<token>"}
 
 ---
+## 🪟 Para Windows
+**Requisitos**: Windows 10/11 Pro/Enterprise + Docker Desktop SIN WSL(no es necesario vaya)
+### Instalación rápida:
+git clone https://github.com/TheEgea/Lab_Gamblers.git
+cd Lab_Gamblers
+run-dev.bat
+
+**URLs después del start:**
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8080
+
+**¿Problemas?** → [Guía Windows (2 min)](WINDOWS-INSTALL.md)
+
+
+---
 
 ## 📁 Estructura del Proyecto
 /home/lab/protube/Lab_Gamblers/

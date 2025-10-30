@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface UserAuthPort {
     Optional<User> loadByUsername(Username username);
-    boolean verifyPassword(RawPassword raw, HashedPassword hashed);
+    boolean login(Username username, Password password);
+
 }

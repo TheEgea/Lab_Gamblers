@@ -31,7 +31,7 @@ public class VideoService {
 
         Video video = videoMapper.toDomain(request);
 
-        videoJpaRepository.save(videoEntityMapper.toEntity(video));
+        videoJpaRepository.save(VideoEntityMapper.toEntity(video));
 
     }
 

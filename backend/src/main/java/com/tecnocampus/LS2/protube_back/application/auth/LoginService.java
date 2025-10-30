@@ -3,9 +3,12 @@ package com.tecnocampus.LS2.protube_back.application.auth;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
-import com.tecnocampus.LS2.protube_back.domain.user.RawPassword;
+import com.tecnocampus.LS2.protube_back.domain.user.Password;
 import com.tecnocampus.LS2.protube_back.domain.user.User;
 import com.tecnocampus.LS2.protube_back.domain.user.Username;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -22,11 +25,16 @@ public class LoginService {
         this.tokenService = tokenService;
     }
 
-    public String login(Username username, RawPassword password) {
+    public String login(Username username, Password password) {
+
+
+
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        if (!userAuthPort.verifyPassword(password, user.password())) {
+
+
+        if (!userAuthPort.login(username,password)) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
@@ -39,6 +47,10 @@ public class LoginService {
         );
 
         return tokenService.issue(claims);
+    }
+
+    public String register(LoginRequest request) {
+        return null;
     }
 
     public static class InvalidCredentialsException extends RuntimeException {

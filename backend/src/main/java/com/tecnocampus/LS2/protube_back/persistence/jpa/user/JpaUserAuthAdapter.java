@@ -2,12 +2,11 @@ package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
+import com.tecnocampus.LS2.protube_back.web.dto.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -23,16 +22,15 @@ public class JpaUserAuthAdapter implements UserAuthPort {
 
     @Override
     public Optional<User> loadByUsername(Username username) {
-        return repo.findByUsername(username.value()).map(this::toDomain);
+        return repo.findByUsername(username.value()).map(UserMapper::toUser);
     }
-
     @Override
-    public boolean verifyPassword(RawPassword raw, HashedPassword hashed) {
-        return encoder.matches(raw.value(), hashed.value());
+    public boolean login(Username username, Password password) {
+        return repo.login(username,password);
     }
 
-    private User toDomain(UserEntity e) {
-        Set<Role> roles = e.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet());
-        return new User(new UserId(e.getId()), new Username(e.getUsername()), new HashedPassword(e.getPasswordHash()), roles);
-    }
+
+
+
+
 }

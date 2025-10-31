@@ -3,14 +3,14 @@ package com.tecnocampus.LS2.protube_back.application.auth;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
-import com.tecnocampus.LS2.protube_back.domain.user.Password;
-import com.tecnocampus.LS2.protube_back.domain.user.User;
-import com.tecnocampus.LS2.protube_back.domain.user.Username;
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.domain.user.*;
+import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class LoginService {
@@ -24,35 +24,55 @@ public class LoginService {
     }
 
     public String login(Username username, Password password) {
-
-
-
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-
-
-        if (!userAuthPort.login(username,password)) {
+        if (!user.password().matches(password.value())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
+        return generateToken(user);
+    }
+
+    public String register(Username username, Password password) {
+        // Verificar si el usuario ya existe
+        if (userAuthPort.loadByUsername(username).isPresent()) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
+
+        // Crear nuevo usuario con rol USER por defecto
+        User newUser = new User(
+                new UserId(UUID.randomUUID().toString()),
+                username,
+                password, // Ya se hashea automáticamente en el constructor
+                Set.of(Role.USER)
+        );
+
+        // Guardar usuario (necesitamos añadir este método al puerto)
+        userAuthPort.save(newUser);
+
+        return generateToken(newUser);
+    }
+
+    private String generateToken(User user) {
         Instant now = Instant.now();
         TokenClaims claims = new TokenClaims(
-                username.value(),
+                user.username().value(),
                 now,
                 now.plus(10, ChronoUnit.HOURS),
                 user.roles()
         );
-
         return tokenService.issue(claims);
-    }
-
-    public String register(LoginRequest request) {
-        return null;
     }
 
     public static class InvalidCredentialsException extends RuntimeException {
         public InvalidCredentialsException(String message) {
+            super(message);
+        }
+    }
+
+    public static class UserAlreadyExistsException extends RuntimeException {
+        public UserAlreadyExistsException(String message) {
             super(message);
         }
     }

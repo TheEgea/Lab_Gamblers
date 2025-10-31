@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticationService loginService;
+    private final AuthenticationService authenticationService;
 
     @Value("${application.security.jwt.token-prefix:Bearer}")
     private String tokenPrefix;
 
-    public AuthController(AuthenticationService loginService) {
-        this.loginService = loginService;
+    public AuthController(AuthenticationService AuthenticationService) {
+        this.authenticationService = AuthenticationService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         try {
-            String token = loginService.login(
+            String token = authenticationService.login(
                     new Username(request.username()),
                     new Password(request.password())
             );
@@ -43,7 +43,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         try {
-            String token = loginService.register(
+            String token = authenticationService.register(
                     new Username(request.username()),
                     new Password(request.password())
             );

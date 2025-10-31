@@ -4,7 +4,7 @@ import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -42,7 +42,7 @@ public class LoginService {
 
         // Crear nuevo usuario con rol USER por defecto
         User newUser = new User(
-                new UserId(UUID.randomUUID().toString()),
+                new UserId(UUID.randomUUID()),
                 username,
                 password, // Ya se hashea automáticamente en el constructor
                 Set.of(Role.USER)

@@ -1,11 +1,11 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
+import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
 import com.tecnocampus.LS2.protube_back.domain.video.*;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.CreateVideoRequest;
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.UpdateVideoRequest;
-import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
+
+import com.tecnocampus.LS2.protube_back.application.dto.response.VideoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.*;

@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.application.dto.mapper.request;
+package com.tecnocampus.LS2.protube_back.application.dto.request;
 
 import jakarta.validation.constraints.Size;
 

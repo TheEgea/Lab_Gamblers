@@ -1,7 +1,8 @@
 package com.tecnocampus.LS2.protube_back.application.dto.mapper;
 
+import com.tecnocampus.LS2.protube_back.application.dto.request.LoginRequest;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserEntity;
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.LoginRequest;
+
 import org.springframework.stereotype.Component;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
 

@@ -1,13 +1,14 @@
 package com.tecnocampus.LS2.protube_back.application.user;
 
 import com.tecnocampus.LS2.protube_back.application.auth.LoginService;
+import com.tecnocampus.LS2.protube_back.application.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.response.LoginResponse;
 import com.tecnocampus.LS2.protube_back.domain.user.Username;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.JpaUserAuthAdapter;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserJpaRepository;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.LoginRequest;
-import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

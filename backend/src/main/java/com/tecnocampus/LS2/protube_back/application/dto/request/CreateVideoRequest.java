@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.web.dto.request;
+package com.tecnocampus.LS2.protube_back.application.dto.mapper.request;
 
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import jakarta.validation.constraints.NotBlank;

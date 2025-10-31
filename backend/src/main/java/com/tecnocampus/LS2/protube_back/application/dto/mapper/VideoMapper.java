@@ -1,9 +1,8 @@
-package com.tecnocampus.LS2.protube_back.web.dto.mapper;
+package com.tecnocampus.LS2.protube_back.application.dto.mapper;
 
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
-import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
-import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.CreateVideoRequest;
 import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
 import org.springframework.stereotype.Component;
 

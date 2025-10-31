@@ -1,9 +1,9 @@
-package com.tecnocampus.LS2.protube_back.web;
+package com.tecnocampus.LS2.protube_back.api;
 
 import com.tecnocampus.LS2.protube_back.application.auth.*;
 import com.tecnocampus.LS2.protube_back.domain.user.Password;
 import com.tecnocampus.LS2.protube_back.domain.user.Username;
-import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.LoginRequest;
 import com.tecnocampus.LS2.protube_back.web.dto.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

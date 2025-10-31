@@ -2,7 +2,7 @@ package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-import com.tecnocampus.LS2.protube_back.web.dto.mapper.UserMapper;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

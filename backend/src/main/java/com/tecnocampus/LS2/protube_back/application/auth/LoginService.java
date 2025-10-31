@@ -6,9 +6,7 @@ import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.Password;
 import com.tecnocampus.LS2.protube_back.domain.user.User;
 import com.tecnocampus.LS2.protube_back.domain.user.Username;
-import com.tecnocampus.LS2.protube_back.web.dto.request.LoginRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.request.LoginRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

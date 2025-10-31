@@ -1,3 +1,4 @@
 package com.tecnocampus.LS2.protube_back.application.dto.response;
 
-public record AuthenticationResponse(String access_token) { }
+public record AuthResponse(String token) {
+}

@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.application.dto.mapper;
 
-import com.tecnocampus.LS2.protube_back.application.dto.request.LoginRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.user.UserEntity;
 
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Component
 public class UserMapper {
-    public static User toDomain(LoginRequest loginRequest) {
+    public static User toDomain(AuthRequest loginRequest) {
         return new User(
                 new UserId(UUID.randomUUID()),
                 new Username(loginRequest.username()),
@@ -20,8 +20,8 @@ public class UserMapper {
                 );
     }
 
-    public static LoginRequest toLoginRequest(User user) {
-        return new LoginRequest(user.username().toString(),user.password().toString());
+    public static AuthRequest toLoginRequest(User user) {
+        return new AuthRequest(user.username().toString(),user.password().toString());
     }
 
     public static UserEntity toEntity(User domain) {

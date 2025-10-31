@@ -13,12 +13,12 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-public class LoginService {
+public class AuthenticationService {
 
     private final UserAuthPort userAuthPort;
     private final TokenService tokenService;
 
-    public LoginService(UserAuthPort userAuthPort, TokenService tokenService) {
+    public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService) {
         this.userAuthPort = userAuthPort;
         this.tokenService = tokenService;
     }

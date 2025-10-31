@@ -2,35 +2,54 @@ package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-import com.tecnocampus.LS2.protube_back.web.dto.mapper.UserMapper;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class JpaUserAuthAdapter implements UserAuthPort {
 
-    private final UserJpaRepository repo;
-    private final PasswordEncoder encoder;
+    private final UserJpaRepository userRepository;
 
-    public JpaUserAuthAdapter(UserJpaRepository repo, PasswordEncoder encoder) {
-        this.repo = repo;
-        this.encoder = encoder;
+    public JpaUserAuthAdapter(UserJpaRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public Optional<User> loadByUsername(Username username) {
-        return repo.findByUsername(username.value()).map(UserMapper::toUser);
+        return userRepository.findByUsername(username.value())
+                .map(this::toDomain);
     }
+
     @Override
-    public boolean login(Username username, Password password) {
-        return repo.login(username,password);
+    public void save(User user) {
+        UserEntity entity = fromDomain(user);
+        userRepository.save(entity);
     }
 
+    private User toDomain(UserEntity entity) {
+        Set<Role> roles = entity.getRoles().stream()
+                .map(Role::valueOf)
+                .collect(Collectors.toSet());
 
+        return new User(
+                new UserId(entity.getId()),
+                new Username(entity.getUsername()),
+                new Password(entity.getPasswordHash()), // Ya está hasheada
+                roles
+        );
+    }
 
-
-
+    private UserEntity fromDomain(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setId(user.id().value());
+        entity.setUsername(user.username().value());
+        entity.setPasswordHash(user.password().getHashedValue());
+        entity.setRoles(user.roles().stream()
+                .map(Role::name)
+                .collect(Collectors.toSet()));
+        return entity;
+    }
 }

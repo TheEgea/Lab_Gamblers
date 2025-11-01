@@ -48,7 +48,7 @@ public class AuthenticationService {
                 Set.of(Role.USER)
         );
 
-        // Guardar usuario (necesitamos añadir este método al puerto)
+        // Guardar usuario (necesitamos añadir este méto_do al puerto)
         userAuthPort.save(newUser);
 
         return generateToken(newUser);

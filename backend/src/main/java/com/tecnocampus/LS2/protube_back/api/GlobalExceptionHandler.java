@@ -1,6 +1,7 @@
 package com.tecnocampus.LS2.protube_back.api;
 
 import com.tecnocampus.LS2.protube_back.exception.*;
+import com.tecnocampus.LS2.protube_back.exception.user.UserAlreadyExistsException;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,22 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(ex.getHttpStatus()).body(error);
+    }
+    // Exeption handler UserAlreadyExistsException
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(
+            UserAlreadyExistsException ex, WebRequest request) {
+
+        logger.warn("User already exists: {}", ex.getMessage());
+
+        ErrorResponse error = ErrorResponse.of(
+                "USER_ALREADY_EXISTS",
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                getPath(request)
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(ConflictException.class)

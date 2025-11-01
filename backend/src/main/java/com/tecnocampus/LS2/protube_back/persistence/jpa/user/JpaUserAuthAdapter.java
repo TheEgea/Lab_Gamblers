@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
 import org.springframework.context.annotation.Primary;
@@ -32,7 +33,9 @@ public class JpaUserAuthAdapter implements UserAuthPort {
 
     @Override
     public void save(User user) {
-        // TODO: Implementar guardado
+
+        repo.save(UserMapper.toEntity(user));
+
     }
 
 

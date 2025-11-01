@@ -8,38 +8,36 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class UserEntity {
-
-
     @Id
-    @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.USER;
+    private String role = "USER";  // String puro
 
     protected UserEntity() {}
 
-    public UserEntity(UUID id, String username, String passwordHash, Role role) {
+    public UserEntity(UUID id, String username, String passwordHash, String role) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
-        this.role = role != null ? role : Role.USER;
+        this.role = role != null ? role : "USER";
     }
+
+
 
     public UUID getId() { return id; }
     public String getUsername() { return username; }
     public String getPasswordHash() { return passwordHash; }
-    public Role getRole() { return role; }
+    public Role getRole() { return Role.valueOf(role); }
 
     public void setId(UUID id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    public void setRole(Role role) { this.role = role != null ? role : Role.USER; }
+    public void setRole(String role) { this.role = role; }
 }

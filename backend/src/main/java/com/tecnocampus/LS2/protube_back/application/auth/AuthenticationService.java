@@ -27,43 +27,37 @@ public class AuthenticationService {
     }
 
     public String login(Username username, String rawPassword) { // ✅ Cambiar a String rawPassword
-        System.out.println("=== LOGIN ATTEMPT ===");
-        System.out.println("Username: " + username.value());
-        System.out.println("Raw password: '" + rawPassword + "'");
+
 
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        System.out.println("Usuario encontrado. Hash en DB: " + user.password().value());
 
-        // ✅ Verificar usando BCrypt: raw vs hash guardado
+
+
         boolean matches = encoder.matches(rawPassword, user.password().value());
-        System.out.println("¿Password coincide? " + matches);
-        System.out.println("Encoder usado: " + encoder.getClass().getSimpleName());
+
 
         if (!matches) {
-            System.out.println("❌ LOGIN FAILED: Password no coincide");
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
-        System.out.println("✅ LOGIN SUCCESS");
+
         return generateToken(user);
     }
 
     public String register(Username username, String rawPassword) { // ✅ Corregir parámetros
-        System.out.println("=== REGISTRO USUARIO ===");
-        System.out.println("Username: " + username.value());
-        System.out.println("Raw password: '" + rawPassword + "'");
+
 
         // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
-            System.out.println("❌ Usuario ya existe: " + username.value());
+
             throw new UserAlreadyExistsException("Username already exists");
         }
 
         // ✅ Hashear con BCrypt
         String hashedPassword = encoder.encode(rawPassword);
-        System.out.println("Password hasheada con BCrypt: " + hashedPassword);
+
 
         // ✅ Crear usuario con hash BCrypt
         User newUser = new User(
@@ -73,15 +67,15 @@ public class AuthenticationService {
                 Role.USER
         );
 
-        System.out.println("Guardando usuario: " + newUser.username().value());
+
         userAuthPort.save(newUser);
 
-        System.out.println("✅ Usuario registrado correctamente");
+
         return generateToken(newUser);
     }
 
     private String generateToken(User user) {
-        System.out.println("=== GENERANDO TOKEN ===");
+
         Instant now = Instant.now();
         TokenClaims claims = new TokenClaims(
                 user.username().value(),
@@ -91,7 +85,7 @@ public class AuthenticationService {
         );
 
         String token = tokenService.issue(claims);
-        System.out.println("Token generado: " + token.substring(0, 20) + "...");
+
         return token;
     }
 

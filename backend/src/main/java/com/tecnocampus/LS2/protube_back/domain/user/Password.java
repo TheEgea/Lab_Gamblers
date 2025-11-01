@@ -16,7 +16,7 @@ public record Password(String value) {
         if (value.isBlank()) {
             throw new IllegalArgumentException("password cannot be blank");
         }
-        // ❌ NO HASHEAR AQUÍ - dejar que Spring Security se encargue
+
     }
 /*
     public Password {
@@ -80,6 +80,6 @@ public record Password(String value) {
 
     @Override
     public String toString() {
-        return this.value;
+        return "Password{****}";
     }
 }

@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
+import com.tecnocampus.LS2.protube_back.api.IndexController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

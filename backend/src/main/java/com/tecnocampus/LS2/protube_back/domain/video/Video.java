@@ -3,6 +3,8 @@ package com.tecnocampus.LS2.protube_back.domain.video;
 import com.tecnocampus.LS2.protube_back.domain.user.User;
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 
+import jakarta.persistence.*;
+
 import java.time.Instant;
 import java.util.List;
 

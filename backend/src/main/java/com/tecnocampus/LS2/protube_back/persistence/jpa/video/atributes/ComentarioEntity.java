@@ -15,7 +15,7 @@ public class ComentarioEntity {
     @Column(name = "text", nullable = false)
     private String text;
 
-    @Column(name = "user", nullable = false)
+    @Column(name = "username", nullable = false)
     private String user;
 
     @Column(name = "timestamp", nullable = false)

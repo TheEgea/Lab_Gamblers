@@ -17,6 +17,14 @@ public record Password(String value) {
             throw new IllegalArgumentException("password cannot be blank");
         }
 
+    }
+/*
+    public Password {
+        Objects.requireNonNull(value, "password cannot be null");
+        if (value.isBlank()) {
+            throw new IllegalArgumentException("password cannot be blank");
+        }
+
         // Si no está hasheada, la hasheamos automáticamente
         if (!isHashed(value)) {
             try {
@@ -26,6 +34,8 @@ public record Password(String value) {
             }
         }
     }
+
+ */
 
     /**
      * Detecta si la contraseña ya está hasheada
@@ -70,6 +80,6 @@ public record Password(String value) {
 
     @Override
     public String toString() {
-        return "********";
+        return "Password{****}";
     }
 }

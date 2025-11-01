@@ -7,9 +7,9 @@ public final class User {
     private final UserId id;
     private final Username username;
     private final Password password;
-    private final Set<Role> roles;
+    private final Role roles;
 
-    public User(UserId id, Username username, Password password, Set<Role> roles) {
+    public User(UserId id, Username username, Password password, Role roles) {
         this.id = Objects.requireNonNull(id);
         this.username = Objects.requireNonNull(username);
         this.password = Objects.requireNonNull(password);
@@ -19,7 +19,15 @@ public final class User {
     public UserId id() { return id; }
     public Username username() { return username; }
     public Password password() { return password; }
-    public Set<Role> roles() { return roles; }
+    public Role roles() { return roles; }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username=" + username +
+                ", password=" + password +
+                ", roles=" + roles +
+                '}';
+    }
 
-    public boolean hasRole(Role role) { return roles.contains(role); }
 }

@@ -4,17 +4,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class VideoId {
-    private final String value;
+    private final UUID value;
 
-    public VideoId(String value) {
+    public VideoId(UUID value) {
         this.value = Objects.requireNonNull(value);
     }
 
-    public static VideoId generate() {
-        return new VideoId(UUID.randomUUID().toString());
+    public VideoId(String value) {
+        this(UUID.fromString(Objects.requireNonNull(value)));
     }
 
-    public String value() {
+    public static VideoId fromString(String value) {
+        return new VideoId(value);
+    }
+
+    public static VideoId generate() {
+        return new VideoId(UUID.randomUUID());
+    }
+
+    public UUID value() {
         return value;
     }
 
@@ -33,6 +41,6 @@ public final class VideoId {
 
     @Override
     public String toString() {
-        return "VideoId{" + value + '}';
+        return value.toString();
     }
 }

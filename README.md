@@ -61,13 +61,33 @@ run-dev.bat
 ---
 
 ## 📁 Estructura del Proyecto
+---
+```
 /home/lab/protube/Lab_Gamblers/
-├── backend/ # Spring Boot backend
-├── frontend/ # React/Vite frontend
-├── tooling/ # Herramientas (videoGrabber)
-├── docs/ # Documentación
-├── resources/ # Recursos del proyecto
-└── README.md # Este archivo
+├── backend/                 # Spring Boot backend
+│   ├── src/main/java/com/tecnocampus/LS2/protube_back/
+│   │   ├── api/             # Controladores REST (AuthController, VideoController, GlobalExceptionHandler)
+│   │   ├── application/     # Casos de uso, DTOs y mappers
+│   │   │   ├── auth/        # AuthenticationService
+│   │   │   ├── user/        # UserService (WIP)
+│   │   │   ├── video/       # VideoService (WIP)
+│   │   │   └── dto/         # request/, response/, mapper/
+│   │   ├── domain/          # Entidades/VOs y puertos (User, Username, Password, Role, TokenService, UserAuthPort, Video…)
+│   │   ├── persistence/     # Adaptadores JPA (user/, video/)
+│   │   ├── security/        # Configuración JWT y servicios de seguridad
+│   │   ├── exception/       # Excepciones de negocio + ErrorResponse
+│   │   ├── AppStartupRunner.java
+│   │   └── ProtubeBackApplication.java
+│   └── pom.xml
+├── frontend/                # React/Vite frontend
+├── tooling/                 # Herramientas (videoGrabber)
+├── docs/                    # Documentación (si aplica)
+├── resources/               # Recursos del proyecto
+└── README.md
+
+```
+---
+
 
 ## 🔐 Autenticación JWT
 

@@ -48,7 +48,7 @@ public class VideoEntityMapper {
         }
 
         return new VideoEntity(
-                video.getId().value(),
+                video.getId().value().toString(),
                 video.getJsonId(),
                 video.getWidth(),
                 video.getHeight(),

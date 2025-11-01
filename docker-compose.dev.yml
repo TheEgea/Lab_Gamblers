@@ -20,11 +20,13 @@ services:
     image: maven:3.9-eclipse-temurin-21
     container_name: lab_gamblers_backend
     working_dir: /workspace
-    command: mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run
+    # ⭐ COMANDO CORREGIDO - sin tocar el directorio store
+    command: sh -c "chmod -R 755 /workspace/src /workspace/target 2>/dev/null || true && rm -rf target && mvn clean compile -q -DskipTests && mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run"
     volumes:
       - ./backend:/workspace
       - maven_repo:/root/.m2
-      - protube_store:/workspace/var/store
+      # ⭐ QUITAR :ro TEMPORALMENTE para testing
+      - ../protube_store:/workspace/var/store
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-protube}
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-protube}

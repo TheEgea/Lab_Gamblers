@@ -1,43 +1,43 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
+import com.tecnocampus.LS2.protube_back.domain.user.Role;
 import jakarta.persistence.*;
-import java.util.Set;
+
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
     @Id
-    @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role")
-    private Set<String> roles;
+    @Column(nullable = false)
+    private String role; // String puro
 
     protected UserEntity() {}
 
-    public UserEntity(UUID id, String username, String passwordHash, Set<String> roles) {
+    public UserEntity(UUID id, String username, String passwordHash, String role) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
-        this.roles = roles;
+        this.role = role != null ? role : "USER";
     }
+
+
 
     public UUID getId() { return id; }
     public String getUsername() { return username; }
     public String getPasswordHash() { return passwordHash; }
-    public Set<String> getRoles() { return roles; }
+    public Role getRole() { return Role.valueOf(role); }
 
     public void setId(UUID id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-    public void setRoles(Set<String> roles) { this.roles = roles; }
+    public void setRole(String role) { this.role = role; }
 }

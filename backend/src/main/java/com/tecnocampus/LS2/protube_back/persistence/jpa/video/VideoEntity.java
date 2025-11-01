@@ -1,6 +1,5 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
-import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.atributes.ComentarioEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,7 +29,7 @@ public class VideoEntity {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "user", length = 32)
+    @Column(name = "username", length = 32)
     private String user;
 
     @ElementCollection
@@ -105,6 +104,15 @@ public class VideoEntity {
     }
 
 
+
+    @PrePersist
+    public void onCreate() {
+        Instant now = Instant.now();
+        if (this.createdAt == null)
+            this.createdAt = now;
+        if (this.updatedAt == null)
+            this.updatedAt = now;
+    }
 
     @PreUpdate
     public void onUpdate() {

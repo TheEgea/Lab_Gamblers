@@ -1,5 +1,7 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.video;
 
+import com.tecnocampus.LS2.protube_back.domain.video.Video;
+import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.domain.video.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,17 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> {
-
-    /**
-     * Find video by checksum to avoid duplicates
-     */
-    //Optional<VideoEntity> findByChecksum(String checksum);
-
-    /**
-     * Check if video exists by checksum
-     */
-    //boolean existsByChecksum(String checksum);
+public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
 
     /**
      * Find videos by title containing text (case insensitive)
@@ -60,6 +52,6 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, VideoId> 
      */
     List<VideoEntity> findByThumbnailPathIsNull();
 
-    @Query(value = "SELECT * FROM VideoEntity ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM videos ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     VideoEntity getRandomVideo();
 }

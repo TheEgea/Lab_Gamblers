@@ -1,10 +1,9 @@
-package com.tecnocampus.LS2.protube_back.web.dto.mapper;
+package com.tecnocampus.LS2.protube_back.application.dto.mapper;
 
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
-import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
-import com.tecnocampus.LS2.protube_back.web.dto.request.CreateVideoRequest;
-import com.tecnocampus.LS2.protube_back.web.dto.response.VideoResponse;
+import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.response.VideoResponse;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -16,7 +15,7 @@ public class VideoMapper {
         if (video == null) return null;
 
         return new VideoResponse(
-                video.getId().value(),
+                video.getId().value().toString(),
                 video.getJsonId(),
                 video.getWidth(),
                 video.getHeight(),

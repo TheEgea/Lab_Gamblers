@@ -18,7 +18,7 @@ public class UserEntity {
     private String passwordHash;
 
     @Column(nullable = false)
-    private String role = "USER";  // String puro
+    private String role; // String puro
 
     protected UserEntity() {}
 

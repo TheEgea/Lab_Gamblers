@@ -24,7 +24,8 @@ services:
     volumes:
       - ./backend:/workspace
       - maven_repo:/root/.m2
-      - protube_store:/workspace/var/store
+      #- protube_store:/workspace/var/store
+      - ../protube_store:/workspace/var/store:ro
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-protube}
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-protube}

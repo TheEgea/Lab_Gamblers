@@ -29,7 +29,7 @@ public class UserMapper {
                 domain.id().value(),
                 domain.username().toString(),
                 domain.password().toString(),
-                Set.of(domain.roles().toString())
+                domain.roles()
         );
     }
 

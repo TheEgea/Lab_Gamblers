@@ -19,15 +19,21 @@ public class UserEntity {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
-
+/*
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles;
 
+ */
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role roles = Role.USER;
+
     protected UserEntity() {}
 
-    public UserEntity(UUID id, String username, String passwordHash, Set<String> roles) {
+    public UserEntity(UUID id, String username, String passwordHash, Role roles) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;

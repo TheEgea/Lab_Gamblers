@@ -37,9 +37,12 @@ public class AuthenticationService {
 
     public String register(Username username, Password password) {
         // Verificar si el usuario ya existe
+        System.out.println("Checking if user exists: " + username.value());
         if (userAuthPort.loadByUsername(username).isPresent()) {
+            System.out.println("User already exists: " + username.value());
             throw new UserAlreadyExistsException("Username already exists");
         }
+        System.out.println("Registering user: " + username.value());
 
         // Crear nuevo usuario con rol USER por defecto
         User newUser = new User(

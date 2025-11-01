@@ -20,11 +20,13 @@ services:
     image: maven:3.9-eclipse-temurin-21
     container_name: lab_gamblers_backend
     working_dir: /workspace
-    command: mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run
+    # ⭐ CAMBIO CRÍTICO: usar usuario root temporalmente
+    user: root
+    # ⭐ COMANDO MEJORADO con limpieza
+    command: sh -c "chmod -R 777 /workspace && rm -rf target && mvn clean compile -q -DskipTests && mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run"
     volumes:
       - ./backend:/workspace
       - maven_repo:/root/.m2
-      #- protube_store:/workspace/var/store
       - ../protube_store:/workspace/var/store:ro
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-protube}

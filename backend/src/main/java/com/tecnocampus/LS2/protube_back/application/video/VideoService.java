@@ -1,6 +1,7 @@
 package com.tecnocampus.LS2.protube_back.application.video;
 
 import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.request.UpdateVideoRequest;
 import com.tecnocampus.LS2.protube_back.domain.video.*;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;

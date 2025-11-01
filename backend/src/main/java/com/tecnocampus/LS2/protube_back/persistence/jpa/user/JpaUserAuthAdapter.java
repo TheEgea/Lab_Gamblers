@@ -45,4 +45,5 @@ public class JpaUserAuthAdapter implements UserAuthPort {
         Set<Role> roles = e.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet());
         return new User(new UserId(e.getId()), new Username(e.getUsername()), new Password(e.getPasswordHash()), roles);
     }
+
 }

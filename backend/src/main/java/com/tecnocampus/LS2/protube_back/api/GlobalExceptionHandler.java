@@ -1,5 +1,6 @@
-package com.tecnocampus.LS2.protube_back.exception;
+package com.tecnocampus.LS2.protube_back.api;
 
+import com.tecnocampus.LS2.protube_back.exception.*;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

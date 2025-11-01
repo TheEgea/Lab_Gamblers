@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class AuthenticationService {
                 new UserId(UUID.randomUUID()),
                 username,
                 password, // Ya se hashea automáticamente en el constructor
-                Set.of(Role.USER)
+                Role.USER
         );
 
         // Guardar usuario (necesitamos añadir este méto_do al puerto)
@@ -60,7 +61,7 @@ public class AuthenticationService {
                 user.username().value(),
                 now,
                 now.plus(10, ChronoUnit.HOURS),
-                user.roles()
+                Collections.singleton(user.roles())
         );
         return tokenService.issue(claims);
     }

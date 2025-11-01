@@ -16,7 +16,7 @@ public class UserMapper {
                 new UserId(UUID.randomUUID()),
                 new Username(loginRequest.username()),
                 new Password(loginRequest.password()),
-                Set.of(Role.USER)
+                Role.USER
                 );
     }
 
@@ -38,7 +38,7 @@ public class UserMapper {
              new UserId(domain.getId()),
              new Username(domain.getUsername()),
              new Password(domain.getPasswordHash()),
-             Set.of(Role.valueOf(domain.getRoles().toString()))
+             Role.valueOf(domain.getRoles().toString())
         );
     }
 }

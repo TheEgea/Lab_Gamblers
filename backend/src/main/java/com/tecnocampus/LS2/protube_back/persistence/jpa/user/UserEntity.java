@@ -1,6 +1,9 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
+import com.tecnocampus.LS2.protube_back.domain.user.Role;
 import jakarta.persistence.*;
+
+import java.net.ProtocolFamily;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,4 +43,9 @@ public class UserEntity {
     public void setUsername(String username) { this.username = username; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public void setRoles(Set<String> roles) { this.roles = roles; }
+
+    public Role getRole() {
+        // Assuming a user has only one role for simplicity
+        return Role.valueOf(roles.iterator().next());
+    }
 }

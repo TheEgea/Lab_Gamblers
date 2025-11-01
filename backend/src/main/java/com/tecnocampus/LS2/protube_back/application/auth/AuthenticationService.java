@@ -4,9 +4,7 @@ import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-import com.tecnocampus.LS2.protube_back.persistence.jpa.user.JpaUserAuthAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,7 +17,6 @@ public class AuthenticationService {
 
     private final UserAuthPort userAuthPort;
     private final TokenService tokenService;
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService) {
         this.userAuthPort = userAuthPort;
@@ -28,13 +25,9 @@ public class AuthenticationService {
 
     public String login(Username username, Password password) {
 
-        ((JpaUserAuthAdapter) userAuthPort).debugShowAllUsers();
-
-        logger.debug("login username={} password={}", username, password);
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
-        logger.debug("User found: {}", user.username().value());
-        logger.debug("User found: {}", user.password().value());
+
         if (!user.password().matches(password.value())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }

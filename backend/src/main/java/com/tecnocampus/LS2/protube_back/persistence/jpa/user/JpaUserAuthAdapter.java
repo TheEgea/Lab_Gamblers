@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 @Component
 @Primary
 public class JpaUserAuthAdapter implements UserAuthPort {
@@ -33,17 +32,17 @@ public class JpaUserAuthAdapter implements UserAuthPort {
 
     @Override
     public void save(User user) {
-
+        // TODO: Implementar guardado
     }
 
-    @Override
+
     @Transactional(readOnly = true)
-    public boolean verifyPassword(Password password) {
-        return encoder.matches(raw.value(), hashed.value());
+    public boolean verifyPassword(String rawPassword, String hashedPassword) {
+        return encoder.matches(rawPassword, hashedPassword);
     }
 
     private User toDomain(UserEntity e) {
         Set<Role> roles = e.getRoles().stream().map(Role::valueOf).collect(Collectors.toSet());
-        return new User(new UserId(e.getId()), new Username(e.getUsername()), new HashedPassword(e.getPasswordHash()), roles);
+        return new User(new UserId(e.getId()), new Username(e.getUsername()), new Password(e.getPasswordHash()), roles);
     }
 }

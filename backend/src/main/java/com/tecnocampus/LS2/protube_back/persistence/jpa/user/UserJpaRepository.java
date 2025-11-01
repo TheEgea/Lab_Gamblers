@@ -1,6 +1,5 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
-import com.tecnocampus.LS2.protube_back.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

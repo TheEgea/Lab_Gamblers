@@ -70,6 +70,6 @@ public record Password(String value) {
 
     @Override
     public String toString() {
-        return "********";
+        return this.value;
     }
 }

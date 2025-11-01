@@ -20,5 +20,14 @@ public final class User {
     public Username username() { return username; }
     public Password password() { return password; }
     public Role roles() { return roles; }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username=" + username +
+                ", password=" + password +
+                ", roles=" + roles +
+                '}';
+    }
 
 }

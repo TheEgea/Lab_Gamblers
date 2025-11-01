@@ -28,9 +28,12 @@ public class AuthenticationService {
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
+        System.out.println("Saving user: " + user.toString());
+
         if (!user.password().matches(password.value())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
+
 
         return generateToken(user);
     }
@@ -51,6 +54,7 @@ public class AuthenticationService {
                 password, // Ya se hashea automáticamente en el constructor
                 Role.USER
         );
+        System.out.println("Saving user: " + newUser.toString());
 
         // Guardar usuario (necesitamos añadir este méto_do al puerto)
         userAuthPort.save(newUser);

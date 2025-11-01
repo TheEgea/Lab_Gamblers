@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserEntity {
 
-    
+
     @Id
     @Column(nullable = false, updatable = false)
     private UUID id;

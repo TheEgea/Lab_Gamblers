@@ -38,7 +38,7 @@ public class UserMapper {
              new UserId(domain.getId()),
              new Username(domain.getUsername()),
              new Password(domain.getPasswordHash()),
-             Role.valueOf(domain.getRoles().toString())
+                domain.getRole()
         );
     }
 }

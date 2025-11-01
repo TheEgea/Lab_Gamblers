@@ -1,19 +1,13 @@
 package com.tecnocampus.LS2.protube_back.persistence.jpa.user;
 
-import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-import org.springframework.context.annotation.Primary;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
-@Primary
 public class JpaUserAuthAdapter implements UserAuthPort {
 
     private final UserJpaRepository repo;
@@ -25,28 +19,25 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
-        return repo.findByUsername(username.value())
-                .map(this::toDomain);
+        return repo.findByUsername(username.value()).map(UserMapper::toUser);
     }
 
     @Override
     public void save(User user) {
-
-        repo.save(UserMapper.toEntity(user));
+        UserEntity entity = UserMapper.toEntity(user, encoder);
+        repo.save(entity);
 
     }
 
 
-    @Transactional(readOnly = true)
-    public boolean verifyPassword(String rawPassword, String hashedPassword) {
-        return encoder.matches(rawPassword, hashedPassword);
-    }
+    public boolean login(Username username, Password password) {
+        Optional<UserEntity> userEntity = repo.findByUsername(username.value());
+        if (userEntity.isEmpty()) {
+            return false;
+        }
 
-    private User toDomain(UserEntity e) {
-        Role role = Role.valueOf(e.getRole().name());
-        return new User(new UserId(e.getId()), new Username(e.getUsername()), new Password(e.getPasswordHash()),role);
+        // Usar el valor raw de la contraseña para comparar con BCrypt
+        return encoder.matches(password.value(), userEntity.get().getPasswordHash());
     }
-
 }

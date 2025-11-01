@@ -16,6 +16,14 @@ public record Password(String value) {
         if (value.isBlank()) {
             throw new IllegalArgumentException("password cannot be blank");
         }
+        // ❌ NO HASHEAR AQUÍ - dejar que Spring Security se encargue
+    }
+/*
+    public Password {
+        Objects.requireNonNull(value, "password cannot be null");
+        if (value.isBlank()) {
+            throw new IllegalArgumentException("password cannot be blank");
+        }
 
         // Si no está hasheada, la hasheamos automáticamente
         if (!isHashed(value)) {
@@ -26,6 +34,8 @@ public record Password(String value) {
             }
         }
     }
+
+ */
 
     /**
      * Detecta si la contraseña ya está hasheada

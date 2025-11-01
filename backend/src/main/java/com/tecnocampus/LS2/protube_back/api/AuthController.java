@@ -30,7 +30,7 @@ public class AuthController {
         try {
             String token = authenticationService.login(
                     new Username(request.username()),
-                    new Password(request.password())
+                    request.password()
             );
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)
@@ -46,7 +46,7 @@ public class AuthController {
         try {
             String token = authenticationService.register(
                     new Username(request.username()),
-                    new Password(request.password())
+                    request.password()
             );
             return ResponseEntity.status(HttpStatus.CREATED)
                     .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)

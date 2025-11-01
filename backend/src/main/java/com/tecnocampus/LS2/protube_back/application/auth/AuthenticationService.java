@@ -5,7 +5,6 @@ import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,40 +17,23 @@ public class AuthenticationService {
 
     private final UserAuthPort userAuthPort;
     private final TokenService tokenService;
-    private final PasswordEncoder encoder;
 
-
-    public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService, PasswordEncoder encoder) {
+    public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService) {
         this.userAuthPort = userAuthPort;
         this.tokenService = tokenService;
-        this.encoder = encoder;
     }
 
-
     public String login(Username username, Password password) {
+
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        // ✅ CAMBIAR ESTO: usar la contraseña raw (sin la lógica de auto-hash de Password)
-        // Crear un Password simple para la verificación
-        String rawPassword = password.value(); // Obtener el valor original
-
-        // Verificar usando el adapter que usa BCrypt
-        if (!encoder.matches(rawPassword, user.password().value())) {
+        if (!user.password().matches(password.value())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
-        Instant now = Instant.now();
-        TokenClaims claims = new TokenClaims(
-                username.value(),
-                now,
-                now.plus(10, ChronoUnit.HOURS),
-                user.roles()
-        );
-
-        return tokenService.issue(claims);
+        return generateToken(user);
     }
-
 
     public String register(Username username, Password password) {
         // Verificar si el usuario ya existe

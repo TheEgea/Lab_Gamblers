@@ -33,7 +33,7 @@ public class JpaUserAuthAdapter implements UserAuthPort {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean verifyPassword(RawPassword raw, HashedPassword hashed) {
+    public boolean verifyPassword(Password password) {
         return encoder.matches(raw.value(), hashed.value());
     }
 

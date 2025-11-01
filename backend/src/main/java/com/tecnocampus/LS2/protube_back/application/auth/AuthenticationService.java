@@ -24,6 +24,7 @@ public class AuthenticationService {
     }
 
     public String login(Username username, Password password) {
+
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 

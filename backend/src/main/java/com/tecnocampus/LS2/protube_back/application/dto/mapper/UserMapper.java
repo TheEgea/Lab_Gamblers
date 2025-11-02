@@ -19,6 +19,14 @@ public class UserMapper {
                 Role.USER
                 );
     }
+    public static User toDomain(UserEntity entity) {
+        return new User(
+                new UserId(entity.getId()),
+                new Username(entity.getUsername()),
+                new Password(entity.getPasswordHash()),
+                entity.getRole()
+        );
+    }
 
     public static AuthRequest toLoginRequest(User user) {
         return new AuthRequest(user.username().toString(),user.password().toString());
@@ -33,12 +41,5 @@ public class UserMapper {
         );
     }
 
-    public static User toUser(UserEntity domain) {
-        return new User(
-             new UserId(domain.getId()),
-             new Username(domain.getUsername()),
-             new Password(domain.getPasswordHash()),
-                domain.getRole()
-        );
-    }
+
 }

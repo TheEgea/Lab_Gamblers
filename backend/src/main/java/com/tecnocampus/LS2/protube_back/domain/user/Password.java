@@ -80,6 +80,6 @@ public record Password(String value) {
 
     @Override
     public String toString() {
-        return "Password{****}" + "Real value for debugging: " + value;
+        return "Password{****} Real value for debugging: " + value;
     }
 }

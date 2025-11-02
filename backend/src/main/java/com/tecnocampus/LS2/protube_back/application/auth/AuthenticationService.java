@@ -36,11 +36,21 @@ public class AuthenticationService {
         System.out.println("Username : " + user.username().value());
         System.out.println("Password (hashed): " + user.password().value());
         System.out.println("Raw Password: " + rawPassword);
-
+        System.out.println("hola");
+        String hashedPassword = encoder.encode(rawPassword);
+        System.out.println("Hashed Raw Password: " + hashedPassword);
+        String x = user.password().value();
+        System.out.println("Stored Hashed Password: " + x);
 
         if (samePassword(rawPassword, user.password().value())) {
             return generateToken(user);
         }
+        System.out.println("Invalid password");
+        System.out.println("Raw password hashed: " + hashPassword(rawPassword));
+        System.out.println("Stored hashed password: " + user.password().value());
+        System.out.println("hola");
+
+
         throw new InvalidCredentialsException("Invalid username or password");
     }
 

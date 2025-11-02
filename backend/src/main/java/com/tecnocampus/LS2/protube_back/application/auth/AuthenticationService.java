@@ -4,7 +4,6 @@ import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,48 +17,34 @@ public class AuthenticationService {
 
     private final UserAuthPort userAuthPort;
     private final TokenService tokenService;
-    private final PasswordEncoder encoder; // ✅ Añadir esto
+    private final PasswordEncoder encoder;
 
     public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService, PasswordEncoder encoder) {
         this.userAuthPort = userAuthPort;
         this.tokenService = tokenService;
-        this.encoder = encoder; // ✅ Añadir al constructor
+        this.encoder = encoder;
     }
 
-    public String login(Username username, String rawPassword) { // ✅ Cambiar a String rawPassword
-
-
+    public String login(Username username, String rawPassword) {
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-
-
-
         boolean matches = encoder.matches(rawPassword, user.password().value());
-
 
         if (!matches) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
-
-
         return generateToken(user);
     }
 
-    public String register(Username username, String rawPassword) { // ✅ Corregir parámetros
+    public String register(Username username, String rawPassword) {
 
-
-        // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
-
             throw new UserAlreadyExistsException("Username already exists");
         }
 
-        // ✅ Hashear con BCrypt
         String hashedPassword = encoder.encode(rawPassword);
 
-
-        // ✅ Crear usuario con hash BCrypt
         User newUser = new User(
                 new UserId(UUID.randomUUID()),
                 username,
@@ -67,9 +52,7 @@ public class AuthenticationService {
                 Role.USER
         );
 
-
         userAuthPort.save(newUser);
-
 
         return generateToken(newUser);
     }
@@ -81,7 +64,7 @@ public class AuthenticationService {
                 user.username().value(),
                 now,
                 now.plus(10, ChronoUnit.HOURS),
-                Collections.singleton(user.roles()) // ✅ Arreglar si roles es Set
+                Collections.singleton(user.roles())
         );
 
         String token = tokenService.issue(claims);

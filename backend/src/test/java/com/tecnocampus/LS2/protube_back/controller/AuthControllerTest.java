@@ -1,27 +1,92 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.api.AuthController;
 import com.tecnocampus.LS2.protube_back.application.auth.AuthenticationService;
+import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.request.RegisterRequest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-@ExtendWith(MockitoExtension.class)
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false) // Disable security filters
 public class AuthControllerTest {
 
-    @InjectMocks
-    private AuthController authController;
-
-    @Mock
+    @MockBean
     private AuthenticationService authenticationService;
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
-    void testLogin() {
+    void testLogin() throws Exception {
+        String token = "mocked-jwt-token";
+        Mockito.when(authenticationService.login(any(), eq("password123"))).thenReturn(token);
 
+        AuthRequest authRequest = new AuthRequest("testUser", "password123");
 
-
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authRequest)))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Authorization", "Bearer " + token))
+                .andExpect(jsonPath("$.token").value(token));
     }
+
+    @Test
+    void testRegister() throws Exception {
+        String token = "mocked-jwt-token";
+        Mockito.when(authenticationService.register(any(), eq("password123"))).thenReturn(token);
+
+        RegisterRequest registerRequest = new RegisterRequest("testUser", "password123");
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Authorization", "Bearer " + token))
+                .andExpect(jsonPath("$.token").value(token));
+    }
+
+    @Test
+    void testLoginInvalidCredentials() throws Exception {
+        Mockito.when(authenticationService.login(any(), eq("wrongPassword")))
+                .thenThrow(new AuthenticationService.InvalidCredentialsException("Invalid username or password"));
+
+        AuthRequest authRequest = new AuthRequest("testUser", "wrongPassword");
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authRequest)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testRegisterUserAlreadyExists() throws Exception {
+        Mockito.when(authenticationService.register(any(), eq("password123")))
+                .thenThrow(new AuthenticationService.UserAlreadyExistsException("Username already exists"));
+
+        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password123");
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .andExpect(status().isConflict());
+    }
+
 
 }

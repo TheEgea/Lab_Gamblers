@@ -33,7 +33,6 @@ public class UserService {
 
         return userEntityOptional.map(UserMapper::toDomain);
 
-
     }
 
     @Transactional//Modifica datos en la base de datos
@@ -68,7 +67,8 @@ public class UserService {
                 user.id(),
                 user.username(),
                 new Password(hashedPassword), // Nueva contraseña hasheada
-                user.roles()
+                user.roles(),
+                user.email()
         );
 
         // ✅ Guardar en base de datos

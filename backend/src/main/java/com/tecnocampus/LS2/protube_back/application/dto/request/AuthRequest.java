@@ -14,5 +14,9 @@ public record AuthRequest(
         @Size(min = 8, message = "la contraseña debe tener al menos 8 caracteres")
         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\\\S+$).{8,}$",
                 message = "la contraseña debe contener mayúscula, minúscula, número y carácter especial")
-        String password
+        String password,
+
+        @NotBlank(message = "email obligatorio")
+        @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$", message = "email no válido")
+        String email
 ) {}

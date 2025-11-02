@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import VideoGrid from './VideoGrid';
+import {buildApiUrl} from '../config/api';
 
 type Video = {
     id: number;
@@ -13,7 +14,7 @@ type Video = {
 
 const Home = () => {
     const [videos, setVideos] = useState<Video[]>([]);
-    const [status, setStatus] = useState<'idle'|'loading'|'error'|'success'>('idle');
+    const [status, setStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
     const [message, setMessage] = useState<string>('');
 
     const fetchVideos = async () => {
@@ -21,9 +22,13 @@ const Home = () => {
             setStatus('loading');
             setMessage('');
             const token = localStorage.getItem('authToken');
-            const res = await fetch('/api/videos', {
-                // Se usa ruta relativa para respetar tu autodetección de host/puerto
-                headers: { Authorization: `Bearer ${token}` },
+
+            // Usar la función helper
+            const res = await fetch(buildApiUrl('/videos'), {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
             if (!res.ok) throw new Error(`Error ${res.status} al cargar videos`);
             const data = await res.json();
@@ -35,11 +40,13 @@ const Home = () => {
         }
     };
 
-    useEffect(() => { fetchVideos(); }, []);
+    useEffect(() => {
+        fetchVideos();
+    }, []);
 
-    if (status === 'loading') return <div style={{ padding: 24 }}>Cargando videos…</div>;
+    if (status === 'loading') return <div style={{padding: 24}}>Cargando videos…</div>;
     if (status === 'error') return (
-        <div style={{ padding: 24 }}>
+        <div style={{padding: 24}}>
             <h3>Error</h3>
             <p>{message}</p>
             <button onClick={fetchVideos}>Reintentar</button>
@@ -47,11 +54,11 @@ const Home = () => {
     );
 
     return (
-        <div style={{ padding: 24 }}>
+        <div style={{padding: 24}}>
             <h2>Videos</h2>
             {videos.length === 0
                 ? <div>No hay videos disponibles</div>
-                : <VideoGrid videos={videos} onVideoClick={(v) => console.log('clicked', v)} />
+                : <VideoGrid videos={videos} onVideoClick={(v) => console.log('clicked', v)}/>
             }
         </div>
     );

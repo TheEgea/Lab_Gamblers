@@ -92,12 +92,12 @@ private User toDomain(UserEntity e) {
                 new UserId(e.getId()),
                 new Username(e.getUsername()),
                 new Password(e.getPasswordHash()),
-                role
+                role,
+                e.getEmail()
         );
 
         return user;
     } catch (Exception ex) {
-
         ex.printStackTrace();
         throw ex;
     }

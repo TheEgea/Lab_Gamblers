@@ -8,15 +8,17 @@ import java.util.Set;
 public final class User {
     private final UserId id;
     private final Username username;
-    private final Password password;
+    private Password password;
     @Setter
     private Role roles;
+    private String email;
 
-    public User(UserId id, Username username, Password password, Role roles) {
+    public User(UserId id, Username username, Password password, Role roles, String email) {
         this.id = Objects.requireNonNull(id);
         this.username = Objects.requireNonNull(username);
         this.password = Objects.requireNonNull(password);
         this.roles = Objects.requireNonNull(roles);
+        this.email = Objects.requireNonNull(email);
     }
 
     public UserId id() {
@@ -33,6 +35,9 @@ public final class User {
 
     public Role roles() {
         return roles;
+    }
+    public String email() {
+        return email;
     }
 
     @Override

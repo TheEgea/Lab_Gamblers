@@ -42,7 +42,7 @@ public class AuthenticationService {
 
     }
 
-    public String register(Username username, String rawPassword) { // ✅ Corregir parámetros
+    public String register(Username username, String rawPassword, String email) { // ✅ Corregir parámetros
 
 
         // Verificar si el usuario ya existe
@@ -60,7 +60,9 @@ public class AuthenticationService {
                 new UserId(UUID.randomUUID()),
                 username,
                 new Password(hashedPassword), // Hash ya hecho con BCrypt
-                Role.USER
+                Role.USER,
+                email
+
         );
 
 

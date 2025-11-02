@@ -46,7 +46,8 @@ public class AuthController {
         try {
             String token = authenticationService.register(
                     new Username(request.username()),
-                    request.password()
+                    request.password(),
+                    request.email()
             );
             return ResponseEntity.status(HttpStatus.CREATED)
                     .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)

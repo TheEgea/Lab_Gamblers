@@ -1,7 +1,10 @@
 package com.tecnocampus.LS2.protube_back.domain.video.atributes;
 
+import lombok.Getter;
+
 import java.time.Instant;
 
+@Getter
 public class Comentario {
 
     private final String texto;
@@ -16,19 +19,4 @@ public class Comentario {
         this.likes = likes;
     }
 
-    public String getTexto() {
-        return texto;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public Instant getTimestamp() {
-        return timestamp;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
 }

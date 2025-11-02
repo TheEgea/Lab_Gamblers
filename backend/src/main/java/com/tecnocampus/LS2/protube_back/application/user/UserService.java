@@ -50,17 +50,17 @@ public class UserService {
         User user = loadByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // ✅ Verificar que la contraseña actual es correcta
+
         if (!authenticationService.samePassword(currentPassword, user.password().value())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
 
-        // ✅ Verificar que la nueva contraseña es diferente
+
         if (authenticationService.samePassword(newPassword, user.password().value())) {
             throw new IllegalArgumentException("New password must be different from the old one");
         }
 
-        // ✅ Hashear la nueva contraseña
+
         String hashedPassword = authenticationService.hashPassword(newPassword);
 
         // ✅ Crear usuario actualizado con nueva contraseña

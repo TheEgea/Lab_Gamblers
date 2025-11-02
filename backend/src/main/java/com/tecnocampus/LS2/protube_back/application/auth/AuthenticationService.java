@@ -86,7 +86,7 @@ public class AuthenticationService {
     }
 
     public boolean samePassword(String rawPassword, String hashedPassword) {
-        return encoder.matches(hashPassword(rawPassword), hashedPassword);
+        return encoder.matches(rawPassword, hashedPassword);
     }
 
     public String hashPassword(String rawPassword) {

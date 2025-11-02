@@ -42,7 +42,6 @@ public class UserController {
         UserResonse user = UserMapper.toUserResponse(userService.loadByUsername(username).orElseThrow());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(user);
-
     }
 
 }

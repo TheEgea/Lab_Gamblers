@@ -37,9 +37,10 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     @Override
     @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
-
+        System.out.println("Loading user by username: " + username.value());
 
         Optional<UserEntity> userEntity = repo.findByUsername(username.value());
+        System.out.println("User entity found: " + userEntity.isPresent());
 
         if (userEntity.isPresent()) {
             UserEntity user = userEntity.get();

@@ -18,32 +18,33 @@ public class AuthenticationService {
 
     private final UserAuthPort userAuthPort;
     private final TokenService tokenService;
-    private final PasswordEncoder encoder; // ✅ Añadir esto
+    private final PasswordEncoder encoder;
 
     public AuthenticationService(UserAuthPort userAuthPort, TokenService tokenService, PasswordEncoder encoder) {
         this.userAuthPort = userAuthPort;
         this.tokenService = tokenService;
-        this.encoder = encoder; // ✅ Añadir al constructor
+        this.encoder = encoder;
     }
 
-    public String login(Username username, String rawPassword) { // ✅ Cambiar a String rawPassword
+    public String login(Username username, String rawPassword) {
+        System.out.println("Attempting login for username: " + username.value());
 
 
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
+        System.out.println("User found: " + user.username().value());
+        System.out.println("Username : " + user.username().value());
+        System.out.println("Password (hashed): " + user.password().value());
+        System.out.println("Raw Password: " + rawPassword);
 
 
         if (samePassword(rawPassword, user.password().value())) {
             return generateToken(user);
         }
-
         throw new InvalidCredentialsException("Invalid username or password");
-
-
     }
 
-    public String register(Username username, String rawPassword, String email) { // ✅ Corregir parámetros
-
+    public String register(Username username, String rawPassword, String email) {
 
         // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
@@ -51,11 +52,9 @@ public class AuthenticationService {
             throw new UserAlreadyExistsException("Username already exists");
         }
 
-        // ✅ Hashear con BCrypt
         String hashedPassword = hashPassword(rawPassword);
 
 
-        // ✅ Crear usuario con hash BCrypt
         User newUser = new User(
                 new UserId(UUID.randomUUID()),
                 username,
@@ -64,10 +63,7 @@ public class AuthenticationService {
                 email
 
         );
-
-
         userAuthPort.save(newUser);
-
 
         return generateToken(newUser);
     }
@@ -79,7 +75,7 @@ public class AuthenticationService {
                 user.username().value(),
                 now,
                 now.plus(10, ChronoUnit.HOURS),
-                Collections.singleton(user.roles()) // ✅ Arreglar si roles es Set
+                Collections.singleton(user.roles())
         );
 
         String token = tokenService.issue(claims);
@@ -88,6 +84,11 @@ public class AuthenticationService {
     }
 
     public boolean samePassword(String rawPassword, String hashedPassword) {
+        System.out.println("Comparing raw password with hashed password");
+        System.out.println("Raw Password hashed: " + hashPassword(rawPassword));
+        System.out.println("Stored Hashed Password: " + hashedPassword);
+
+
         return encoder.matches(rawPassword, hashedPassword);
     }
 

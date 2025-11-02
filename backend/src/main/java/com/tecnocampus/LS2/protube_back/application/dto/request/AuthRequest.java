@@ -16,7 +16,7 @@ public record AuthRequest(
                 message = "la contraseña debe contener mayúscula, minúscula, número y carácter especial")
         String password,
 
-        @NotBlank(message = "email obligatorio")
+
         @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$", message = "email no válido")
         String email
 ) {}

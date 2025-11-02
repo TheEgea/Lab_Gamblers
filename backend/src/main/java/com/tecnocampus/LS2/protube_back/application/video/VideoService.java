@@ -64,7 +64,7 @@ public class VideoService {
 
         // Construir dominio
         Video video = new Video(
-                VideoId.generate(),
+                request.id() != null ? new VideoId(request.id()) : VideoId.generate(),
                 request.jsonId(),
                 request.width(),
                 request.height(),

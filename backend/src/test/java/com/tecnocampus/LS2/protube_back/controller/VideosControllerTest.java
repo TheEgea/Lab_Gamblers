@@ -1,110 +1,83 @@
 package com.tecnocampus.LS2.protube_back.controller;
-/*
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnocampus.LS2.protube_back.api.VideoController;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;
+import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.request.UpdateVideoRequest;
+import com.tecnocampus.LS2.protube_back.application.dto.response.VideoResponse;
+import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
-import com.tecnocampus.LS2.protube_back.domain.video.VideoCatalogPort;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
-import org.junit.jupiter.api.BeforeEach;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 class VideosControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @Mock
-    private VideoCatalogPort videoCatalogPort;
+    private VideoService videoService;
 
     @InjectMocks
     private VideoController videoController;
 
+
     @Test
-    void getAllVideos_ShouldReturnListOfVideos() {
-        List<Video> videos = List.of(createSampleVideo("1"));
-        when(videoCatalogPort.listAll()).thenReturn(videos);
+    void testGetAllVideos() {
+        Video video = createSampleVideo(UUID.randomUUID().toString());
+        when(videoService.listAll()).thenReturn(List.of(video));
 
-        Object result = videoController.getAllVideos();
-
-        assertEquals(videos, result);
-
+        ResponseEntity<List<Video>> response = videoController.getAllVideos();
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(List.of(video), response.getBody());
     }
 
     @Test
-    void addVideo_ShouldReturnSuccessMessage() {
-        ResponseEntity<String> response = videoController.addVideo(createSampleVideo("3"));
-
-        assertEquals("Video added successfully", response.getBody());
+    void testAddVideo() {
+        CreateVideoRequest request = createSampleCreateVideoRequest(createSampleVideo(UUID.randomUUID().toString()).getId().toString());
+        doNothing().when(videoService).save(request);
+        ResponseEntity<String> response = videoController.addVideo(request);
+        assertEquals(201, response.getStatusCodeValue());
+        assertEquals("Video created successfully", response.getBody());
     }
 
     @Test
-    void findById_ShouldReturnVideoIfExists() {
-        Video video = createSampleVideo("1");
-        when(videoCatalogPort.findById(new VideoId("1"))).thenReturn(Optional.of(video));
+    void testFindById() {
+        String id = UUID.randomUUID().toString().toString();
+        VideoResponse responseMock = createSampleVideoResponse(createSampleVideo(id));
+        when(videoService.findById(id)).thenReturn(responseMock);
 
-        ResponseEntity<Video> response = videoController.findById(new VideoId("1"));
+        ResponseEntity<VideoResponse> response = videoController.findById(id);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(responseMock, response.getBody());
+    }
 
+    @Test
+    void testGetRandomVideo() {
+        Video video = createSampleVideo(UUID.randomUUID().toString());
+        when(videoService.getRandomVideo()).thenReturn(Optional.of(video));
+
+        ResponseEntity<Video> response = videoController.getRandomVideo();
+        assertEquals(200, response.getStatusCodeValue());
         assertEquals(video, response.getBody());
-        verify(videoCatalogPort, times(1)).findById(new VideoId("1"));
     }
 
-    @Test
-    void findById_ShouldReturnNotFoundIfVideoDoesNotExist() {
-        when(videoCatalogPort.findById(new VideoId("1"))).thenReturn(Optional.empty());
-
-        ResponseEntity<Video> response = videoController.findById(new VideoId("1"));
-
-        assertEquals(404, response.getStatusCodeValue());
-        verify(videoCatalogPort, times(1)).findById(new VideoId("1"));
-    }
-
-    @Test
-    void addVideo_ShouldThrowExceptionForInvalidInputv2(){
-
-        //mockMvc.perform(/)
-
-
-        //long nonExistingCustomerId = Long.MAX_VALUE;
-        //mockMvc.perform(get(BASE_URL + "/{id}", nonExistingCustomerId))
-        //       .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void addVideo_ShouldThrowExceptionForInvalidInput() {
-        // Simula un caso donde el video tiene datos inválidos
-        doThrow(new IllegalArgumentException("Invalid video data"))
-                .when(videoCatalogPort).save(any(Video.class));
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            videoController.addVideo(null);
-        });
-
-        assertEquals("Invalid video data", exception.getMessage());
-    }
-
-
-    // Helper method to create a sample video
     private Video createSampleVideo(String id) {
         return new Video(
                 new VideoId(id),
@@ -114,7 +87,7 @@ class VideosControllerTest {
                 300,
                 "Sample Title",
                 "Sample User",
-                List.of(Instant.now()),
+                List.of(Instant.parse("2023-01-01T00:00:00Z")),
                 "Sample Description",
                 List.of("Category1", "Category2"),
                 List.of("Tag1", "Tag2"),
@@ -124,10 +97,46 @@ class VideosControllerTest {
                 List.of(),
                 "media/path",
                 "thumbnail/path",
-                Instant.now(),
-                Instant.now()
+                Instant.parse("2023-01-01T00:00:00Z"),
+                Instant.parse("2023-01-01T00:00:00Z")
         );
     }
-}
 
- */
+    private VideoEntity createSampleVideoEntity(Video video) {
+        return VideoEntityMapper.toEntity(video);
+    }
+
+    private CreateVideoRequest createSampleCreateVideoRequest(String id) {
+        return new CreateVideoRequest(
+                "Sample Title",
+                "Sample Description",
+                id,
+                "jsonId",
+                1920,
+                1080,
+                300,
+                "Sample User",
+                List.of(Instant.parse("2023-01-01T00:00:00Z")),
+                List.of("Category1", "Category2"),
+                List.of("Tag1", "Tag2"),
+                1000,
+                100,
+                "Sample Channel",
+                List.of(),
+                "media/path",
+                "thumbnail/path"
+        );
+    }
+
+    private VideoResponse createSampleVideoResponse(Video video) {
+        return VideoMapper.toResponse(video);
+    }
+
+    private UpdateVideoRequest createSampleUpdateVideoRequest() {
+        return new UpdateVideoRequest(
+                "Updated Sample Title",
+                "Updated Sample Description"
+        );
+    }
+
+}

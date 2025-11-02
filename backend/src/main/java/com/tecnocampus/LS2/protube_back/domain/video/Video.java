@@ -55,28 +55,6 @@ public final class Video {
         this.updatedAt = updatedAt;
     }
 
-    public Video(VideoId id) {
-        this.id = id;
-        this.jsonId = "";
-        this.width = 0;
-        this.height = 0;
-        this.durationSeconds = null;
-        this.title = "";
-        this.user = "";
-        this.timestamp = List.of();
-        this.description = "";
-        this.categories = List.of();
-        this.tags = List.of();
-        this.viewCount = 0;
-        this.likeCount = 0;
-        this.channel = "";
-        this.comments = List.of();
-        this.mediaPath = "";
-        this.thumbnailPath = "";
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
-    }
-
     public VideoId getId() {
         return id;
     }
@@ -153,29 +131,6 @@ public final class Video {
         return updatedAt;
     }
 
-    public Video withTitle(String newTitle) {
-        return new Video(
-                this.id,
-                this.jsonId,
-                this.width,
-                this.height,
-                this.durationSeconds,
-                newTitle,
-                this.user,
-                this.timestamp,
-                this.description,
-                this.categories,
-                this.tags,
-                this.viewCount,
-                this.likeCount,
-                this.channel,
-                this.comments,
-                this.mediaPath,
-                this.thumbnailPath,
-                this.createdAt,
-                this.updatedAt
-        );
-    }
 
     public boolean equals(Object o) {
         if (!(o instanceof Video)) return false;

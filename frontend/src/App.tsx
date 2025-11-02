@@ -4,9 +4,20 @@ import { useAllVideos } from './useAllVideos';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import AppBar from './components/AppBar';
+import { useEffect } from 'react';
+import Home from './components/Home';
 
 function App() {
   const [showLogin, setShowLogin] = useState<boolean>(true);
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+
+    useEffect(() => {
+        setIsAuth(!!localStorage.getItem('authToken'));
+    }, []);
+
+    const handleLoginSuccess = () => {
+        setIsAuth(true);
+    }
 
   return (
     <div className="App">

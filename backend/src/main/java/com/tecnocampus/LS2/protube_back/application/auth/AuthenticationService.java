@@ -33,17 +33,13 @@ public class AuthenticationService {
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
 
-
-
-        boolean matches = encoder.matches(rawPassword, user.password().value());
-
-
-        if (!matches) {
-            throw new InvalidCredentialsException("Invalid username or password");
+        if (samePassword(rawPassword, user.password().value())) {
+            return generateToken(user);
         }
 
+        throw new InvalidCredentialsException("Invalid username or password");
 
-        return generateToken(user);
+
     }
 
     public String register(Username username, String rawPassword) { // ✅ Corregir parámetros
@@ -56,7 +52,7 @@ public class AuthenticationService {
         }
 
         // ✅ Hashear con BCrypt
-        String hashedPassword = encoder.encode(rawPassword);
+        String hashedPassword = hashPassword(rawPassword);
 
 
         // ✅ Crear usuario con hash BCrypt
@@ -74,7 +70,7 @@ public class AuthenticationService {
         return generateToken(newUser);
     }
 
-    private String generateToken(User user) {
+    public String generateToken(User user) {
 
         Instant now = Instant.now();
         TokenClaims claims = new TokenClaims(
@@ -87,6 +83,14 @@ public class AuthenticationService {
         String token = tokenService.issue(claims);
 
         return token;
+    }
+
+    public boolean samePassword(String rawPassword, String hashedPassword) {
+        return encoder.matches(hashPassword(rawPassword), hashedPassword);
+    }
+
+    public String hashPassword(String rawPassword) {
+        return encoder.encode(rawPassword);
     }
 
     public static class InvalidCredentialsException extends RuntimeException {

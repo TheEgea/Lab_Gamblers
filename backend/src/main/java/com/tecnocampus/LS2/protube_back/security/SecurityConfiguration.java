@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+
 import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
@@ -24,12 +25,14 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .anyRequest().authenticated()
-            );
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/media/**").permitAll()
+                        .requestMatchers("/videos/**").permitAll()
+                        .anyRequest().authenticated()
+                );
         return http.build();
     }
 
@@ -48,10 +51,10 @@ public class SecurityConfiguration {
         return new NimbusJwtEncoder(new ImmutableSecret<>("mySecretKeyThatIs32CharactersLong!".getBytes()));
     }
 
-    @Bean  
+    @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withSecretKey(
-            new SecretKeySpec("mySecretKeyThatIs32CharactersLong!".getBytes(), "HmacSHA256")
+                new SecretKeySpec("mySecretKeyThatIs32CharactersLong!".getBytes(), "HmacSHA256")
         ).build();
     }
 }

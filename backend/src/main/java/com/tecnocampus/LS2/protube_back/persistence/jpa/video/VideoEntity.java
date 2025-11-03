@@ -67,6 +67,28 @@ public class VideoEntity {
     @Column(name = "thumbnail_path", length = 500)
     private String thumbnailPath;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "video_bytes")
+    private byte[] videoBytes;
+
+    @Column(name = "video_size")
+    private Long videoSize;
+
+    @Column(name = "video_mime", length = 64)
+    private String videoMime = "video/mp4";
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "thumbnail_bytes")
+    private byte[] thumbnailBytes;
+
+    @Column(name = "thumbnail_size")
+    private Long thumbnailSize;
+
+    @Column(name = "thumbnail_mime", length = 64)
+    private String thumbnailMime = "image/webp";
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -276,6 +298,54 @@ public class VideoEntity {
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public byte[] getVideoBytes() {
+        return videoBytes;
+    }
+
+    public void setVideoBytes(byte[] videoBytes) {
+        this.videoBytes = videoBytes;
+    }
+
+    public Long getVideoSize() {
+        return videoSize;
+    }
+
+    public void setVideoSize(Long videoSize) {
+        this.videoSize = videoSize;
+    }
+
+    public String getVideoMime() {
+        return videoMime;
+    }
+
+    public void setVideoMime(String videoMime) {
+        this.videoMime = videoMime;
+    }
+
+    public byte[] getThumbnailBytes() {
+        return thumbnailBytes;
+    }
+
+    public void setThumbnailBytes(byte[] thumbnailBytes) {
+        this.thumbnailBytes = thumbnailBytes;
+    }
+
+    public Long getThumbnailSize() {
+        return thumbnailSize;
+    }
+
+    public void setThumbnailSize(Long thumbnailSize) {
+        this.thumbnailSize = thumbnailSize;
+    }
+
+    public String getThumbnailMime() {
+        return thumbnailMime;
+    }
+
+    public void setThumbnailMime(String thumbnailMime) {
+        this.thumbnailMime = thumbnailMime;
     }
 
     public Instant getCreatedAt() {

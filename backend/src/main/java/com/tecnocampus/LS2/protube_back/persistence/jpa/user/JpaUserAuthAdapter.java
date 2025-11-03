@@ -38,7 +38,6 @@ public class JpaUserAuthAdapter implements UserAuthPort {
     @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
 
-
         Optional<UserEntity> userEntity = repo.findByUsername(username.value());
 
         if (userEntity.isPresent()) {
@@ -80,9 +79,13 @@ public class JpaUserAuthAdapter implements UserAuthPort {
 
     }
 
+    @Override
+    public void deleteAllUsers() {
+        repo.deleteAll();
+    }
 
 
-private User toDomain(UserEntity e) {
+    private User toDomain(UserEntity e) {
 
 
     try {
@@ -92,12 +95,12 @@ private User toDomain(UserEntity e) {
                 new UserId(e.getId()),
                 new Username(e.getUsername()),
                 new Password(e.getPasswordHash()),
-                role
+                role,
+                e.getEmail()
         );
 
         return user;
     } catch (Exception ex) {
-
         ex.printStackTrace();
         throw ex;
     }

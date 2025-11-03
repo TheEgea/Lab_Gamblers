@@ -45,4 +45,9 @@ public class JwtTokenService implements TokenService {
         Set<Role> roles = roleNames.stream().map(Role::valueOf).collect(Collectors.toSet());
         return new TokenClaims(sub, iat, exp, roles);
     }
+
+    public String getUsernameFromToken(String token) {
+        Jwt jwt = decoder.decode(token);
+        return jwt.getSubject();
+    }
 }

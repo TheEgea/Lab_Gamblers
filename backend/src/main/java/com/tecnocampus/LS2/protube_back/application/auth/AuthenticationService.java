@@ -26,38 +26,47 @@ public class AuthenticationService {
     }
 
     public String login(Username username, String rawPassword) {
+        
+
+
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        boolean matches = encoder.matches(rawPassword, user.password().value());
 
-        if (!matches) {
-            throw new InvalidCredentialsException("Invalid username or password");
+        if (samePassword(rawPassword, user.password().value())) {
+            return generateToken(user);
         }
-        return generateToken(user);
+
+
+
+        throw new InvalidCredentialsException("Invalid username or password");
     }
 
-    public String register(Username username, String rawPassword) {
+    public String register(Username username, String rawPassword, String email) {
 
+        // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
             throw new UserAlreadyExistsException("Username already exists");
         }
 
-        String hashedPassword = encoder.encode(rawPassword);
+        String hashedPassword = hashPassword(rawPassword);
+
+
 
         User newUser = new User(
                 new UserId(UUID.randomUUID()),
                 username,
                 new Password(hashedPassword), // Hash ya hecho con BCrypt
-                Role.USER
-        );
+                Role.USER,
+                email
 
+        );
         userAuthPort.save(newUser);
 
         return generateToken(newUser);
     }
 
-    private String generateToken(User user) {
+    public String generateToken(User user) {
 
         Instant now = Instant.now();
         TokenClaims claims = new TokenClaims(
@@ -70,6 +79,18 @@ public class AuthenticationService {
         String token = tokenService.issue(claims);
 
         return token;
+    }
+
+    public boolean samePassword(String rawPassword, String hashedPassword) {
+                return encoder.matches(rawPassword, hashedPassword);
+    }
+
+    public String hashPassword(String rawPassword) {
+        return encoder.encode(rawPassword);
+    }
+
+    public void cleanUsers() {
+        userAuthPort.deleteAllUsers();
     }
 
     public static class InvalidCredentialsException extends RuntimeException {

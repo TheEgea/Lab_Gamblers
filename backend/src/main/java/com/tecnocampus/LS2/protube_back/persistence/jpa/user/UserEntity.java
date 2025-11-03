@@ -20,13 +20,17 @@ public class UserEntity {
     @Column(nullable = false)
     private String role; // String puro
 
+    @Column(nullable = true)
+    private String email;
+
     protected UserEntity() {}
 
-    public UserEntity(UUID id, String username, String passwordHash, String role) {
+    public UserEntity(UUID id, String username, String passwordHash, String role, String email) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.role = role != null ? role : "USER";
+        this.email = email;
     }
 
 
@@ -35,9 +39,11 @@ public class UserEntity {
     public String getUsername() { return username; }
     public String getPasswordHash() { return passwordHash; }
     public Role getRole() { return Role.valueOf(role); }
+    public  String getEmail() { return email; }
 
     public void setId(UUID id) { this.id = id; }
     public void setUsername(String username) { this.username = username; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
     public void setRole(String role) { this.role = role; }
+    public void setEmail(String email) { this.email = email; }
 }

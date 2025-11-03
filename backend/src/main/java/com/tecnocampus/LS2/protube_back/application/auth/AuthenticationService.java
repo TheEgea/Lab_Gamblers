@@ -27,28 +27,17 @@ public class AuthenticationService {
     }
 
     public String login(Username username, String rawPassword) {
-        System.out.println("Attempting login for username: " + username.value());
+        
 
 
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
-        System.out.println("User found: " + user.username().value());
-        System.out.println("Username : " + user.username().value());
-        System.out.println("Password (hashed): " + user.password().value());
-        System.out.println("Raw Password: " + rawPassword);
-        System.out.println("hola");
-        String hashedPassword = encoder.encode(rawPassword);
-        System.out.println("Hashed Raw Password: " + hashedPassword);
-        String x = user.password().value();
-        System.out.println("Stored Hashed Password: " + x);
+
 
         if (samePassword(rawPassword, user.password().value())) {
             return generateToken(user);
         }
-        System.out.println("Invalid password");
-        System.out.println("Raw password hashed: " + hashPassword(rawPassword));
-        System.out.println("Stored hashed password: " + user.password().value());
-        System.out.println("hola");
+
 
 
         throw new InvalidCredentialsException("Invalid username or password");
@@ -63,6 +52,7 @@ public class AuthenticationService {
         }
 
         String hashedPassword = hashPassword(rawPassword);
+
 
 
         User newUser = new User(
@@ -94,16 +84,15 @@ public class AuthenticationService {
     }
 
     public boolean samePassword(String rawPassword, String hashedPassword) {
-        System.out.println("Comparing raw password with hashed password");
-        System.out.println("Raw Password hashed: " + hashPassword(rawPassword));
-        System.out.println("Stored Hashed Password: " + hashedPassword);
-
-
-        return encoder.matches(rawPassword, hashedPassword);
+                return encoder.matches(rawPassword, hashedPassword);
     }
 
     public String hashPassword(String rawPassword) {
         return encoder.encode(rawPassword);
+    }
+
+    public void cleanUsers() {
+        userAuthPort.deleteAllUsers();
     }
 
     public static class InvalidCredentialsException extends RuntimeException {

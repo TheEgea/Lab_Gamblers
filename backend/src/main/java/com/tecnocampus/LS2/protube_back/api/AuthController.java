@@ -27,7 +27,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         try {
-            System.out.println("Login attempt for user: " + request.username());
+
             String token = authenticationService.login(
                     new Username(request.username()),
                     request.password()
@@ -56,4 +56,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    @PostMapping("/clean")
+    public ResponseEntity<Void> cleanUsers() {
+        authenticationService.cleanUsers();
+        return ResponseEntity.noContent().build();
+    }
+
 }

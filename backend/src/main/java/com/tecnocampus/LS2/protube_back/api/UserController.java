@@ -3,7 +3,7 @@ package com.tecnocampus.LS2.protube_back.api;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
 import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.response.AuthResponse;
-import com.tecnocampus.LS2.protube_back.application.dto.response.UserResonse;
+import com.tecnocampus.LS2.protube_back.application.dto.response.UserResponse;
 import com.tecnocampus.LS2.protube_back.application.user.UserService;
 import com.tecnocampus.LS2.protube_back.security.jwt.JwtTokenService;
 import jakarta.validation.Valid;
@@ -36,10 +36,10 @@ public class UserController {
     }
 
     @GetMapping("/u")
-    public ResponseEntity<UserResonse> getUsernameFromToken(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<UserResponse> getUsernameFromToken(@RequestHeader("Authorization") String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
         String username = jwtTokenService.getUsernameFromToken(token);
-        UserResonse user = UserMapper.toUserResponse(userService.loadByUsername(username).orElseThrow());
+        UserResponse user = UserMapper.toUserResponse(userService.loadByUsername(username).orElseThrow());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(user);
     }

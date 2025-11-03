@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntityMapper;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +152,53 @@ public class VideoDataLoader implements CommandLineRunner {
                 Instant.now()
         );
 
-        videoJpaRepository.save(VideoEntityMapper.toEntity(video));
-        logger.info("Inserted video {} - {}", jsonId, title);
+        // Extensión para añadir multimedia directamente en la base de datos como bytes
+
+        String basename = jsonFile.getName().substring(0, jsonFile.getName().lastIndexOf('.'));
+        File videoFile = new File(jsonFile.getParentFile(), basename + ".mp4");
+        File thumbnailFile = new File(jsonFile.getParentFile(), basename + ".webp");
+
+        byte[] videoBytes = null;
+        Long videoSize = null;
+        byte[] thumbnailBytes = null;
+        Long thumbnailSize = null;
+
+        if (videoFile.exists()) {
+            Path videoPath = videoFile.toPath();
+            videoBytes = Files.readAllBytes(videoPath);
+            videoSize = Files.size(videoPath);
+            logger.debug("Loaded video file: {} ({} bytes)", videoFile.getName(), videoSize);
+        } else {
+            logger.warn("Video file not found: {}", videoFile.getName());
+            return ProcessResult.SKIPPED;
+        }
+
+        if (thumbnailFile.exists()) {
+            Path thumbPath = thumbnailFile.toPath();
+            thumbnailBytes = Files.readAllBytes(thumbPath);
+            thumbnailSize = Files.size(thumbPath);
+            logger.debug("Loaded thumbnail file: {} ({} bytes)", thumbnailFile.getName(), thumbnailSize);
+        } else {
+            logger.warn("Thumbnail file not found: {}", thumbnailFile.getName());
+            return ProcessResult.SKIPPED;
+        }
+
+        VideoEntity entity = VideoEntityMapper.toEntity(video);
+        entity.setVideoBytes(videoBytes);
+        entity.setVideoSize(videoSize);
+        entity.setVideoMime("video/mp4");
+        entity.setThumbnailBytes(thumbnailBytes);
+        entity.setThumbnailSize(thumbnailSize);
+        entity.setThumbnailMime("image/webp");
+
+        videoJpaRepository.save(entity);
+        logger.info("Inserted video {} with {} bytes + {} thumbnail bytes",
+                jsonId, videoSize, thumbnailSize != null ? thumbnailSize : 0);
+
+        // Hasta aquí la extensión
+
+        //videoJpaRepository.save(VideoEntityMapper.toEntity(video));
+        //logger.info("Inserted video {} - {}", jsonId, title);
         return ProcessResult.CREATED;
     }
 

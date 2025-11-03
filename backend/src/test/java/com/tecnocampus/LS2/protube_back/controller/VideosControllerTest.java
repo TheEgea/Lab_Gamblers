@@ -1,6 +1,5 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.api.VideoController;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.time.Instant;

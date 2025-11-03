@@ -4,7 +4,6 @@ import com.tecnocampus.LS2.protube_back.domain.auth.TokenClaims;
 import com.tecnocampus.LS2.protube_back.domain.auth.TokenService;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,6 @@ public class AuthenticationService {
 
         // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
-
             throw new UserAlreadyExistsException("Username already exists");
         }
 

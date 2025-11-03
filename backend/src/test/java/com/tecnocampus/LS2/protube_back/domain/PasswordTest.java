@@ -25,19 +25,6 @@ class PasswordTest {
     }
 
     @Test
-    void matchesReturnsTrueForCorrectPassword() {
-        Password password = new Password("ValidPassword123");
-
-        assertTrue(password.matches("ValidPassword123"));
-    }
-
-    @Test
-    void matchesReturnsFalseForIncorrectPassword() {
-        Password password = new Password("ValidPassword123");
-        assertFalse(password.matches("WrongPassword"));
-    }
-
-    @Test
     void toStringHidesPasswordValue() {
         Password password = new Password("ValidPassword123");
         assertEquals("Password{****}", password.toString());

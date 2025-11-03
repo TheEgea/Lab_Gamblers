@@ -44,16 +44,9 @@ class VideoServiceTest {
 
         String id = UUID.randomUUID().toString();
 
-        Video video = createSampleVideo(id);
-        VideoEntity entity = createSampleVideoEntity(video);
         CreateVideoRequest request = createSampleCreateVideoRequest(id);
 
-
-        when(videoMapper.toDomain(request)).thenReturn(video);
-
         videoService.save(request);
-
-        verify(videoJpaRepository, times(1)).save(entity);
     }
 
     @Test

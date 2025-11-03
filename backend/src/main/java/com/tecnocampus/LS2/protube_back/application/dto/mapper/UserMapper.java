@@ -53,8 +53,8 @@ public class UserMapper {
         return new UserResponse(
                 domain.id().value().toString(),
                 domain.username().toString(),
-                domain.roles().toString(),
-                domain.email()
+                domain.email(),
+                domain.roles().toString()
         );
     }
 

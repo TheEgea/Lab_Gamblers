@@ -37,7 +37,7 @@ public class AuthControllerTest {
         String token = "mocked-jwt-token";
         Mockito.when(authenticationService.login(any(), eq("password123"))).thenReturn(token);
 
-        AuthRequest authRequest = new AuthRequest("testUser", "password123");
+        AuthRequest authRequest = new AuthRequest("testUser", "password123", "email@test.com");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,9 +50,9 @@ public class AuthControllerTest {
     @Test
     void testRegister() throws Exception {
         String token = "mocked-jwt-token";
-        Mockito.when(authenticationService.register(any(), eq("password123"))).thenReturn(token);
+        Mockito.when(authenticationService.register(any(), eq("password123"), any())).thenReturn(token);
 
-        RegisterRequest registerRequest = new RegisterRequest("testUser", "password123");
+        RegisterRequest registerRequest = new RegisterRequest("testUser", "password123", "email@test.com");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +67,7 @@ public class AuthControllerTest {
         Mockito.when(authenticationService.login(any(), eq("wrongPassword")))
                 .thenThrow(new AuthenticationService.InvalidCredentialsException("Invalid username or password"));
 
-        AuthRequest authRequest = new AuthRequest("testUser", "wrongPassword");
+        AuthRequest authRequest = new AuthRequest("testUser", "wrongPassword", "wrongemail@test.com");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,10 +77,10 @@ public class AuthControllerTest {
 
     @Test
     void testRegisterUserAlreadyExists() throws Exception {
-        Mockito.when(authenticationService.register(any(), eq("password123")))
+        Mockito.when(authenticationService.register(any(), eq("password123"), any()))
                 .thenThrow(new AuthenticationService.UserAlreadyExistsException("Username already exists"));
 
-        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password123");
+        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password123", "existingemail@test.com");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

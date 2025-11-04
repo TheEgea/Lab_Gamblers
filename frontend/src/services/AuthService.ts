@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { LoginRequest, LoginResponse, User } from '../types/auth.types';
 
-const API_URL = 'http://localhost:8080'; //TODO: gestionar environment variables i integrar cosillas
+const API_URL = 'http://localhost:8080';
 
 //this thing = calls
 const api: AxiosInstance = axios.create({

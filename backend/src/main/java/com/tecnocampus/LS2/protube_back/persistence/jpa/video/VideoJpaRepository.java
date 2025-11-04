@@ -54,4 +54,7 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
 
     @Query(value = "SELECT * FROM videos ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     VideoEntity getRandomVideo();
+
+    @Query(value = "SELECT v FROM VideoEntity v")
+    List<VideoEntity> findAll();
 }

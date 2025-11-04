@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 
 
+import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,15 @@ public class VideoController {
     public ResponseEntity<List<Video>> getAllVideos() {
         List<Video> videos = videoService.listAll();
         return ResponseEntity.ok(videos);
+    }
+
+    @GetMapping("/ids")
+    public ResponseEntity<List<VideoId>> getAllVideoIds() {
+        List<Video> videos = videoService.listAll();
+        List<VideoId> videoIds = videos.stream()
+                .map(Video::getId)
+                .toList();
+        return ResponseEntity.ok(videoIds);
     }
 
     @PostMapping("/add")

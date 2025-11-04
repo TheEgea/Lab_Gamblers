@@ -12,6 +12,7 @@ This has been added to the gitignore, so each team member can have an specific c
 
 
 # Here you have your own path
-YT_DLP_BIN="/usr/local/bin/yt-dlp"
+# Configuración para Windows
+YT_DLP_BIN="python -m yt_dlp"
 FFMPEG_BIN="ffmpeg"
 FFPROBE_BIN="ffprobe"

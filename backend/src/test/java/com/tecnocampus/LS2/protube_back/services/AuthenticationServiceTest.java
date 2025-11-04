@@ -39,7 +39,7 @@ class AuthenticationServiceTest {
         Username username = new Username("testUser");
         String rawPassword = "password";
         String hashedPassword = "hashedPassword";
-        User user = new User(new UserId(UUID.randomUUID()), username, new Password(hashedPassword), Role.USER, "email@test.com");
+        User user = new User(new UserId(UUID.randomUUID()), username, new Password(hashedPassword), Role.USER,"test@gmail.com");
 
         when(userAuthPort.loadByUsername(username)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(rawPassword, hashedPassword)).thenReturn(true);
@@ -78,7 +78,7 @@ class AuthenticationServiceTest {
         when(passwordEncoder.encode(rawPassword)).thenReturn(hashedPassword);
         when(tokenService.issue(any(TokenClaims.class))).thenReturn("mockToken");
 
-        String token = authenticationService.register(username, rawPassword, "email@test.com");
+        String token = authenticationService.register(username, rawPassword,"test@gmail.com");
 
         assertNotNull(token);
         assertEquals("mockToken", token);
@@ -92,12 +92,12 @@ class AuthenticationServiceTest {
     void register_ExistingUser_ThrowsException() {
         Username username = new Username("existingUser");
         String rawPassword = "password";
-        User existingUser = new User(new UserId(UUID.randomUUID()), username, new Password("hashedPassword"), Role.USER, "email@test.com");
+        User existingUser = new User(new UserId(UUID.randomUUID()), username, new Password("hashedPassword"), Role.USER,"test@gmail.com");
 
         when(userAuthPort.loadByUsername(username)).thenReturn(Optional.of(existingUser));
 
         assertThrows(AuthenticationService.UserAlreadyExistsException.class,
-                () -> authenticationService.register(username, rawPassword, "email@test.com"));
+                () -> authenticationService.register(username, rawPassword,"test@gmail.com"));
 
         verify(userAuthPort).loadByUsername(username);
         verifyNoInteractions(passwordEncoder, tokenService);

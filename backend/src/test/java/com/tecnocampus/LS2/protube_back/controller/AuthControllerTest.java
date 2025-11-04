@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,7 +38,7 @@ public class AuthControllerTest {
         String token = "mocked-jwt-token";
         Mockito.when(authenticationService.login(any(), eq("password123"))).thenReturn(token);
 
-        AuthRequest authRequest = new AuthRequest("testUser", "password123", "email@test.com");
+        AuthRequest authRequest = new AuthRequest("testUser", "password123","test@gmail.com");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,9 +51,9 @@ public class AuthControllerTest {
     @Test
     void testRegister() throws Exception {
         String token = "mocked-jwt-token";
-        Mockito.when(authenticationService.register(any(), eq("password123"), any())).thenReturn(token);
+        Mockito.when(authenticationService.register(any(), eq("password123"),any())).thenReturn(token);
 
-        RegisterRequest registerRequest = new RegisterRequest("testUser", "password123", "email@test.com");
+        RegisterRequest registerRequest = new RegisterRequest("testUser", "password123","test@gmail.com");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +68,7 @@ public class AuthControllerTest {
         Mockito.when(authenticationService.login(any(), eq("wrongPassword")))
                 .thenThrow(new AuthenticationService.InvalidCredentialsException("Invalid username or password"));
 
-        AuthRequest authRequest = new AuthRequest("testUser", "wrongPassword", "wrongemail@test.com");
+        AuthRequest authRequest = new AuthRequest("testUser", "wrongPassword","test@gmail.com");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,15 +78,24 @@ public class AuthControllerTest {
 
     @Test
     void testRegisterUserAlreadyExists() throws Exception {
-        Mockito.when(authenticationService.register(any(), eq("password123"), any()))
+        Mockito.when(authenticationService.register(any(), eq("password123"),any()))
                 .thenThrow(new AuthenticationService.UserAlreadyExistsException("Username already exists"));
 
-        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password123", "existingemail@test.com");
+        RegisterRequest registerRequest = new RegisterRequest("existingUser", "password123","test@gmail.com");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void testClean() throws Exception {
+        doNothing().when(authenticationService).cleanUsers();
+
+        mockMvc.perform(post("/auth/clean")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
 

@@ -21,7 +21,7 @@ public class UserController {
     @Autowired
     private JwtTokenService jwtTokenService;
 
-    @PostMapping("/ChangeRole")
+    @PostMapping("/changeRole")
     public ResponseEntity<AuthResponse> upgradeToAdmin(@Valid String username, @Valid String RoleKey) {
         String token = userService.changeRole(username, RoleKey);
         return ResponseEntity.status(HttpStatus.OK)

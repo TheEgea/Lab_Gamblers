@@ -1,5 +1,5 @@
 import React, { useState, FormEvent } from 'react';
-import { authService } from '../services/AuthService';
+import authService from '../services/AuthService';
 
 interface SignupProps {
   onSignupSuccess?: () => void;
@@ -7,20 +7,14 @@ interface SignupProps {
 
 const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
   const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError('');
-
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      return;
-    }
 
     if (password.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres');
@@ -30,7 +24,7 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
     setLoading(true);
 
     try {
-      const response = await authService.signup(username, email, password);
+      const response = await authService.signup(username, password, email);
       console.log('Registro exitoso:', response);
 
       if (onSignupSuccess) {
@@ -98,28 +92,6 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
         </div>
 
         <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="email" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
-            Email:
-          </label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '10px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '14px',
-              boxSizing: 'border-box',
-            }}
-          />
-        </div>
-
-        <div style={{ marginBottom: '20px' }}>
           <label htmlFor="password" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
             Contraseña:
           </label>
@@ -140,16 +112,15 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
             }}
           />
         </div>
-
         <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
-            Confirmar Contraseña:
+          <label htmlFor="email" style={{ display: 'block', marginBottom: '8px', color: '#555', fontWeight: '500' }}>
+            Email:
           </label>
           <input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             disabled={loading}
             style={{

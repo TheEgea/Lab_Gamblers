@@ -32,10 +32,8 @@ public class VideoController {
 
     @GetMapping("/ids")
     public ResponseEntity<List<VideoId>> getAllVideoIds() {
-        List<Video> videos = videoService.listAll();
-        List<VideoId> videoIds = videos.stream()
-                .map(Video::getId)
-                .toList();
+
+        List<VideoId> videoIds = videoService.listAllVideoIds();
         return ResponseEntity.ok(videoIds);
     }
 

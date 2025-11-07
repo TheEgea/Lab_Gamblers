@@ -21,6 +21,9 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
      */
     List<VideoEntity> findByTitleContainingIgnoreCase(String title);
 
+    @Query("SELECT v.id FROM VideoEntity v")
+    List<VideoId> findAllIds();
+
     /**
      * Find all videos ordered by creation date (newest first)
      */

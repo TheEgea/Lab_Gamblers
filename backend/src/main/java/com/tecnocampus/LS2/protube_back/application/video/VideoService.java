@@ -47,6 +47,10 @@ public class VideoService {
                 .toList();
     }
 
+    public List<VideoId> listAllVideoIds() {
+        return videoJpaRepository.findAllIds();
+    }
+
     public VideoResponse findById(String id) {
         VideoEntity entity = videoJpaRepository.findById(id)
                 .orElseThrow(() -> new VideoNotFoundException(id));

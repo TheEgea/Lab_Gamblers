@@ -1,9 +1,12 @@
+// frontend/src/App.tsx
 import './App.css';
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import AppBar from './components/AppBar';
 import Home from './components/Home';
+import VideoPlayer from './components/VideoPlayer';
 
 function App() {
     const [showLogin, setShowLogin] = useState<boolean>(true);
@@ -20,25 +23,46 @@ function App() {
         setIsAuth(true);
     };
 
-    return (
-        <div className="App">
-            <AppBar showLogin={showLogin} setShowLogin={setShowLogin} />
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        setIsAuth(false);
+    };
 
-            <div className="App-content">
+    return (
+        <Router>
+            <div className="App">
                 {!isAuth ? (
                     <>
-                        <img src="/src/utils/logo.png" className="App-logo" alt="logo" />
-                        {showLogin ? (
-                            <Login onLoginSuccess={handleLoginSuccess} />
-                        ) : (
-                            <Signup onLoginSuccess={handleLoginSuccess} />
-                        )}
+                        <AppBar showLogin={showLogin} setShowLogin={setShowLogin} />
+                        <div className="App-content">
+                            <img src="/logo.jpg" className="App-logo" alt="logo" style={{ maxWidth: '200px', margin: '20px auto' }} />
+                            {showLogin ? (
+                                <Login onLoginSuccess={handleLoginSuccess} />
+                            ) : (
+                                <Signup onSignupSuccess={handleLoginSuccess} />
+                            )}
+                        </div>
                     </>
                 ) : (
-                    <Home />
+                    <>
+                        <nav className="navbar navbar-dark bg-dark">
+                            <div className="container-fluid">
+                                <a className="navbar-brand" href="/">ProTube</a>
+                                <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        </nav>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/video/:videoId" element={<VideoPlayer />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                    </>
                 )}
             </div>
-        </div>
+        </Router>
     );
 }
 

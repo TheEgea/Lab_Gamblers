@@ -1,16 +1,7 @@
-import {useEffect, useState} from 'react';
+// frontend/src/components/Home.tsx
+import { useEffect, useState } from 'react';
 import VideoGrid from './VideoGrid';
-import {buildApiUrl} from '../config/api';
-
-type Video = {
-    id: number;
-    title: string;
-    duration: number;
-    width: number;
-    height: number;
-    user: string;
-    description?: string;
-};
+import videoService, { Video } from '../services/VideoService';
 
 const Home = () => {
     const [videos, setVideos] = useState<Video[]>([]);
@@ -21,22 +12,15 @@ const Home = () => {
         try {
             setStatus('loading');
             setMessage('');
-            const token = localStorage.getItem('authToken');
 
-            // Usar la función helper
-            const res = await fetch(buildApiUrl('/videos'), {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!res.ok) throw new Error(`Error ${res.status} al cargar videos`);
-            const data = await res.json();
-            setVideos(Array.isArray(data) ? data : []);
+            const data = await videoService.getAllVideos();
+            setVideos(data);
             setStatus('success');
         } catch (e) {
-            setMessage(e instanceof Error ? e.message : 'Error desconocido');
+            const errorMsg = e instanceof Error ? e.message : 'Error desconocido';
+            setMessage(errorMsg);
             setStatus('error');
+            console.error('Error fetching videos:', e);
         }
     };
 
@@ -44,22 +28,39 @@ const Home = () => {
         fetchVideos();
     }, []);
 
-    if (status === 'loading') return <div style={{padding: 24}}>Cargando videos…</div>;
-    if (status === 'error') return (
-        <div style={{padding: 24}}>
-            <h3>Error</h3>
-            <p>{message}</p>
-            <button onClick={fetchVideos}>Reintentar</button>
-        </div>
-    );
+    if (status === 'loading') {
+        return (
+            <div style={{ padding: 24, textAlign: 'center' }}>
+                <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                </div>
+                <p className="mt-2">Cargando videos…</p>
+            </div>
+        );
+    }
+
+    if (status === 'error') {
+        return (
+            <div style={{ padding: 24 }}>
+                <div className="alert alert-danger" role="alert">
+                    <h4 className="alert-heading">Error</h4>
+                    <p>{message}</p>
+                    <button onClick={fetchVideos} className="btn btn-primary">
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div style={{padding: 24}}>
-            <h2>Videos</h2>
-            {videos.length === 0
-                ? <div>No hay videos disponibles</div>
-                : <VideoGrid videos={videos} onVideoClick={(v) => console.log('clicked', v)}/>
-            }
+        <div className="container-fluid" style={{ padding: 24 }}>
+            <h2 className="mb-4">Videos Disponibles</h2>
+            {videos.length === 0 ? (
+                <div className="alert alert-info">No hay videos disponibles</div>
+            ) : (
+                <VideoGrid videos={videos} onVideoClick={(v) => console.log('Video clicked:', v)} />
+            )}
         </div>
     );
 };

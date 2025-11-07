@@ -1,54 +1,34 @@
+// frontend/src/components/VideoPlayer.tsx
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getEnv } from "../utils/Env";
-
-interface Video {
-    id: string;
-    title: string;
-    user: string;
-    channel: string;
-    description: string;
-    viewCount: number;
-    likeCount: number;
-    durationSeconds: number;
-    createdAt: string;
-    width: number;
-    height: number;
-}
+import { useParams, useNavigate } from 'react-router-dom';
+import videoService, { Video } from '../services/VideoService';
 
 const VideoPlayer = () => {
     const { videoId } = useParams<{ videoId: string }>();
+    const navigate = useNavigate();
     const [video, setVideo] = useState<Video | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const env = getEnv();
-
     useEffect(() => {
         if (!videoId) {
-            setError('ID de video no valid');
+            setError('ID de video no válido');
             setLoading(false);
             return;
         }
 
-        // Obtenir metadades del video
-        fetch(`${env.API_BASE_URL}/videos/${videoId}`)
-            .then(async (res) => {
-                if (!res.ok) {
-                    throw new Error(`Error ${res.status}: ${res.statusText}`);
-                }
-                return res.json();
-            })
-            .then((data: Video) => {
+        videoService
+            .getVideoById(videoId)
+            .then((data) => {
                 setVideo(data);
                 setLoading(false);
             })
             .catch((err) => {
-                console.error('Error al carregar video:', err);
-                setError(err.message);
+                console.error('Error al cargar video:', err);
+                setError(err.message || 'Error al cargar el video');
                 setLoading(false);
             });
-    }, [videoId, env.API_BASE_URL]);
+    }, [videoId]);
 
     const formatNumber = (num: number): string => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -66,7 +46,7 @@ const VideoPlayer = () => {
         return new Date(dateString).toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
         });
     };
 
@@ -75,9 +55,9 @@ const VideoPlayer = () => {
             <div className="container mt-4">
                 <div className="text-center">
                     <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Carregant...</span>
+                        <span className="visually-hidden">Cargando...</span>
                     </div>
-                    <p className="mt-2">Carregant video...</p>
+                    <p className="mt-2">Cargando video...</p>
                 </div>
             </div>
         );
@@ -89,6 +69,9 @@ const VideoPlayer = () => {
                 <div className="alert alert-danger" role="alert">
                     <h4 className="alert-heading">Error</h4>
                     <p>{error}</p>
+                    <button onClick={() => navigate('/')} className="btn btn-primary">
+                        Volver al inicio
+                    </button>
                 </div>
             </div>
         );
@@ -98,16 +81,16 @@ const VideoPlayer = () => {
         return (
             <div className="container mt-4">
                 <div className="alert alert-warning" role="alert">
-                    Video no trobat
+                    Video no encontrado
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container fluid mt-3">
+        <div className="container-fluid mt-3">
             <div className="row">
-                {/* Columna principal - Reproductor de video */}
+                {/* Columna principal - Reproductor */}
                 <div className="col-lg-8">
                     {/* Reproductor de video */}
                     <div className="ratio ratio-16x9 mb-3">
@@ -115,31 +98,26 @@ const VideoPlayer = () => {
                             controls
                             autoPlay
                             preload="metadata"
-                            poster={`${env.MEDIA_BASE_URL}/thumbnails/{video.id}`}
+                            poster={videoService.getThumbnailUrl(video.id)}
                             className="rounded"
                             style={{ backgroundColor: '#000' }}
                         >
-                            <source
-                                src={`${env.MEDIA_BASE_URL}/video/{video.id}`}
-                                type="video/mp4"
-                            />
-                            El teu navegador no suporta la reproducció de video HTML5.
+                            <source src={videoService.getVideoStreamUrl(video.id)} type="video/mp4" />
+                            Tu navegador no soporta la reproducción de video HTML5.
                         </video>
                     </div>
 
-                    {/* Informació del video */}
+                    {/* Información del video */}
                     <div className="mb-3">
                         <h1 className="fs-4 fw-bold mb-2">{video.title}</h1>
 
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <div className="d-flex align-items-center">
-                                <span className="text-muted me-3">
-                                    {formatNumber(video.viewCount)} visualitzacions
-                                </span>
+                <span className="text-muted me-3">
+                  {formatNumber(video.viewCount)} visualizaciones
+                </span>
                                 <span className="text-muted me-3">·</span>
-                                <span className="text-muted">
-                                    {formatDate(video.createdAt)}
-                                </span>
+                                <span className="text-muted">{formatDate(video.createdAt)}</span>
                             </div>
 
                             <div className="d-flex align-items-center">
@@ -151,54 +129,55 @@ const VideoPlayer = () => {
                                     <i className="bi bi-share me-1"></i>
                                     Compartir
                                 </button>
-                                <button className="btn btn-outline-secondary">
-                                    <i className="bi bi-three-dots"></i>
+                                <button className="btn btn-outline-secondary" onClick={() => navigate('/')}>
+                                    <i className="bi bi-arrow-left me-1"></i>
+                                    Volver
                                 </button>
                             </div>
                         </div>
 
                         <hr />
 
-                        {/* Informació del canal */}
+                        {/* Información del canal */}
                         <div className="d-flex align-items-start mb-3">
-                            <div className="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3"
-                                 style={{ width: '50px', height: '50px' }}>
-                                <span className="text-white fw-bold">
-                                    {video.channel ? video.channel.charAt(0).toUpperCase() : video.user.charAt(0).toUpperCase()}
-                                </span>
+                            <div
+                                className="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style={{ width: '50px', height: '50px' }}
+                            >
+                <span className="text-white fw-bold">
+                  {video.channel
+                      ? video.channel.charAt(0).toUpperCase()
+                      : video.user.charAt(0).toUpperCase()}
+                </span>
                             </div>
                             <div className="flex-grow-1">
-                                <h6 className="mb-1 fw-bold">
-                                    {video.channel || video.user}
-                                </h6>
+                                <h6 className="mb-1 fw-bold">{video.channel || video.user}</h6>
                                 <p className="text-muted small mb-0">
-                                    Canal · {formatDuration(video.durationSeconds)} de duració
+                                    {formatDuration(video.durationSeconds)} · {video.width}x{video.height}
                                 </p>
                             </div>
-                            <button className="btn btn-danger btn-sm">
-                                Subscriure's
-                            </button>
+                            <button className="btn btn-danger btn-sm">Suscribirse</button>
                         </div>
 
-                        {/* Descripció */}
+                        {/* Descripción */}
                         <div className="bg-light p-3 rounded">
                             <div className="d-flex mb-2">
-                                <span className="text-muted me-3">{formatNumber(video.viewCount)} visualitzacions</span>
+                <span className="text-muted me-3">
+                  {formatNumber(video.viewCount)} visualizaciones
+                </span>
                                 <span className="text-muted">{formatDate(video.createdAt)}</span>
                             </div>
                             <div style={{ whiteSpace: 'pre-wrap' }}>
-                                {video.description || 'No hi ha descripció disponible per a aquest video.'}
+                                {video.description || 'No hay descripción disponible.'}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Columna lateral - Videos Relacionats */}
+                {/* Columna lateral - Videos relacionados */}
                 <div className="col-lg-4">
-                    <h5 className="mb-3">Videos relacionats</h5>
-                    <div className="text-muted text-center">
-                        {/* Aqui posar VideoGrid */}
-                    </div>
+                    <h5 className="mb-3">Videos relacionados</h5>
+                    <div className="text-muted text-center">Próximamente...</div>
                 </div>
             </div>
         </div>

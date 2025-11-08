@@ -20,6 +20,7 @@ import com.tecnocampus.LS2.protube_back.persistence.jpa.video.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +42,9 @@ public class VideoService {
     // Métodos de casos de uso que USAN el puerto
     @Transactional
     public List<Video> listAll() {
-        return videoJpaRepository.findAll()
-                .stream()
-                .map(VideoEntityMapper::toDomain)
-                .toList();
+        return videoJpaRepository.findAllMetadata().stream()
+                .map(VideoMapper::VideoProjectionToDomain)  // ← Usar tu mapper existente
+                .collect(Collectors.toList());
     }
 
     public List<VideoId> listAllVideoIds() {

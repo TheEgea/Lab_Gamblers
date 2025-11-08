@@ -4,9 +4,11 @@ import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.application.dto.request.CreateVideoRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.response.VideoResponse;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoProjection;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 public class VideoMapper {
@@ -85,4 +87,31 @@ public class VideoMapper {
     private static String buildThumbnailUrl(String path) {
         return path != null ? "/media/thumbnails/" + path : null;
     }
+
+    public static Video VideoProjectionToDomain(VideoProjection projection) {
+        if (projection == null) return null;
+        return new Video(
+                new VideoId(projection.getId()),
+                projection.getJsonId(),
+                projection.getWidth(),
+                projection.getHeight(),
+                projection.getDurationSeconds(),
+                projection.getTitle(),
+                projection.getUser(),
+                List.of(), // No timestamp info in projection
+                projection.getDescription(),
+                List.of(), // No categories info in projection
+                List.of(), // No tags info in projection
+                projection.getViewCount(),
+                projection.getLikeCount(),
+                projection.getChannel(),
+                List.of(), // No comments info in projection
+                projection.getMediaPath(),
+                projection.getThumbnailPath(),
+                projection.getCreatedAt(),
+                projection.getUpdatedAt()
+        );
+    }
+
+
 }

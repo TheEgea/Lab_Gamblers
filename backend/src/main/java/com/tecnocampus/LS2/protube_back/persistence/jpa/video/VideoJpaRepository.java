@@ -60,4 +60,26 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
 
     @Query(value = "SELECT v FROM VideoEntity v")
     List<VideoEntity> findAll();
+
+    // NUEVO - Query optimizada sin BLOBs
+    @Query("""
+        SELECT v.id as id,
+               v.jsonId as jsonId,
+               v.title as title,
+               v.description as description,
+               v.user as user,
+               v.channel as channel,
+               v.viewCount as viewCount,
+               v.likeCount as likeCount,
+               v.durationSeconds as durationSeconds,
+               v.width as width,
+               v.height as height,
+               v.mediaPath as mediaPath,
+               v.thumbnailPath as thumbnailPath,
+               v.createdAt as createdAt,
+               v.updatedAt as updatedAt
+        FROM VideoEntity v
+        ORDER BY v.createdAt DESC
+        """)
+    List<VideoProjection> findAllMetadata();
 }

@@ -1,15 +1,20 @@
+// backend/src/main/java/com/tecnocampus/LS2/protube_back/domain/video/VideoId.java
 package com.tecnocampus.LS2.protube_back.domain.video;
 
+import com.fasterxml.jackson.annotation.JsonCreator;  // ← AÑADIR
+import com.fasterxml.jackson.annotation.JsonValue;    // ← AÑADIR
 import java.util.Objects;
 import java.util.UUID;
 
 public final class VideoId {
+
     private final UUID value;
 
     public VideoId(UUID value) {
         this.value = Objects.requireNonNull(value);
     }
 
+    @JsonCreator  // ← AÑADIR
     public VideoId(String value) {
         this(UUID.fromString(Objects.requireNonNull(value)));
     }
@@ -27,6 +32,12 @@ public final class VideoId {
     }
 
     @Override
+    @JsonValue  // ← AÑADIR
+    public String toString() {
+        return value.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -37,10 +48,5 @@ public final class VideoId {
     @Override
     public int hashCode() {
         return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return value.toString();
     }
 }

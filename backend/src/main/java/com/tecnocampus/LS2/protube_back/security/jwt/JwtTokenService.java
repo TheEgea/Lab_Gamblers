@@ -35,16 +35,6 @@ public class JwtTokenService implements TokenService {
         return encoder.encode(JwtEncoderParameters.from(header, set)).getTokenValue();
     }
 
-    @Override
-    public TokenClaims verify(String token) {
-        Jwt jwt = decoder.decode(token);
-        String sub = jwt.getSubject();
-        Instant iat = jwt.getIssuedAt();
-        Instant exp = jwt.getExpiresAt();
-        List<String> roleNames = (List<String>) jwt.getClaims().getOrDefault("roles", List.of());
-        Set<Role> roles = roleNames.stream().map(Role::valueOf).collect(Collectors.toSet());
-        return new TokenClaims(sub, iat, exp, roles);
-    }
 
     public String getUsernameFromToken(String token) {
         Jwt jwt = decoder.decode(token);

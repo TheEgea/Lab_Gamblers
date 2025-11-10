@@ -9,7 +9,6 @@ import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
-import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntityMapper;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,9 +29,6 @@ class VideoServiceTest {
 
     @Mock
     private VideoJpaRepository videoJpaRepository;
-
-    @Mock
-    private VideoMapper videoMapper;
 
     @InjectMocks
     private VideoService videoService;
@@ -60,7 +56,7 @@ class VideoServiceTest {
         List<Video> videos = videoService.listAll();
 
         assertEquals(1, videos.size());
-        assertEquals(video.getId(), videos.get(0).getId());
+        assertEquals(video.getId(), videos.getFirst().getId());
     }
 
     @Test
@@ -234,7 +230,7 @@ class VideoServiceTest {
     }
 
     private VideoEntity createSampleVideoEntity(Video video) {
-        return VideoEntityMapper.toEntity(video);
+        return VideoMapper.toEntity(video);
     }
 
     private CreateVideoRequest createSampleCreateVideoRequest(String id) {

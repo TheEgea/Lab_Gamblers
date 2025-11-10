@@ -1,4 +1,5 @@
 // frontend/src/components/VideoGrid.tsx
+import React from 'react';
 import { Video } from '../services/VideoService';
 import videoService from '../services/VideoService';
 import { useNavigate } from 'react-router-dom';

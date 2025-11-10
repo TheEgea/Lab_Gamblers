@@ -26,7 +26,7 @@ services:
       - ./backend:/workspace
       - maven_repo:/root/.m2
       # ⭐ QUITAR :ro TEMPORALMENTE para testing
-      - C:/protube/store:/workspace/var/store
+      - ../protube_store:/workspace/var/store
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME:-protube}
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-protube}

@@ -76,7 +76,7 @@ export const videoService = {
 
     // URL para el thumbnail
     getThumbnailUrl: (id: string): string => {
-        return `${MEDIA_BASE_URL}/media/thumbnails/${id}`;
+        return `${MEDIA_BASE_URL}/media/thumbnail/${id}`;
     },
 };
 

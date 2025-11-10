@@ -9,6 +9,7 @@ const VideoPlayer = () => {
     const [video, setVideo] = useState<Video | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
 
     useEffect(() => {
         if (!videoId) {
@@ -22,6 +23,12 @@ const VideoPlayer = () => {
             .then((data) => {
                 setVideo(data);
                 setLoading(false);
+                return videoService.getAllVideos();
+            })
+            .then((allVideos) => {
+                const filtered = allVideos.filter(v => v.id !== videoId);
+                const shuffled = filtered.sort(() => Math.random() - 0.5);
+                setRelatedVideos(shuffled.slice(0, 5));
             })
             .catch((err) => {
                 console.error('Error al cargar video:', err);
@@ -109,22 +116,24 @@ const VideoPlayer = () => {
 
                     {/* Información del video */}
                     <div className="mb-3">
-                        <h1 className="fs-4 fw-bold mb-2">{video.title}</h1>
+                        <h1 className="fs-4 fw-bold mb-2" style={{ textAlign: 'left' }}>
+                            {video.title}
+                        </h1>
 
                         <div className="d-flex align-items-center justify-content-between mb-3">
                             <div className="d-flex align-items-center">
-                <span className="text-muted me-3">
-                  {formatNumber(video.viewCount)} visualizaciones
-                </span>
+                                <span className="text-muted me-3">
+                                    {formatNumber(video.viewCount)} visualizaciones
+                                </span>
                                 <span className="text-muted me-3">·</span>
-                                <span className="text-muted">{formatDate(video.createdAt)}</span>
+                                <span className="text-muted me-3">{formatDate(video.createdAt)}</span>
+                                <span className="text-muted me-3">·</span>
+                                <span className="text-muted me-3">
+                                    {formatNumber(video.likeCount)} Me Gusta
+                                </span>
                             </div>
 
                             <div className="d-flex align-items-center">
-                                <button className="btn btn-outline-secondary me-2">
-                                    <i className="bi bi-hand-thumbs-up me-1"></i>
-                                    {formatNumber(video.likeCount)}
-                                </button>
                                 <button className="btn btn-outline-secondary me-2">
                                     <i className="bi bi-share me-1"></i>
                                     Compartir
@@ -136,38 +145,38 @@ const VideoPlayer = () => {
                             </div>
                         </div>
 
-                        <hr />
-
                         {/* Información del canal */}
                         <div className="d-flex align-items-start mb-3">
                             <div
                                 className="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-3"
                                 style={{ width: '50px', height: '50px' }}
                             >
-                <span className="text-white fw-bold">
-                  {video.channel
-                      ? video.channel.charAt(0).toUpperCase()
-                      : video.user.charAt(0).toUpperCase()}
-                </span>
+                            <span className="text-white fw-bold">
+                              {video.channel
+                                  ? video.channel.charAt(0).toUpperCase()
+                                  : video.user.charAt(0).toUpperCase()}
+                            </span>
                             </div>
-                            <div className="flex-grow-1">
+                            <div className="flex-grow-1" style={{ textAlign: 'left' }}>
                                 <h6 className="mb-1 fw-bold">{video.channel || video.user}</h6>
                                 <p className="text-muted small mb-0">
-                                    {formatDuration(video.durationSeconds)} · {video.width}x{video.height}
+                                    {formatDuration(video.durationSeconds)}
                                 </p>
                             </div>
                             <button className="btn btn-danger btn-sm">Suscribirse</button>
                         </div>
 
+                        <hr />
+
                         {/* Descripción */}
                         <div className="bg-light p-3 rounded">
                             <div className="d-flex mb-2">
-                <span className="text-muted me-3">
-                  {formatNumber(video.viewCount)} visualizaciones
-                </span>
+                                <span className="text-muted me-3">
+                                  {formatNumber(video.viewCount)} visualizaciones
+                                </span>
                                 <span className="text-muted">{formatDate(video.createdAt)}</span>
                             </div>
-                            <div style={{ whiteSpace: 'pre-wrap' }}>
+                            <div style={{ whiteSpace: 'pre-wrap', textAlign: 'justify' }}>
                                 {video.description || 'No hay descripción disponible.'}
                             </div>
                         </div>
@@ -176,8 +185,49 @@ const VideoPlayer = () => {
 
                 {/* Columna lateral - Videos relacionados */}
                 <div className="col-lg-4">
-                    <h5 className="mb-3">Videos relacionados</h5>
-                    <div className="text-muted text-center">Próximamente...</div>
+                    <h5 className="mb-3">Vídeos relacionados</h5>
+                    {relatedVideos.length === 0 ? (
+                        <div className="text-muted text-center">Cargando...</div>
+                    ) : (
+                        <div className="d-flex flex-column gap-3" style={{ textAlign: 'left' }}>
+                            {relatedVideos.map((relVideo) => (
+                                <div
+                                    key={relVideo.id}
+                                    className="card flex-row p-2"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => navigate(`/video/${relVideo.id}`)}
+                                >
+                                    <img
+                                        src={videoService.getThumbnailUrl(relVideo.id)}
+                                        alt={relVideo.title}
+                                        className="rounded"
+                                        style={{ width: '168px', height: '94px', objectFit: 'cover' }}
+                                        onError={(e) => {
+                                            e.currentTarget.src = 'https://via.placeholder.com/168x94?text=No+Thumb';
+                                        }}
+                                    />
+                                    <div className="ms-2 flex-grow-1" style={{ minWidth: 0 }}>
+                                        <h6
+                                            className="card-title mb-1 small text-truncate"
+                                            title={relVideo.title}
+                                            style = {{
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                                display: 'block',
+                                            }}
+                                        >
+                                            {relVideo.title}
+                                        </h6>
+                                        <p className="card-text text-muted small mb-0">{relVideo.user}</p>
+                                        <p className="card-text text-muted small mb-0">
+                                            {formatNumber(relVideo.viewCount)} visualizaciones
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

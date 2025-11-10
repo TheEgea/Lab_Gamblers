@@ -44,6 +44,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({ videos, onVideoClick }) => {
                             src={videoService.getThumbnailUrl(video.id)}
                             className="card-img-top"
                             alt={video.title}
+                            loading="lazy"
                             style={{ height: '200px', objectFit: 'cover' }}
                             onError={(e) => {
                                 e.currentTarget.src = 'https://via.placeholder.com/320x180?text=No+Thumbnail';

@@ -9,7 +9,6 @@ import com.tecnocampus.LS2.protube_back.application.video.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
-import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -101,7 +100,7 @@ class VideosControllerTest {
     }
 
     private VideoEntity createSampleVideoEntity(Video video) {
-        return VideoEntityMapper.toEntity(video);
+        return VideoMapper.toEntity(video);
     }
 
     private CreateVideoRequest createSampleCreateVideoRequest(String id) {

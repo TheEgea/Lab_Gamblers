@@ -1,11 +1,12 @@
-package com.tecnocampus.LS2.protube_back.persistence.jpa.video.atributes;
+package com.tecnocampus.LS2.protube_back.application.dto.mapper;
 
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.atributes.ComentarioEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ComentarioEntityMapper {
+public class CommentMapper {
 
     /**
      * Convert JPA Entity to Domain Model
@@ -48,7 +49,7 @@ public class ComentarioEntityMapper {
         }
 
         return entities.stream()
-                .map(entity -> new ComentarioEntityMapper().toDomain(entity))
+                .map(entity -> new CommentMapper().toDomain(entity))
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +62,7 @@ public class ComentarioEntityMapper {
         }
 
         return comentarios.stream()
-                .map(ComentarioEntityMapper::toEntity)
+                .map(CommentMapper::toEntity)
                 .collect(Collectors.toList());
     }
 }

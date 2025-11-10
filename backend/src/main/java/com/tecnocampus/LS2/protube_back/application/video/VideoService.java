@@ -27,15 +27,13 @@ import java.util.stream.Collectors;
 public class VideoService {
 
     private final VideoJpaRepository videoJpaRepository;
-    private final VideoMapper videoMapper;
-    private final VideoEntityMapper videoEntityMapper;
 
 
     public void save(CreateVideoRequest request) {
 
-        Video video = videoMapper.toDomain(request);
+        Video video = VideoMapper.toDomain(request);
 
-        videoJpaRepository.save(VideoEntityMapper.toEntity(video));
+        videoJpaRepository.save(VideoMapper.toEntity(video));
 
     }
 
@@ -54,7 +52,7 @@ public class VideoService {
     public VideoResponse findById(String id) {
         VideoEntity entity = videoJpaRepository.findById(id)
                 .orElseThrow(() -> new VideoNotFoundException(id));
-        Video video = VideoEntityMapper.toDomain(entity);
+        Video video = VideoMapper.toDomain(entity);
         return VideoMapper.toResponse(video);
     }
 
@@ -90,7 +88,7 @@ public class VideoService {
         );
 
         // Persistir usando el puerto
-        VideoEntity entity = VideoEntityMapper.toEntity(video);
+        VideoEntity entity = VideoMapper.toEntity(video);
         videoJpaRepository.save(entity);
         return video;
     }
@@ -113,7 +111,7 @@ public class VideoService {
         entity.setUpdatedAt(Instant.now());
 
         VideoEntity updated = videoJpaRepository.save(entity);
-        return Optional.of(VideoEntityMapper.toDomain(updated));
+        return Optional.of(VideoMapper.toDomain(updated));
     }
 
     public void deleteVideo(String id) {
@@ -126,10 +124,10 @@ public class VideoService {
     @Transactional
     public Optional<Video> getRandomVideo() {
         //TODO: chekear si esto esta bien (unicamente delega la llamada al jpaRepository)
-        //return Optional.of(VideoEntityMapper.toDomain(videoJpaRepository.getRandomVideo()));
+        //return Optional.of(VideoMapper.toDomain(videoJpaRepository.getRandomVideo()));
         try {
             VideoEntity entity = videoJpaRepository.getRandomVideo();
-            return Optional.ofNullable(VideoEntityMapper.toDomain(entity));
+            return Optional.ofNullable(VideoMapper.toDomain(entity));
         } catch (Exception e) {
             return Optional.empty();
         }

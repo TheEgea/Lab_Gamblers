@@ -18,7 +18,7 @@ public class AuthController {
     private final AuthenticationService authenticationService;
 
     @Value("${application.security.jwt.token-prefix:Bearer}")
-    private String tokenPrefix;
+    private String token;
 
     public AuthController(AuthenticationService AuthenticationService) {
         this.authenticationService = AuthenticationService;
@@ -33,7 +33,7 @@ public class AuthController {
                     request.password()
             );
             return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)
+                    .header(HttpHeaders.AUTHORIZATION, this.token + " " + token)
                     .body(new AuthResponse(token));
         } catch (AuthenticationService.InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -50,7 +50,7 @@ public class AuthController {
                     request.email()
             );
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .header(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + token)
+                    .header(HttpHeaders.AUTHORIZATION, this.token + " " + token)
                     .body(new AuthResponse(token));
         } catch (AuthenticationService.UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

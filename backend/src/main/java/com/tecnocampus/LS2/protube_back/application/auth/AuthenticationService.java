@@ -26,32 +26,22 @@ public class AuthenticationService {
     }
 
     public String login(Username username, String rawPassword) {
-        
-
-
         User user = userAuthPort.loadByUsername(username)
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
-
 
         if (samePassword(rawPassword, user.password().value())) {
             return generateToken(user);
         }
-
-
-
         throw new InvalidCredentialsException("Invalid username or password");
     }
 
     public String register(Username username, String rawPassword, String email) {
-
         // Verificar si el usuario ya existe
         if (userAuthPort.loadByUsername(username).isPresent()) {
             throw new UserAlreadyExistsException("Username already exists");
         }
 
         String hashedPassword = hashPassword(rawPassword);
-
-
 
         User newUser = new User(
                 new UserId(UUID.randomUUID()),

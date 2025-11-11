@@ -1,10 +1,12 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tecnocampus.LS2.protube_back.api.AuthController;
 import com.tecnocampus.LS2.protube_back.application.auth.AuthenticationService;
 import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.request.RegisterRequest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,6 +50,7 @@ public class AuthControllerTest {
                 .andExpect(header().string("Authorization", "Bearer " + token))
                 .andExpect(jsonPath("$.token").value(token));
     }
+
 
     @Test
     void testRegister() throws Exception {

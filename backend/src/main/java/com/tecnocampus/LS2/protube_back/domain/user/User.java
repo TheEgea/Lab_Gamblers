@@ -51,6 +51,6 @@ public final class User {
     }
 
     public void setPassword(String hashedPassword) {
-
+        this.password = new Password(hashedPassword);
     }
 }

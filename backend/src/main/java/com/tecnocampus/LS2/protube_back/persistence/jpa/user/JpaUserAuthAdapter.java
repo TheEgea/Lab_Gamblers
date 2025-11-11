@@ -24,87 +24,22 @@ public class JpaUserAuthAdapter implements UserAuthPort {
         this.repo = repo;
         this.encoder = encoder;
     }
-/*
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<User> loadByUsername(Username username) {
-        return repo.findByUsername(username.value())
-                .map(this::toDomain);
-    }
-
- */
 
     @Override
     @Transactional(readOnly = true)
     public Optional<User> loadByUsername(Username username) {
-
         Optional<UserEntity> userEntity = repo.findByUsername(username.value());
-
-        if (userEntity.isPresent()) {
-            UserEntity user = userEntity.get();
-        }
-
-
-
-        return userEntity.map(this::toDomain);
+        return userEntity.map(UserMapper::toDomain);
     }
-
-    public boolean debugLogin(Username username, String rawPassword) {
-
-
-        Optional<UserEntity> userEntity = repo.findByUsername(username.value());
-
-        if (userEntity.isEmpty()) {
-
-            return false;
-        }
-
-        UserEntity user = userEntity.get();
-        String storedHash = user.getPasswordHash();
-
-
-
-        boolean matches = encoder.matches(rawPassword, storedHash);
-
-
-        return matches;
-    }
-
 
 
     @Override
     public void save(User user) {
-
         repo.save(UserMapper.toEntity(user));
-
     }
 
     @Override
     public void deleteAllUsers() {
         repo.deleteAll();
     }
-
-
-    private User toDomain(UserEntity e) {
-
-
-    try {
-
-        Role role = e.getRole(); // NO e.getRole().name()
-        User user = new User(
-                new UserId(e.getId()),
-                new Username(e.getUsername()),
-                new Password(e.getPasswordHash()),
-                role,
-                e.getEmail()
-        );
-
-        return user;
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        throw ex;
-    }
-}
-
-
 }

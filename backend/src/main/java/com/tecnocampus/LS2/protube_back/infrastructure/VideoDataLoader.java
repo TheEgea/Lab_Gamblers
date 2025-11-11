@@ -2,11 +2,11 @@ package com.tecnocampus.LS2.protube_back.infrastructure;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
-import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntityMapper;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +183,7 @@ public class VideoDataLoader implements CommandLineRunner {
             return ProcessResult.SKIPPED;
         }
 
-        VideoEntity entity = VideoEntityMapper.toEntity(video);
+        VideoEntity entity = VideoMapper.toEntity(video);
         entity.setVideoBytes(videoBytes);
         entity.setVideoSize(videoSize);
         entity.setVideoMime("video/mp4");
@@ -197,7 +197,7 @@ public class VideoDataLoader implements CommandLineRunner {
 
         // Hasta aquí la extensión
 
-        //videoJpaRepository.save(VideoEntityMapper.toEntity(video));
+        //videoJpaRepository.save(VideoMapper.toEntity(video));
         //logger.info("Inserted video {} - {}", jsonId, title);
         return ProcessResult.CREATED;
     }

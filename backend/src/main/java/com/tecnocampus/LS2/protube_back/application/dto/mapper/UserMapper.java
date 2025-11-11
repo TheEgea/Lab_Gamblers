@@ -12,15 +12,6 @@ import java.util.UUID;
 
 @Component
 public class UserMapper {
-    public static User toDomain(AuthRequest loginRequest) {
-        return new User(
-                new UserId(UUID.randomUUID()),
-                new Username(loginRequest.username()),
-                new Password(loginRequest.password()),
-                Role.USER,
-                loginRequest.email()
-                );
-    }
     public static User toDomain(UserEntity entity) {
         return new User(
                 new UserId(entity.getId()),
@@ -28,14 +19,6 @@ public class UserMapper {
                 new Password(entity.getPasswordHash()),
                 entity.getRole(),
                 entity.getEmail()
-        );
-    }
-
-    public static AuthRequest toLoginRequest(User user) {
-        return  new AuthRequest(
-                user.username().toString(),
-                user.password().toString(),
-                user.email()
         );
     }
 
@@ -57,6 +40,4 @@ public class UserMapper {
                 domain.roles().toString()
         );
     }
-
-
 }

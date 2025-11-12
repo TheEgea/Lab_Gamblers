@@ -54,10 +54,28 @@ const Home = () => {
     }
 
     return (
-        <div className="container-fluid" style={{ padding: 24 }}>
-            <h2 className="mb-4">Videos Disponibles</h2>
+        <div
+            className="container-fluid"
+            style={{
+                padding: 24,
+                backgroundColor: 'var(--bg-primary)',
+                minHeight: '100vh',
+            }}
+        >
+            <h2 className="mb-4" style={{ color: 'var(--text-primary)' }}>
+                Vídeos Disponibles
+            </h2>
             {videos.length === 0 ? (
-                <div className="alert alert-info">No hay videos disponibles</div>
+                <div
+                    className="alert"
+                    style={{
+                        backgroundColor: 'var(--bg-secondary)',
+                        border: '1px solid var(--accent-orange)',
+                        color: 'var(--text-primary)',
+                    }}
+                >
+                    No hay videos disponibles
+                </div>
             ) : (
                 <VideoGrid videos={videos} onVideoClick={(v) => console.log('Video clicked:', v)} />
             )}

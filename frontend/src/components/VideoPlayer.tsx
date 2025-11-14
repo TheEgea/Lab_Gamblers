@@ -59,8 +59,29 @@ const VideoPlayer = () => {
         });
     };
 
-    const formatCommentDate = (timestamp: string): string => {
-        const date = new Date(timestamp);
+    const formatCommentDate = (timestamp: number | string): string => {
+        if (!timestamp) return '';
+
+        let date: Date;
+
+        try {
+            if (typeof timestamp === 'number') {
+                date = new Date(timestamp * 1000);
+            } else if (typeof timestamp === 'string') {
+                date = new Date(timestamp);
+            } else {
+                date = new Date(timestamp);
+            }
+        } catch (err) {
+            console.error('Error parsing timestamp:', timestamp, error);
+            return '';
+        }
+
+        if (isNaN(date.getTime())) {
+            console.warn('Invalid timestamp:', timestamp);
+            return '';
+        }
+
         const now = new Date();
         const currentYear = now.getFullYear();
         const commentYear = date.getFullYear();
@@ -196,14 +217,15 @@ const VideoPlayer = () => {
                     {/* Reproductor de video */}
                     <div className="ratio ratio-16x9 mb-3">
                         <video
+                            key={videoId}
                             controls
                             autoPlay
                             preload="metadata"
-                            poster={videoService.getThumbnailUrl(video.id)}
+                            poster={videoService.getThumbnailUrl(videoId)}
                             className="rounded"
                             style={{ backgroundColor: '#000' }}
                         >
-                            <source src={videoService.getVideoStreamUrl(video.id)} type="video/mp4" />
+                            <source src={videoService.getVideoStreamUrl(videoId)} type="video/mp4" />
                             Tu navegador no soporta la reproducción de video HTML5.
                         </video>
                     </div>
@@ -427,9 +449,9 @@ const VideoPlayer = () => {
 
                         {video.comments && video.comments.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                {video.comments.map((comment) => (
+                                {video.comments.map((comment, index) => (
                                     <div
-                                        key={comment.id}
+                                        key={index}
                                         style={{
                                             backgroundColor: '#2d2d2d',
                                             padding: '16px',
@@ -456,7 +478,7 @@ const VideoPlayer = () => {
                                                 }}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    navigate(`/channel/${encodeURIComponent(comment.author)}`);
+                                                    navigate(`/channel/${encodeURIComponent(comment.usuario)}`);
                                                 }}
                                                 onMouseEnter={(e) => {
                                                     e.currentTarget.style.textDecoration = 'underline';
@@ -465,7 +487,7 @@ const VideoPlayer = () => {
                                                     e.currentTarget.style.textDecoration = 'none';
                                                 }}
                                             >
-                                                {comment.author}
+                                                {comment.usuario}
                                             </span>
                                             <span
                                                 style={{
@@ -487,7 +509,7 @@ const VideoPlayer = () => {
                                                 marginBottom: '10px',
                                             }}
                                         >
-                                            {comment.text}
+                                            {comment.texto}
                                         </div>
 
                                         { /* Likes del comentario */ }

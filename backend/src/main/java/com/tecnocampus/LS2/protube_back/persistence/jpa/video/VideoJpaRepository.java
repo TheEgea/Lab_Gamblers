@@ -82,4 +82,7 @@ public interface VideoJpaRepository extends JpaRepository<VideoEntity, String> {
         ORDER BY v.createdAt DESC
         """)
     List<VideoProjection> findAllMetadata();
+
+    @Query("SELECT v FROM VideoEntity v LEFT JOIN FETCH v.comments WHERE v.id = :id")
+    Optional<VideoEntity> findByIdWithComments(@Param("id") String id);
 }

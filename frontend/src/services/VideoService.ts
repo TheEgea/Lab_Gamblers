@@ -36,6 +36,13 @@ videoApi.interceptors.response.use(
     }
 );
 
+export interface Comment {
+    texto: string;
+    usuario: string;
+    timestamp: string;
+    likes: number;
+}
+
 export interface Video {
     id: string;
     title: string;

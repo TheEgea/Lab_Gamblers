@@ -57,7 +57,7 @@ public class VideoEntity {
     @Column(name = "channel", length = 32)
     private String channel;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "video_id")
     private List<ComentarioEntity> comments;
 

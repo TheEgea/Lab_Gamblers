@@ -48,6 +48,7 @@ export interface Video {
     createdAt: string;
     width: number;
     height: number;
+    comments?: Comment[];
 }
 
 export const videoService = {

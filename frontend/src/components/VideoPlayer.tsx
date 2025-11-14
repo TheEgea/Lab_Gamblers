@@ -11,6 +11,7 @@ const VideoPlayer = () => {
     const [error, setError] = useState<string | null>(null);
     const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
     const [showCopiedToast, setShowCopiedToast] = useState(false);
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
     useEffect(() => {
         if (!videoId) {
@@ -58,6 +59,26 @@ const VideoPlayer = () => {
         });
     };
 
+    const formatCommentDate = (timestamp: string): string => {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const commentYear = date.getFullYear();
+
+        if (commentYear === currentYear) {
+            return date.toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+            });
+        } else {
+            return date.toLocaleDateString('es-ES', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
+        }
+    };
+
     const handleShare = async () => {
         try {
             const currentUrl = window.location.href;
@@ -91,7 +112,7 @@ const VideoPlayer = () => {
         }
 
         document.body.removeChild(textArea);
-    }
+    };
 
     if (loading) {
         return (
@@ -281,6 +302,15 @@ const VideoPlayer = () => {
                                     width: '48px',
                                     height: '48px',
                                     backgroundColor: '#3a3a3a',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                }}
+                                onClick={() => navigate(`/channel/${encodeURIComponent(video.channel || video.user)}`)}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#ff6b35';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#3a3a3a';
                                 }}
                             >
                                 <span style={{ color: '#ff6b35', fontWeight: 'bold', fontSize: '20px' }}>
@@ -290,7 +320,20 @@ const VideoPlayer = () => {
                                 </span>
                             </div>
                             <div className="flex-grow-1" style={{ textAlign: 'left' }}>
-                                <h6 className="mb-1 fw-bold" style={{ color: '#e0e0e0' }}>
+                                <h6
+                                    className="mb-1 fw-bold"
+                                    style={{
+                                        color: '#e0e0e0',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => navigate(`/channel/${encodeURIComponent(video.channel || video.user)}`)}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.color = '#ff6b35';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.color = '#e0e0e0';
+                                    }}
+                                >
                                     {video.channel || video.user}
                                 </h6>
                                 <p style={{ color: '#a0a0a0', fontSize: '0.875rem', margin: 0 }}>
@@ -319,15 +362,25 @@ const VideoPlayer = () => {
                             </button>
                         </div>
 
-                        <hr />
+                        <hr style={{ borderColor: '#404040', opacity: 0.3 }} />
 
                         {/* Descripción */}
                         <div
+                            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
                             style={{
                                 backgroundColor: '#2d2d2d',
                                 padding: '16px',
                                 borderRadius: '12px',
                                 border: '1px solid #404040',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s',
+                                marginBottom: '24px',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = '#ff6b35';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = '#404040';
                             }}
                         >
                             <div className="d-flex mb-2">
@@ -344,11 +397,130 @@ const VideoPlayer = () => {
                                     textAlign: 'left',
                                     color: '#e0e0e0',
                                     lineHeight: '1.6',
+                                    maxHeight: isDescriptionExpanded ? 'none' : '60px',
+                                    overflow: 'hidden',
+                                    position: 'relative',
                                 }}
                             >
                                 {video.description || 'No hay descripción disponible.'}
                             </div>
+                            {!isDescriptionExpanded && (
+                                <div
+                                    style={{
+                                        color: '#a0a0a0',
+                                        fontSize: '0.875rem',
+                                        marginTop: '8px',
+                                        fontStyle: 'italic',
+                                    }}
+                                >
+                                    Pulsa para ver toda la descripción...
+                                </div>
+                            )}
                         </div>
+                    </div>
+
+                    {/* Sección de comentarios */}
+                    <div style={{ marginTop: '32px' }}>
+                        <h5 style={{ color: '#e0e0e0', marginBottom: '20px', fontWeight: 'bold' }}>
+                            {video.comments?.length || 0} Comentarios
+                        </h5>
+
+                        {video.comments && video.comments.length > 0 ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                {video.comments.map((comment) => (
+                                    <div
+                                        key={comment.id}
+                                        style={{
+                                            backgroundColor: '#2d2d2d',
+                                            padding: '16px',
+                                            borderRadius: '12px',
+                                            border: '1px solid #404040',
+                                            transition: 'all 0.2s',
+                                            textAlign: 'left', /* TODO: Revisar si esta be posar aquesta linea, originalment no estava pensada per estar */
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.borderColor = '#505050';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.borderColor = '#404040';
+                                        }}
+                                    >
+                                        { /* Header del comentario: autor y fecha */ }
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                                            <span
+                                                style={{
+                                                    color: '#ff6b35',
+                                                    fontSize: '1rem',
+                                                    fontWeight: 'bold',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(`/channel/${encodeURIComponent(comment.author)}`);
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.textDecoration = 'underline';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.textDecoration = 'none';
+                                                }}
+                                            >
+                                                {comment.author}
+                                            </span>
+                                            <span
+                                                style={{
+                                                    color: '#707070',
+                                                    fontSize: '0.8rem',
+                                                    marginLeft: '12px',
+                                                }}
+                                            >
+                                                {formatCommentDate(comment.timestamp)}
+                                            </span>
+                                        </div>
+
+                                        { /* Texto del comentario */ }
+                                        <div
+                                            style={{
+                                                color: '#e0e0e0',
+                                                fontSize: '0.95rem',
+                                                lineHeight: '1.5',
+                                                marginBottom: '10px',
+                                            }}
+                                        >
+                                            {comment.text}
+                                        </div>
+
+                                        { /* Likes del comentario */ }
+                                        <div
+                                            style={{
+                                                color: '#707070',
+                                                fontSize: '0.8rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                            }}
+                                        >
+                                            <span>👍</span>
+                                            <span>{formatNumber(comment.likes)}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div
+                                style={{
+                                    backgroundColor: '#2d2d2d',
+                                    padding: '32px',
+                                    borderRadius: '12px',
+                                    border: '1px solid #404040',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                <p style={{ color: '#a0a0a0', margin: 0 }}>
+                                    Aún no hay comentarios. ¡Sé el primero en comentar!
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

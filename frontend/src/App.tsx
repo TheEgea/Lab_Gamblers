@@ -7,6 +7,7 @@ import Signup from './components/Signup';
 import AppBar from './components/AppBar';
 import Home from './components/Home';
 import VideoPlayer from './components/VideoPlayer';
+import ChannelPage from "./components/ChannelPage.tsx";
 
 function App() {
     const [showLogin, setShowLogin] = useState<boolean>(true);
@@ -57,6 +58,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/video/:videoId" element={<VideoPlayer />} />
+                            <Route path="/channel/:channelName" element={<ChannelPage />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </>

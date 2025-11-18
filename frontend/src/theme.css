@@ -143,3 +143,16 @@ a:hover {
     text-decoration: underline;
 }
 
+.title-orange {
+    color: #ff7a00;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+

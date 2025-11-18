@@ -8,6 +8,8 @@ import AppBar from './components/AppBar';
 import Home from './components/Home';
 import VideoPlayer from './components/VideoPlayer';
 import ChannelPage from "./components/ChannelPage.tsx";
+import Profile from "./components/Profile.tsx";
+import Subscriptions from "./components/Subscriptions.tsx";
 
 function App() {
     const [showLogin, setShowLogin] = useState<boolean>(true);
@@ -28,6 +30,12 @@ function App() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         setIsAuth(false);
+    };
+
+    const user = {
+        username: "MiUsuario",
+        avatarUrl: "",
+        subscriptions: [] as { id: string; name: string; avatarUrl?: string }[],
     };
 
     return (
@@ -59,6 +67,8 @@ function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/video/:videoId" element={<VideoPlayer />} />
                             <Route path="/channel/:channelName" element={<ChannelPage />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/subscriptions" element={<Subscriptions />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </>

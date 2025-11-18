@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SubscriptionService, SubscriptionResponse } from '../services/SubscriptionService';
-import { VideoService } from '../services/VideoService';
+import { videoService } from '../services/VideoService';
 import VideoGrid from './VideoGrid';
 
 interface Video {
@@ -30,7 +30,7 @@ const Subscriptions: React.FC = () => {
             const subs = await SubscriptionService.getUserSubscriptions();
             setSubscriptions(subs);
 
-            const allVideos = await VideoService.getAllVideos();
+            const allVideos = await videoService.getAllVideos();
 
             const subscribedChannels = subs.map(s => s.channelName);
             const filteredVideos = allVideos.filter(video => subscribedChannels.includes(video.uploaderUsername));

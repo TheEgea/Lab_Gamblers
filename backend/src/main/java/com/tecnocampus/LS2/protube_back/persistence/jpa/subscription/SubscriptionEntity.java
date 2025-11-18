@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table( name = "subscriptions",
@@ -21,7 +22,7 @@ public class SubscriptionEntity {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name = "channel_name", nullable = false)
     private String channelName;
@@ -29,7 +30,7 @@ public class SubscriptionEntity {
     @Column(name = "subscribed_at", nullable = false)
     private LocalDateTime subscribedAt;
 
-    public SubscriptionEntity(Long userId, String channelName, LocalDateTime subscribedAt) {
+    public SubscriptionEntity(UUID userId, String channelName, LocalDateTime subscribedAt) {
         this.userId = userId;
         this.channelName = channelName;
         this.subscribedAt = subscribedAt;

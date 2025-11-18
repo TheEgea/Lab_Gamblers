@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,11 +20,11 @@ public class SubscriptionService {
     private final SubscriptionPort subscriptionPort;
 
     @Transactional
-    public SubscriptionResponse subscribe(Long userId, SubscriptionRequest subscriptionRequest) {
+    public SubscriptionResponse subscribe(UUID userId, SubscriptionRequest subscriptionRequest) {
         UserId userIdObj = new UserId(userId);
 
         if (subscriptionPort.existsByUserIdAndChannelName(userIdObj, subscriptionRequest.getChannelName()))
-            throw new BusinessException("Subscription already exists");
+            throw new IllegalStateException("Subscription already exists");
 
         Subscription subscription = new Subscription(userIdObj, subscriptionRequest.getChannelName());
         Subscription saved = subscriptionPort.save(subscription);
@@ -32,17 +33,17 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void unsubscribe(Long userId, String channelName) {
+    public void unsubscribe(UUID userId, String channelName) {
         UserId userIdObj = new UserId(userId);
 
         Subscription subscription = subscriptionPort.findByUserIdAndChannelName(userIdObj, channelName)
-                .orElseThrow(() -> new BusinessException("Subscription not found"));
+                .orElseThrow(() -> new IllegalStateException("Subscription not found"));
 
         subscriptionPort.delete(subscription.getId());
     }
 
     @Transactional(readOnly = true)
-    public List<SubscriptionResponse> getUserSubscriptions(Long userId) {
+    public List<SubscriptionResponse> getUserSubscriptions(UUID userId) {
         UserId userIdObj = new UserId(userId);
         List<Subscription> subscriptions = subscriptionPort.findByUserId(userIdObj);
 
@@ -52,7 +53,7 @@ public class SubscriptionService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isSubscribed(Long userId, String channelName) {
+    public boolean isSubscribed(UUID userId, String channelName) {
         UserId userIdObj = new UserId(userId);
         return subscriptionPort.existsByUserIdAndChannelName(userIdObj, channelName);
     }
@@ -62,7 +63,7 @@ public class SubscriptionService {
                 subscription.getId().value(),
                 subscription.getUserId().value(),
                 subscription.getChannelName(),
-                subscription.getSubscribedAt()
+                subscription.getSubscribedAt().toString()
         );
     }
 }

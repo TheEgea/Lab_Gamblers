@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubscriptionResponse {
     private Long id;
-    private Long userId;
+    private UUID userId;
     private String channelName;
     private String subscribedAt;
 }

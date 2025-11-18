@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/subscriptions")
@@ -21,23 +22,23 @@ public class SubscriptionController {
     public ResponseEntity<SubscriptionResponse> subscribe(
             Authentication authentication,
             @RequestBody SubscriptionRequest request) {
-        Long userId = Long.parseLong(authentication.getName());
+        UUID userId = UUID.fromString(authentication.getName());
         SubscriptionResponse response = subscriptionService.subscribe(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{channelName}")
     public ResponseEntity<Void> unsubscribe(
             Authentication authentication,
             @PathVariable String channelName) {
-        Long userId = Long.parseLong(authentication.getName());
+        UUID userId = UUID.fromString(authentication.getName());
         subscriptionService.unsubscribe(userId, channelName);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
     public ResponseEntity<List<SubscriptionResponse>> getUserSubscriptions(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
+        UUID userId = UUID.fromString(authentication.getName());
         List<SubscriptionResponse> subscriptions = subscriptionService.getUserSubscriptions(userId);
         return ResponseEntity.ok(subscriptions);
     }
@@ -46,7 +47,7 @@ public class SubscriptionController {
     public ResponseEntity<Boolean> isSubscribed(
             Authentication authentication,
             @PathVariable String channelName) {
-        Long userId = Long.parseLong(authentication.getName());
+        UUID userId = UUID.fromString(authentication.getName());
         boolean isSubscribed = subscriptionService.isSubscribed(userId, channelName);
         return ResponseEntity.ok(isSubscribed);
     }

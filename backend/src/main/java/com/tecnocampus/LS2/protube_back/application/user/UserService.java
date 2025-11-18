@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.application.user;
 
 import com.tecnocampus.LS2.protube_back.application.auth.AuthenticationService;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
+import com.tecnocampus.LS2.protube_back.application.dto.response.UserResponse;
 import com.tecnocampus.LS2.protube_back.domain.auth.UserAuthPort;
 import com.tecnocampus.LS2.protube_back.domain.user.Password;
 import com.tecnocampus.LS2.protube_back.domain.user.Role;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -73,6 +75,14 @@ public class UserService {
 
         // ✅ Guardar en base de datos
         userJpaRepository.save(UserMapper.toEntity(updatedUser));
+    }
+
+    public Optional<UserResponse> loadById(UUID id) {
+        User user = userJpaRepository.findById(id)
+                .map(UserMapper::toDomain)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        UserResponse userResponse = UserMapper.toUserResponse(user);
+        return Optional.of(userResponse);
     }
 
 }

@@ -33,10 +33,10 @@ const Subscriptions: React.FC = () => {
             const allVideos = await videoService.getAllVideos();
 
             const subscribedChannels = subs.map(s => s.channelName);
-            const filteredVideos = allVideos.filter(video => subscribedChannels.includes(video.uploaderUsername));
+            const filteredVideos = allVideos.filter(video => subscribedChannels.includes(video.user));
 
             filteredVideos.sort((a, b) =>
-                new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime()
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
 
             setVideos(filteredVideos);

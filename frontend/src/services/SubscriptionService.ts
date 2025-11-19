@@ -1,5 +1,3 @@
-import { Env } from '../utils/Env';
-
 export interface SubscriptionResponse {
     id: number;
     userId: string;
@@ -19,8 +17,7 @@ export interface UserProfileResponse {
     subscribedChannels: string[];
 }
 
-const API_URL =
-    `${Env.getApiProtocol()}://${Env.getApiDomain()}:${Env.getApiPort()}`;
+const API_URL = 'http://localhost:8080'
 
 class SubscriptionServiceClass {
     private getAuthToken(): string | null {

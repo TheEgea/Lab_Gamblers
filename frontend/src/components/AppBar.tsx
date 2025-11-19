@@ -6,6 +6,8 @@ interface AppBarProps {
 }
 
 const AppBar: React.FC<AppBarProps> = ({showLogin, setShowLogin}) => {
+
+
     return (
         <div
             style={{

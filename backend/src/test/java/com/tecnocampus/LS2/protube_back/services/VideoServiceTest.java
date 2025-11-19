@@ -10,6 +10,7 @@ import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
+import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoProjection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -50,8 +52,9 @@ class VideoServiceTest {
         String id = UUID.randomUUID().toString();
         Video video = createSampleVideo(id);
         VideoEntity entity = createSampleVideoEntity(video);
+        VideoProjection videoProjection = createSampleVideoProjection(video);
 
-        when(videoJpaRepository.findAll()).thenReturn(List.of(entity));
+        when(videoJpaRepository.findAllMetadata()).thenReturn(List.of(videoProjection));
 
         List<Video> videos = videoService.listAll();
 
@@ -264,5 +267,84 @@ class VideoServiceTest {
                 "Updated Sample Title",
                 "Updated Sample Description"
         );
+    }
+
+    private VideoProjection createSampleVideoProjection(Video video) {
+        return new VideoProjection() {
+            @Override
+            public String getId() {
+                return video.getId().value().toString();
+            }
+
+            @Override
+            public String getJsonId() {
+                return video.getJsonId();
+            }
+
+            @Override
+            public String getTitle() {
+                return video.getTitle();
+            }
+
+            @Override
+            public String getDescription() {
+                return video.getDescription();
+            }
+
+            @Override
+            public String getUser() {
+                return video.getUser();
+            }
+
+            @Override
+            public String getChannel() {
+                return video.getChannel();
+            }
+
+            @Override
+            public int getViewCount() {
+                return video.getViewCount();
+            }
+
+            @Override
+            public int getLikeCount() {
+                return video.getLikeCount();
+            }
+
+            @Override
+            public Integer getDurationSeconds() {
+                return video.getDurationSeconds();
+            }
+
+            @Override
+            public int getWidth() {
+                return video.getWidth();
+            }
+
+            @Override
+            public int getHeight() {
+                return video.getHeight();
+            }
+
+            @Override
+            public String getMediaPath() {
+                return video.getMediaPath();
+            }
+
+            @Override
+            public String getThumbnailPath() {
+                return video.getThumbnailPath();
+            }
+
+            @Override
+            public Instant getCreatedAt() {
+                return video.getCreatedAt();
+            }
+
+            @Override
+            public Instant getUpdatedAt() {
+                return video.getUpdatedAt();
+            }
+        };
     }
 }

@@ -5,6 +5,7 @@ import com.tecnocampus.LS2.protube_back.api.UserController;
 import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.response.AuthResponse;
 import com.tecnocampus.LS2.protube_back.application.dto.response.UserResponse;
+import com.tecnocampus.LS2.protube_back.application.subscription.SubscriptionService;
 import com.tecnocampus.LS2.protube_back.application.user.UserService;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.UserMapper;
@@ -37,6 +38,9 @@ public class UserControllerTest {
 
     @MockBean
     private JwtTokenService jwtTokenService;
+
+    @MockBean
+    private SubscriptionService subscriptionService;
 
     @Autowired
     private MockMvc mockMvc;

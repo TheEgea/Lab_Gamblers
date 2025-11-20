@@ -58,7 +58,15 @@ function App() {
                     <>
                         <AppBar showLogin={showLogin} setShowLogin={setShowLogin} />
                         <div className="App-content">
-                            <img src="/logo.jpg" className="App-logo" alt="logo" style={{ maxWidth: '200px', margin: '20px auto' }} />
+                            <img
+                                src="/logo.jpg"
+                                className="App-logo"
+                                alt="logo"
+                                style={{
+                                    maxWidth: '200px',
+                                    margin: '20px auto'
+                                }}
+                            />
                             {showLogin ? (
                                 <Login onLoginSuccess={handleLoginSuccess} />
                             ) : (
@@ -69,10 +77,16 @@ function App() {
                 ) : (
                     <>
                         <nav className="navbar navbar-dark bg-dark">
-
                             <div className="container-fluid">
-                                <a className="navbar-brand" href="/">ProTube</a>
-                                <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
+                                <div className="d-flex align-items-center" style={{ gap: '15px' }}>
+                                    <Link className="navbar-brand" to="/">ProTube</Link>
+                                    <Link
+                                        to="/subscriptions"
+                                        className="text-white text-decoration-none ms-3"
+                                        style={{ fontSize: '1rem' }}
+                                    >
+                                        Suscripciones
+                                    </Link>
                                     <button
                                         onClick={handleRandomVideo}
                                         style={{
@@ -89,19 +103,6 @@ function App() {
                                     >
                                         Video Aleatorio
                                     </button>
-                                    <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                                        Cerrar Sesión
-                                    </button>
-                                </div>
-                                <div className="d-flex align-items-center">
-                                    <Link className="navbar-brand" to="/">ProTube</Link>
-                                    <Link
-                                        to="/subscriptions"
-                                        className="text-white text-decoration-none ms-3"
-                                        style={{ fontSize: '1rem' }}
-                                    >
-                                        Suscripciones
-                                    </Link>
                                 </div>
                                 <div className="d-flex align-items-center">
                                     <Link

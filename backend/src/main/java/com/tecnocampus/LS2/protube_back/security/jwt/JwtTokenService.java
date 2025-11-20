@@ -29,7 +29,8 @@ public class JwtTokenService implements TokenService {
                 .subject(claims.subject())
                 .issuedAt(claims.issuedAt())
                 .expiresAt(claims.expiresAt())
-                .claim("roles", claims.roles().stream().map(Enum::name).toArray(String[]::new))
+                .claim("roles",
+                        claims.roles().stream().map(Enum::name).toArray(String[]::new))
                 .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return encoder.encode(JwtEncoderParameters.from(header, set)).getTokenValue();
@@ -39,5 +40,15 @@ public class JwtTokenService implements TokenService {
     public String getUsernameFromToken(String token) {
         Jwt jwt = decoder.decode(token);
         return jwt.getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            decoder.decode(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            System.err.println("Token JWT invalido o expirado: " + e.getMessage());
+            return false;
+        }
     }
 }

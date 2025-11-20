@@ -34,11 +34,14 @@ class SubscriptionServiceClass {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
+        console.log('Token enviado:', token);
+        console.log('Headers:', headers);
+
         return headers;
     }
 
     async subscribe(channelName: string): Promise<SubscriptionResponse> {
-        const response = await fetch(`${API_URL}/subscriptions`, {
+        const response = await fetch(`${API_URL}/api/subscriptions`, {
             method: 'POST',
             headers: this.getHeaders(),
             body: JSON.stringify({ channelName }),

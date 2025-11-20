@@ -1,7 +1,7 @@
 // frontend/src/App.tsx
 import './App.css';
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import AppBar from './components/AppBar';
@@ -57,10 +57,30 @@ function App() {
                     <>
                         <nav className="navbar navbar-dark bg-dark">
                             <div className="container-fluid">
-                                <a className="navbar-brand" href="/">ProTube</a>
-                                <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                                    Cerrar Sesión
-                                </button>
+                                <div className="d-flex align-items-center">
+                                    <Link className="navbar-brand" to="/">ProTube</Link>
+                                    <Link
+                                        to="/subscriptions"
+                                        className="text-white text-decoration-none ms-3"
+                                        style={{ fontSize: '1rem' }}
+                                    >
+                                        Suscripciones
+                                    </Link>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                    <Link
+                                        to="/profile"
+                                        className="btn btn-outline-light btn-sm me-2"
+                                    >
+                                        Perfil
+                                    </Link>
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        onClick={handleLogout}
+                                    >
+                                        Cerrar Sesión
+                                    </button>
+                                </div>
                             </div>
                         </nav>
                         <Routes>

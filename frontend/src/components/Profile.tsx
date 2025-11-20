@@ -1,40 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { SubscriptionService, UserProfileResponse } from '../services/SubscriptionService';
-import { useNavigate } from 'react-router-dom';
 
 const Profile: React.FC = () => {
     const [profile, setProfile] = useState<UserProfileResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
+        const loadProfile = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const data = await SubscriptionService.getUserProfile();
+                setProfile(data);
+            } catch (err) {
+                console.error('Error al cargar el perfil:', err);
+                setError(err?.message || 'Error al cargar el perfil');
+            } finally {
+                setLoading(false);
+            }
+        };
+
         loadProfile();
     }, []);
 
-    const loadProfile = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const userProfile = await SubscriptionService.getUserProfile();
-            setProfile(userProfile);
-        } catch (err) {
-            console.error('Error loading profile:', err);
-            setError('Error al cargar el perfil');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleChannelClick = (channelName: string) => {
-        navigate(`/channel/${channelName}`);
-    };
-
     if (loading) {
         return (
-            <div className="container mt-5 text-center">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
+            <div
+                className="d-flex justify-content-center align-items-center"
+                style={{
+                    minHeight: '60vh',
+                }}
+            >
+                <div className="spinner-border text-warning" role="status">
+                    <span className="visually-hidden">
+                        Cargando...
+                    </span>
                 </div>
             </div>
         );
@@ -42,74 +44,156 @@ const Profile: React.FC = () => {
 
     if (error || !profile) {
         return (
-            <div className="container mt-5">
+            <div className="container mt-4">
                 <div className="alert alert-danger" role="alert">
-                    {error || 'Error al cargar el perfil'}
+                    {error || 'No se ha podido cargar el perfil.'}
                 </div>
             </div>
         );
     }
 
+    const username =
+        typeof profile.username === 'string'
+            ? profile.username
+            : (profile.username as any)?.value ?? '';
+
+    const initial =
+        username && typeof username === 'string' && username.length > 0
+            ? username.charAt(0).toUpperCase()
+            : '?';
+
+    const subscribedChannels = Array.isArray(profile.subscribedChannels)
+        ? profile.subscribedChannels
+        : [];
+
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card shadow-sm">
+        <div className="container py-4">
+            { /* Titulo principal */ }
+            <div className="mb-4">
+                <h2 className="text-light mb-1">Perfil</h2>
+                <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>
+                    Información de tu cuenta y canales a los que estás suscrito.
+                </p>
+            </div>
+
+            <div className="row g-4">
+                { /* Columna izquierda: tarjeta de perfil */ }
+                <div className="col-12 col-lg-4">
+                    <div
+                        className="card border-0 shadow-sm h-100"
+                        style={{
+                            backgroundColor: '#1f1f23',
+                            color: '#f5f5f5',
+                        }}
+                    >
+                        <div className="card-body d-flex flex-column align-items-center text-center">
+                            { /* Avatar del usuario con su letra inicial */ }
+                            <div
+                                className="d-flex align-items-center justify-content-center rounded-circle mb-3"
+                                style={{
+                                    width: 96,
+                                    height: 96,
+                                    backgroundColor: '#ff6b35',
+                                    color: 'white',
+                                    fontSize: 40,
+                                    fontWeight: 700,
+                                }}
+                            >
+                                {initial}
+                            </div>
+
+                            <h3 className="mb-1" style={{ fontSize: "1.4rem" }}>
+                                {username}
+                            </h3>
+                            <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
+                                {profile.email}
+                            </p>
+
+                            <div className="d-flex justify-content-center w-100 mt-2">
+                                <div className="px-3">
+                                    <div style={{ color: '#e5e5e5' }}>
+                                        Suscripciones
+                                    </div>
+                                    <div className="fw-semibold" style={{ fontSize: '1.1rem' }}>
+                                        {profile.subscriptionCount ?? 0}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            className="card-footer border-0"
+                            style={{
+                                backgroundColor: '#18181b',
+                                fontSize: '0.85rem',
+                            }}
+                        >
+                            <span style={{ color: '#e5e5e5' }}>
+                                Gestiona tus suscripciones desde la página de {' '}
+                                <span style={{ color: '#ff6b35' }}>Suscripciones</span> o desde los vídeos.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                { /* Columna derecha: lista de canales suscritos */ }
+                <div className="col-12 col-lg-8">
+                    <div
+                        className="card border-0 shadow-sm h-100"
+                        style={{
+                            backgroundColor: '#18181b',
+                            color: '#f5f5f5',
+                        }}
+                    >
                         <div className="card-body">
-                            <div className="text-center mb-4">
-                                <div
-                                    className="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
-                                    style={{ width: '120px', height: '120px', fontSize: '48px', fontWeight: 'bold' }}
+                            <div className="d-flex align-items-center justify-content-between mb-3">
+                                <h4 className="mb-0" style={{ fontSize: '1.2rem' }}>
+                                    Canales suscritos
+                                </h4>
+                                <span
+                                    className="badge rounded-pill"
+                                    style={{
+                                        backgroundColor: '#2f3136',
+                                        fontSize: '0.8rem',
+                                    }}
                                 >
-                                    {profile.username.charAt(0).toUpperCase()}
-                                </div>
+                                    {subscribedChannels.length} canal
+                                    {subscribedChannels.length === 1 ? '' : 'es'}
+                                </span>
                             </div>
 
-                            <h2 className="text-center mb-4">{profile.username}</h2>
-
-                            <div className="mb-4">
-                                <h5 className="text-muted">Información de la cuenta</h5>
-                                <hr />
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <strong>Email:</strong>
-                                        <p className="mb-0">{profile.email}</p>
-                                    </div>
-                                    <div className="col-md-6 mb-3">
-                                        <strong>ID de Usuario:</strong>
-                                        <p className="mb-0">#{profile.id}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mb-4">
-                                <h5 className="text-muted">
-                                    Suscripciones ({profile.subscriptionCount})
-                                </h5>
-                                <hr />
-                                {profile.subscribedChannels.length === 0 ? (
-                                    <p className="text-muted">No estás suscrito a ningún canal todavía.</p>
-                                ) : (
-                                    <div className="list-group">
-                                        {profile.subscribedChannels.map((channel, index) => (
-                                            <button
-                                                key={index}
-                                                className="list-group-item list-group-item-action d-flex align-items-center"
-                                                onClick={() => handleChannelClick(channel)}
-                                                style={{ cursor: 'pointer' }}
+                            {subscribedChannels.length === 0 ? (
+                                <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                                    Todavía no estás suscrito a ningún canal. Explora vídeos y usa el botón de{' '}
+                                    <span style={{ color: '#ff6b35' }}>Suscribirse</span> para seguir a tus creadores de contenido favoritos.
+                                </p>
+                            ) : (
+                                <ul className="list-group list-group-flush" style={{ background: 'transparent' }}>
+                                    {subscribedChannels.map((channel) => (
+                                        <li
+                                            key={channel}
+                                            className="list-group-item d-flex justify-content-between align-items-center px-0"
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                borderColor: '#2f3136',
+                                                color: '#e5e5e5',
+                                            }}
+                                        >
+                                            <span>{channel}</span>
+                                            <span
+                                                className="badge rounded-pill"
+                                                style={{
+                                                    backgroundColor: '#2f3136',
+                                                    fontSize: '0.75rem',
+                                                    color: '#ffb199',
+                                                }}
                                             >
-                                                <div
-                                                    className="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center me-3"
-                                                    style={{ width: '40px', height: '40px', fontSize: '18px' }}
-                                                >
-                                                    {channel.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span>{channel}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                                                Canal suscrito
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </div>
                 </div>

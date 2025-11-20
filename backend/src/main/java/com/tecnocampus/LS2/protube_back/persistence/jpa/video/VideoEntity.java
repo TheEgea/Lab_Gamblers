@@ -14,7 +14,7 @@ import java.util.Objects;
 public class VideoEntity {
 
     @Id
-    @Column(name = "id", length = 36)
+    @Column(name = "id")
     private String id;
 
     @Column(name = "json_id", length = 10)
@@ -26,10 +26,10 @@ public class VideoEntity {
     @Column(name = "duration_seconds")
     private Integer durationSeconds;
 
-    @Column(name = "title", nullable = false, length = 255)
+    @Column(name = "title", nullable = false, length = 500)
     private String title;
 
-    @Column(name = "username", length = 32)
+    @Column(name = "username", length = 64)
     private String user;
 
     @ElementCollection
@@ -54,7 +54,7 @@ public class VideoEntity {
     private int viewCount;
     @Column(name = "like_count")
     private int likeCount;
-    @Column(name = "channel", length = 32)
+    @Column(name = "channel", length = 64)
     private String channel;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

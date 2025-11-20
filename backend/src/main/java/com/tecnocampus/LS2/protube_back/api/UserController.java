@@ -7,6 +7,7 @@ import com.tecnocampus.LS2.protube_back.application.dto.response.UserResponse;
 import com.tecnocampus.LS2.protube_back.application.dto.subscription.SubscriptionResponse;
 import com.tecnocampus.LS2.protube_back.application.subscription.SubscriptionService;
 import com.tecnocampus.LS2.protube_back.application.user.UserService;
+import com.tecnocampus.LS2.protube_back.domain.user.User;
 import com.tecnocampus.LS2.protube_back.security.jwt.JwtTokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,25 +58,26 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<Map<String, Object>> getCurrentUserProfile(Authentication authentication) {
-        UUID userId = UUID.fromString(authentication.getName());
+        if (authentication == null || authentication.getName() == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-        var userOpt = userService.loadById(userId);
-        if (userOpt.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-
-        var user = userOpt.get();
+        String username = authentication.getName();
+        User user = userService.loadByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+        UUID userId = user.id().value();
 
         List<SubscriptionResponse> subscriptions = subscriptionService.getUserSubscriptions(userId);
         List<String> channelNames = subscriptions.stream()
                 .map(SubscriptionResponse::getChannelName)
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, Object> userProfile = new HashMap<>();
-        userProfile.put("id", user.id());
-        userProfile.put("username", user.username());
+        userProfile.put("id", user.id().value().toString());
+        userProfile.put("username", user.username().toString());
         userProfile.put("email", user.email());
-        userProfile.put("roles", user.role());
-        userProfile.put("subscriptions", channelNames);
+        userProfile.put("roles", user.roles());
+        userProfile.put("subscriptionCount", subscriptions.size());
+        userProfile.put("subscribedChannels", channelNames);
 
         return ResponseEntity.ok(userProfile);
     }

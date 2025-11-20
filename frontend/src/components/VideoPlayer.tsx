@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import videoService, { Video } from '../services/VideoService';
+import { SubscriptionService } from '../services/SubscriptionService.ts';
 
 const VideoPlayer = () => {
     const { videoId } = useParams<{ videoId: string }>();
@@ -12,6 +13,7 @@ const VideoPlayer = () => {
     const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
     const [showCopiedToast, setShowCopiedToast] = useState(false);
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(false);
 
     useEffect(() => {
         if (!videoId) {
@@ -38,6 +40,21 @@ const VideoPlayer = () => {
                 setLoading(false);
             });
     }, [videoId]);
+
+    useEffect(() => {
+        const checkSubscription = async () => {
+            try {
+                const subscribed = await SubscriptionService.isSubscribed(video.user);
+                setIsSubscribed(subscribed);
+            } catch (err) {
+                console.error('Error al verificar la suscripción:', err);
+            }
+        };
+
+        if (video?.user) {
+            checkSubscription();
+        }
+    }, [video?.user]);
 
     const formatNumber = (num: number): string => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -133,6 +150,28 @@ const VideoPlayer = () => {
         }
 
         document.body.removeChild(textArea);
+    };
+
+    const handleToggleSubscription = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            if (isSubscribed) {
+                await SubscriptionService.unsubscribe(video.user);
+                setIsSubscribed(false);
+                console.log('Desuscrito con éxito');
+            } else {
+                await SubscriptionService.subscribe(video.user);
+                setIsSubscribed(true);
+                console.log('Suscrito con éxito');
+            }
+        } catch (err) {
+            console.error('Error toggling subscription:', err);
+            setError(err.message || 'Error al actualizar la suscripción');
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) {
@@ -363,26 +402,34 @@ const VideoPlayer = () => {
                                 </p>
                             </div>
                             <button
+                                onClick={handleToggleSubscription}
+                                disabled={loading}
                                 style={{
                                     padding: '10px 24px',
-                                    backgroundColor: '#ff6b35',
+                                    backgroundColor: isSubscribed ? '#555' : '#ff6b35',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '20px',
-                                    cursor: 'pointer',
+                                    cursor: loading ? 'wait' : 'pointer',
                                     fontWeight: 'bold',
+                                    fontSize: '14px',
                                     transition: 'all 0.2s',
                                 }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#ff8555';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#ff6b35';
-                                }}
                             >
-                                Suscribirse
+                                {loading
+                                    ? 'Cargando...'
+                                    : isSubscribed
+                                        ? 'Suscrito'
+                                        : 'Suscribirse'
+                                }
                             </button>
                         </div>
+
+                        {error && (
+                            <div style={{ color: 'red', marginTop: '10px' }}>
+                                {error}
+                            </div>
+                        )}
 
                         <hr style={{ borderColor: '#404040', opacity: 0.3 }} />
 

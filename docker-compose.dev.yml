@@ -21,7 +21,16 @@ services:
     container_name: lab_gamblers_backend
     working_dir: /workspace
     # ⭐ COMANDO CORREGIDO - sin tocar el directorio store
-    command: sh -c "chmod -R 755 /workspace/src /workspace/target 2>/dev/null || true && rm -rf target && mvn clean compile -q -DskipTests && mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run"
+    command: >
+      sh -c "
+        apt-get update &&
+        apt-get install -y --no-install-recommends ffmpeg &&
+        rm -rf /var/lib/apt/lists/* &&
+        chmod -R 755 /workspace/src /workspace/target 2>/dev/null || true && 
+        rm -rf target && 
+        mvn clean compile -q -DskipTests && 
+        mvn -q -DskipTests -Dspring-boot.run.profiles=dev spring-boot:run
+      "
     volumes:
       - ./backend:/workspace
       - maven_repo:/root/.m2

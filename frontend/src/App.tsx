@@ -10,6 +10,7 @@ import VideoPlayer from './components/VideoPlayer';
 import ChannelPage from "./components/ChannelPage.tsx";
 import Profile from "./components/Profile.tsx";
 import Subscriptions from "./components/Subscriptions.tsx";
+import UploadVideo from "./components/UploadVideo.tsx";
 
 function App() {
     const [showLogin, setShowLogin] = useState<boolean>(true);
@@ -103,6 +104,18 @@ function App() {
                                     >
                                         Video Aleatorio
                                     </button>
+                                    <Link
+                                        to="/upload"
+                                        className="btn btn-sm ms-3"
+                                        style={{
+                                            backgroundColor: '#2f3136',
+                                            borderColor: '#2f3136',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        Subir Vídeo
+                                    </Link>
                                 </div>
                                 <div className="d-flex align-items-center">
                                     <Link
@@ -126,6 +139,7 @@ function App() {
                             <Route path="/channel/:channelName" element={<ChannelPage />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/subscriptions" element={<Subscriptions />} />
+                            <Route path="/upload" element={<UploadVideo />} />
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </>

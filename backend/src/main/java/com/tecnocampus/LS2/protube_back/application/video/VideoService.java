@@ -28,13 +28,10 @@ public class VideoService {
 
     private final VideoJpaRepository videoJpaRepository;
 
-
     public void save(CreateVideoRequest request) {
-
         Video video = VideoMapper.toDomain(request);
 
         videoJpaRepository.save(VideoMapper.toEntity(video));
-
     }
 
     // Métodos de casos de uso que USAN el puerto
@@ -56,15 +53,11 @@ public class VideoService {
         return VideoMapper.toResponse(video);
     }
 
-
-
     public Video createVideo(CreateVideoRequest request) {
-        // Validaciones de negocio
         if (request.title() == null || request.title().isBlank()) {
             throw new IllegalArgumentException("Title is required");
         }
 
-        // Construir dominio
         Video video = new Video(
                 request.id() != null ? new VideoId(request.id()) : VideoId.generate(),
                 request.jsonId(),
@@ -87,7 +80,6 @@ public class VideoService {
                 Instant.now()
         );
 
-        // Persistir usando el puerto
         VideoEntity entity = VideoMapper.toEntity(video);
         videoJpaRepository.save(entity);
         return video;
@@ -99,9 +91,6 @@ public class VideoService {
         if (existing.isEmpty())
             return Optional.empty();
 
-        // Lógica de actualización
-        //TODO:Comprobar si esta bien (que se ha de cambiar?? solo llega el title y description, pero el mapper lo actualiza todo?)
-        //var updated = existing.get().withTitle(request.title());
         VideoEntity entity = existing.get();
         if (request.title() != null)
             entity.setTitle(request.title());
@@ -115,7 +104,6 @@ public class VideoService {
     }
 
     public void deleteVideo(String id) {
-        //TODO: chekear si para decidir si borrarlo unicamente cuenta el id
         if (!videoJpaRepository.existsById(id))
             throw new VideoNotFoundException(id);
         videoJpaRepository.deleteById(id);
@@ -123,8 +111,6 @@ public class VideoService {
 
     @Transactional
     public Optional<Video> getRandomVideo() {
-        //TODO: chekear si esto esta bien (unicamente delega la llamada al jpaRepository)
-        //return Optional.of(VideoMapper.toDomain(videoJpaRepository.getRandomVideo()));
         try {
             VideoEntity entity = videoJpaRepository.getRandomVideo();
             return Optional.ofNullable(VideoMapper.toDomain(entity));

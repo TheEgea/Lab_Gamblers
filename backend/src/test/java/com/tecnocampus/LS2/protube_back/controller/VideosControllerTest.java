@@ -46,6 +46,17 @@ class VideosControllerTest {
     }
 
     @Test
+    void testGetAllVideoIds() {
+        String id = UUID.randomUUID().toString();
+        VideoId videoId = new VideoId(id);
+        when(videoService.listAllVideoIds()).thenReturn(List.of(videoId));
+
+        ResponseEntity<List<VideoId>> response = videoController.getAllVideoIds();
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(List.of(videoId), response.getBody());
+    }
+
+    @Test
     void testAddVideo() {
         CreateVideoRequest request = createSampleCreateVideoRequest(createSampleVideo(UUID.randomUUID().toString()).getId().toString());
         doNothing().when(videoService).save(request);

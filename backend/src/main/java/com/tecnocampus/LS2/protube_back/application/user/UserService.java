@@ -18,7 +18,6 @@ import java.util.UUID;
 
 @Service
 public class UserService {
-    //TODO: Comprobar si es necesaria esta clase? solo se utiliza en tests .-.
 
     private final UserJpaRepository userJpaRepository;
     private final AuthenticationService authenticationService;
@@ -30,7 +29,6 @@ public class UserService {
 
     public Optional<User> loadByUsername(String username) {
 
-        //TODO:Checkear
         Optional<UserEntity> userEntityOptional = userJpaRepository.findByUsername(username);
 
         return userEntityOptional.map(UserMapper::toDomain);
@@ -51,38 +49,23 @@ public class UserService {
         User user = loadByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-
         if (!authenticationService.samePassword(currentPassword, user.password().value())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
-
 
         if (authenticationService.samePassword(newPassword, user.password().value())) {
             throw new IllegalArgumentException("New password must be different from the old one");
         }
 
-
         String hashedPassword = authenticationService.hashPassword(newPassword);
 
-        // ✅ Crear usuario actualizado con nueva contraseña
         User updatedUser = new User(
                 user.id(),
                 user.username(),
-                new Password(hashedPassword), // Nueva contraseña hasheada
+                new Password(hashedPassword),
                 user.roles(),
                 user.email()
         );
-
-        // ✅ Guardar en base de datos
         userJpaRepository.save(UserMapper.toEntity(updatedUser));
     }
-
-    public Optional<UserResponse> loadById(UUID id) {
-        User user = userJpaRepository.findById(id)
-                .map(UserMapper::toDomain)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        UserResponse userResponse = UserMapper.toUserResponse(user);
-        return Optional.of(userResponse);
-    }
-
 }

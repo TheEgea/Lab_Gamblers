@@ -35,7 +35,7 @@ class AuthenticationServiceTest {
 
 
     @Test
-    void login_ValidCredentials_ReturnsToken() {
+    void testValidLogin() {
         Username username = new Username("testUser");
         String rawPassword = "password";
         String hashedPassword = "hashedPassword";
@@ -55,7 +55,26 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void login_InvalidCredentials_ThrowsException() {
+    void testLoginInvalidPassword() {
+
+        Username username = new Username("testUser");
+        String rawPassword = "Incorrect_password";
+
+        User user = new User(
+                new UserId(UUID.randomUUID()),
+                username,
+                new Password("password"),
+                Role.USER,
+                "email@gmail.com");
+
+        when(userAuthPort.loadByUsername(username)).thenReturn(Optional.of(user));
+
+        assertThrows(AuthenticationService.InvalidCredentialsException.class,
+                () -> authenticationService.login(username, rawPassword));
+
+    }
+    @Test
+    void testLoginInvalidUser() {
         Username username = new Username("testUser");
         String rawPassword = "password";
 
@@ -69,7 +88,7 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void register_NewUser_ReturnsToken() {
+    void testRegisterReturnsToken() {
         Username username = new Username("newUser");
         String rawPassword = "password";
         String hashedPassword = "hashedPassword";
@@ -89,7 +108,7 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void register_ExistingUser_ThrowsException() {
+    void testRegisterExistingUserThrowsException() {
         Username username = new Username("existingUser");
         String rawPassword = "password";
         User existingUser = new User(new UserId(UUID.randomUUID()), username, new Password("hashedPassword"), Role.USER,"test@gmail.com");
@@ -101,5 +120,11 @@ class AuthenticationServiceTest {
 
         verify(userAuthPort).loadByUsername(username);
         verifyNoInteractions(passwordEncoder, tokenService);
+    }
+
+    @Test
+    void testCleanUsers(){
+        authenticationService.cleanUsers();
+        verify(userAuthPort).deleteAllUsers();
     }
 }

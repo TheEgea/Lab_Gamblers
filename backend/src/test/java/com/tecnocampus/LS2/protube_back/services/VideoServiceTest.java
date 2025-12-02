@@ -63,6 +63,20 @@ class VideoServiceTest {
     }
 
     @Test
+
+    void testListAllVideoIds() {
+        String id = UUID.randomUUID().toString();
+        VideoId videoId = new VideoId(id);
+
+        when(videoJpaRepository.findAllIds()).thenReturn(List.of(videoId));
+
+        List<VideoId> videoIds = videoService.listAllVideoIds();
+
+        assertEquals(1, videoIds.size());
+        assertEquals(videoId, videoIds.getFirst());
+    }
+
+    @Test
     void testFindById_VideoExists() {
         String id = UUID.randomUUID().toString();
         Video video = createSampleVideo(id);

@@ -66,9 +66,7 @@ public class AuthenticationService {
                 Collections.singleton(user.roles())
         );
 
-        String token = tokenService.issue(claims);
-
-        return token;
+        return tokenService.issue(claims);
     }
 
     public boolean samePassword(String rawPassword, String hashedPassword) {

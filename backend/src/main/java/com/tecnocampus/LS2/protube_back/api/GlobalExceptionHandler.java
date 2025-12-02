@@ -42,21 +42,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).body(error);
     }
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(
-            NotFoundException ex, WebRequest request) {
-
-        logger.warn("Resource not found: {} (Code: {})", ex.getMessage(), ex.getErrorCode());
-
-        ErrorResponse error = ErrorResponse.of(
-                ex.getErrorCode(),
-                ex.getMessage(),
-                ex.getHttpStatus().value(),
-                getPath(request)
-        );
-
-        return ResponseEntity.status(ex.getHttpStatus()).body(error);
-    }
     // Exeption handler UserAlreadyExistsException
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(
@@ -137,87 +122,6 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(error);
-    }
-
-    // ========== Spring Framework Exceptions ==========
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex, WebRequest request) {
-
-        logger.warn("Request validation failed: {}", ex.getMessage());
-
-        List<ErrorResponse.ValidationError> validationErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(this::mapFieldError)
-                .toList();
-
-        ErrorResponse error = ErrorResponse.validation(
-                "Request validation failed",
-                HttpStatus.BAD_REQUEST.value(),
-                getPath(request),
-                validationErrors
-        );
-
-        return ResponseEntity.badRequest().body(error);
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidJson(
-            HttpMessageNotReadableException ex, WebRequest request) {
-
-        logger.warn("Invalid JSON in request: {}", ex.getMessage());
-
-        ErrorResponse error = ErrorResponse.of(
-                "INVALID_JSON",
-                "Invalid JSON format in request body",
-                HttpStatus.BAD_REQUEST.value(),
-                getPath(request)
-        );
-
-        return ResponseEntity.badRequest().body(error);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(
-            MethodArgumentTypeMismatchException ex, WebRequest request) {
-
-        logger.warn("Type mismatch for parameter '{}': {}", ex.getName(), ex.getMessage());
-
-        String message = String.format(
-                "Invalid value '%s' for parameter '%s'. Expected type: %s",
-                ex.getValue(),
-                ex.getName(),
-                ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown"
-        );
-
-        ErrorResponse error = ErrorResponse.of(
-                "INVALID_PARAMETER_TYPE",
-                message,
-                HttpStatus.BAD_REQUEST.value(),
-                getPath(request)
-        );
-
-        return ResponseEntity.badRequest().body(error);
-    }
-
-    // ========== Security Exceptions ==========
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(
-            AccessDeniedException ex, WebRequest request) {
-
-        logger.warn("Access denied: {}", ex.getMessage());
-
-        ErrorResponse error = ErrorResponse.of(
-                "ACCESS_DENIED",
-                "You don't have permission to access this resource",
-                HttpStatus.FORBIDDEN.value(),
-                getPath(request)
-        );
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
     // ========== Generic Exceptions ==========

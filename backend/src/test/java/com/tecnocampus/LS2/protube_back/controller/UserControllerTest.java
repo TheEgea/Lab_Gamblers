@@ -5,6 +5,7 @@ import com.tecnocampus.LS2.protube_back.api.UserController;
 import com.tecnocampus.LS2.protube_back.application.dto.request.AuthRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.response.AuthResponse;
 import com.tecnocampus.LS2.protube_back.application.dto.response.UserResponse;
+import com.tecnocampus.LS2.protube_back.application.dto.subscription.SubscriptionResponse;
 import com.tecnocampus.LS2.protube_back.application.subscription.SubscriptionService;
 import com.tecnocampus.LS2.protube_back.application.user.UserService;
 import com.tecnocampus.LS2.protube_back.domain.user.*;
@@ -20,6 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,14 +64,14 @@ public class UserControllerTest {
 
     @Test
     void testChangePassword() throws Exception {
-        AuthRequest authRequest = new AuthRequest("testUser", "ValidOldPassword1!", "test@gmail.com");
+        AuthRequest authRequest = new AuthRequest("testUser", "ValidOldPassword1@", "test@gmail.com");
 
         Mockito.doNothing().when(userService).changePassword(any(), any(), any());
 
         mockMvc.perform(post("/users/changePassword")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authRequest))
-                        .param("newPassword", "ValidNewPassword1!"))
+                        .param("newPassword", "ValidNewPassword1@"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Password changed successfully"));
     }
@@ -91,5 +93,34 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.username").value(username))
                 .andExpect(jsonPath("$.email").value("test@gmail.com"))
                 .andExpect(jsonPath("$.role").value("USER"));
+    }
+    @Test
+    void testGetCurrentUserProfile() throws Exception {
+        // Mock data
+        String username = "testUser";
+        UUID userId = UUID.randomUUID();
+        User user = new User(new UserId(userId), new Username(username), new Password("12345678aA!"), Role.USER, "test@gmail.com");
+
+        List<SubscriptionResponse> subscriptions = List.of(
+                createSubscriptionResponse("Channel1", userId),
+                createSubscriptionResponse("Channel2",userId)
+        );
+
+        // Mocking services
+        when(userService.loadByUsername(any())).thenReturn(Optional.of(user));
+        when(subscriptionService.getUserSubscriptions(userId)).thenReturn(subscriptions);
+
+        // Perform request
+        mockMvc.perform(get("/users/profile"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId.toString()))
+                .andExpect(jsonPath("$.username").value(username))
+                .andExpect(jsonPath("$.email").value("test@gmail.com"))
+                .andExpect(jsonPath("$.roles").value("USER"))
+                .andExpect(jsonPath("$.subscriptionCount").value(2))
+                .andExpect(jsonPath("$.subscribedChannels[0]").value("Channel1"));
+    }
+    private SubscriptionResponse createSubscriptionResponse(String channelName, UUID userId) {
+        return new SubscriptionResponse(1L, userId, channelName,"2-12-2025");
     }
 }

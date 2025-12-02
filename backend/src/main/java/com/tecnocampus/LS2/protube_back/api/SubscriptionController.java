@@ -22,7 +22,7 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<SubscriptionResponse> subscribe(
             Authentication authentication,
             @RequestBody SubscriptionRequest request) {

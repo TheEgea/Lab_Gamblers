@@ -57,4 +57,17 @@ class UserEntityTest {
         assertEquals(Role.USER, userEntity.getRole());
         assertEquals(newEmail, userEntity.getEmail());
     }
+
+    @Test
+    void testConstructorWithoutArguments() {
+        // Act
+        UserEntity userEntity = new UserEntity();
+
+        // Assert
+        assertNull(userEntity.getId());
+        assertNull(userEntity.getUsername());
+        assertNull(userEntity.getPasswordHash());
+        assertNull(userEntity.getEmail());
+        
+    }
 }

@@ -28,7 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VideoUploadService {
 
-    @Value("${pro_tube.store.dir")
+    @Value("${pro_tube.store.dir}")
     private String storeDir;
 
     private final VideoService videoService;

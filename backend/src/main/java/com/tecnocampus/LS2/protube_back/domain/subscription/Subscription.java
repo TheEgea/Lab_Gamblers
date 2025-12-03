@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
@@ -18,9 +19,9 @@ public class Subscription {
     private LocalDateTime subscribedAt;
 
     public Subscription(UserId userId, String channelName) {
-        this.id = new SubscriptionId(null);
-        this.userId = Objects.requireNonNull(userId);
-        this.channelName = Objects.requireNonNull(channelName);
-        this.subscribedAt = LocalDateTime.now();
+        this(new SubscriptionId(UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE),
+                userId,
+                channelName,
+                LocalDateTime.now());
     }
 }

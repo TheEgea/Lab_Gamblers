@@ -23,7 +23,7 @@ public class UserEntity {
     @Column(nullable = true)
     private String email;
 
-    protected UserEntity() {}
+    public UserEntity() {}
 
     public UserEntity(UUID id, String username, String passwordHash, String role, String email) {
         this.id = id;

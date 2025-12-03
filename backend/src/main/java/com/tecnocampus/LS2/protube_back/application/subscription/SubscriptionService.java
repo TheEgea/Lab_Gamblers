@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back.application.subscription;
 
+import com.tecnocampus.LS2.protube_back.application.dto.mapper.SubscriptionMapper;
 import com.tecnocampus.LS2.protube_back.application.dto.subscription.SubscriptionRequest;
 import com.tecnocampus.LS2.protube_back.application.dto.subscription.SubscriptionResponse;
 import com.tecnocampus.LS2.protube_back.domain.subscription.Subscription;
@@ -29,7 +30,7 @@ public class SubscriptionService {
         Subscription subscription = new Subscription(userIdObj, subscriptionRequest.getChannelName());
         Subscription saved = subscriptionPort.save(subscription);
 
-        return toResponse(saved);
+        return SubscriptionMapper.toResponse(saved);
     }
 
     @Transactional
@@ -48,7 +49,7 @@ public class SubscriptionService {
         List<Subscription> subscriptions = subscriptionPort.findByUserId(userIdObj);
 
         return subscriptions.stream()
-                .map(this::toResponse)
+                .map(SubscriptionMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -56,14 +57,5 @@ public class SubscriptionService {
     public boolean isSubscribed(UUID userId, String channelName) {
         UserId userIdObj = new UserId(userId);
         return subscriptionPort.existsByUserIdAndChannelName(userIdObj, channelName);
-    }
-
-    private SubscriptionResponse toResponse(Subscription subscription) {
-        return new SubscriptionResponse(
-                subscription.getId().value(),
-                subscription.getUserId().value(),
-                subscription.getChannelName(),
-                subscription.getSubscribedAt().toString()
-        );
     }
 }

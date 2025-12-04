@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SubscriptionMapper {
-    public Subscription toDomain(SubscriptionEntity entity){
+    public static Subscription toDomain(SubscriptionEntity entity){
         return new Subscription (
                 new SubscriptionId(entity.getId()),
                 new UserId(entity.getUserId()),
@@ -16,7 +16,7 @@ public class SubscriptionMapper {
         );
     }
 
-    public SubscriptionEntity toEntity(Subscription domain){
+    public static SubscriptionEntity toEntity(Subscription domain){
         return new SubscriptionEntity(
                 domain.getId() != null ? domain.getId().value() : null,
                 domain.getUserId().value(),

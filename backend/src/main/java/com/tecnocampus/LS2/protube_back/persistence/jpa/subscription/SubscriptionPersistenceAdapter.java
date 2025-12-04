@@ -4,7 +4,6 @@ import com.tecnocampus.LS2.protube_back.domain.subscription.Subscription;
 import com.tecnocampus.LS2.protube_back.domain.subscription.SubscriptionId;
 import com.tecnocampus.LS2.protube_back.domain.subscription.SubscriptionPort;
 import com.tecnocampus.LS2.protube_back.domain.user.UserId;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,16 +11,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class SubscriptionPersistenceAdapter implements SubscriptionPort {
     private final SubscriptionJpaRepository subscriptionJpaRepository;
-    private final SubscriptionMapper subscriptionMapper;
+
+    public SubscriptionPersistenceAdapter(SubscriptionJpaRepository subscriptionJpaRepository) {
+        this.subscriptionJpaRepository = subscriptionJpaRepository;
+    }
 
     @Override
     public Subscription save(Subscription subscription) {
-        SubscriptionEntity subscriptionEntity = subscriptionMapper.toEntity(subscription);
+        SubscriptionEntity subscriptionEntity = SubscriptionMapper.toEntity(subscription);
         SubscriptionEntity savedEntity = subscriptionJpaRepository.save(subscriptionEntity);
-        return subscriptionMapper.toDomain(savedEntity);
+        return SubscriptionMapper.toDomain(savedEntity);
     }
 
     @Override
@@ -33,14 +34,14 @@ public class SubscriptionPersistenceAdapter implements SubscriptionPort {
     public List<Subscription> findByUserId(UserId userId) {
         return subscriptionJpaRepository.findByUserId(userId.value())
                 .stream()
-                .map(subscriptionMapper::toDomain)
+                .map(SubscriptionMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<Subscription> findByUserIdAndChannelName(UserId userId, String channelName) {
         return subscriptionJpaRepository.findByUserIdAndChannelName(userId.value(), channelName)
-                .map(subscriptionMapper::toDomain);
+                .map(SubscriptionMapper::toDomain);
     }
 
     @Override

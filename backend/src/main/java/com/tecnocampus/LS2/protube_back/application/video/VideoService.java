@@ -7,7 +7,6 @@ import com.tecnocampus.LS2.protube_back.exception.video.VideoNotFoundException;
 import com.tecnocampus.LS2.protube_back.application.dto.mapper.VideoMapper;
 
 import com.tecnocampus.LS2.protube_back.application.dto.response.VideoResponse;
-import lombok.RequiredArgsConstructor;
 import com.tecnocampus.LS2.protube_back.domain.video.Video;
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
@@ -23,10 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class VideoService {
 
     private final VideoJpaRepository videoJpaRepository;
+
+    public VideoService(VideoJpaRepository videoJpaRepository) {
+        this.videoJpaRepository = videoJpaRepository;
+    }
 
     public void save(CreateVideoRequest request) {
         Video video = VideoMapper.toDomain(request);

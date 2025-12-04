@@ -6,8 +6,6 @@ import com.tecnocampus.LS2.protube_back.application.dto.subscription.Subscriptio
 import com.tecnocampus.LS2.protube_back.domain.subscription.Subscription;
 import com.tecnocampus.LS2.protube_back.domain.subscription.SubscriptionPort;
 import com.tecnocampus.LS2.protube_back.domain.user.UserId;
-import com.tecnocampus.LS2.protube_back.exception.BusinessException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +14,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class SubscriptionService {
     private final SubscriptionPort subscriptionPort;
+
+    public SubscriptionService(SubscriptionPort subscriptionPort) {
+        this.subscriptionPort = subscriptionPort;
+    }
 
     @Transactional
     public SubscriptionResponse subscribe(UUID userId, SubscriptionRequest subscriptionRequest) {

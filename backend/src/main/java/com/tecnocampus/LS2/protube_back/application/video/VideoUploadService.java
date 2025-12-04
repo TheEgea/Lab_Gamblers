@@ -6,7 +6,6 @@ import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import com.tecnocampus.LS2.protube_back.domain.video.atributes.Comentario;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoEntity;
 import com.tecnocampus.LS2.protube_back.persistence.jpa.video.VideoJpaRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class VideoUploadService {
 
     @Value("${pro_tube.store.dir}")
@@ -33,6 +31,11 @@ public class VideoUploadService {
 
     private final VideoService videoService;
     private final VideoJpaRepository videoJpaRepository;
+
+    public VideoUploadService(VideoService videoService, VideoJpaRepository videoJpaRepository) {
+        this.videoService = videoService;
+        this.videoJpaRepository = videoJpaRepository;
+    }
 
     private record VideoMeta(int width, int height, Integer durationSeconds) {}
 

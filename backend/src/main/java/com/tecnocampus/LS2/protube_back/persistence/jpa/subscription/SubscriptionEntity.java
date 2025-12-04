@@ -12,10 +12,7 @@ import java.util.UUID;
 @Entity
 @Table( name = "subscriptions",
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "channel_name"}))
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class SubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +32,48 @@ public class SubscriptionEntity {
         this.channelName = channelName;
         this.subscribedAt = subscribedAt;
     }
+
+    public SubscriptionEntity() {
+
+    }
+
+    public SubscriptionEntity(Long id, UUID userId, String channelName, LocalDateTime subscribedAt) {
+        this.id = id;
+        this.userId = userId;
+        this.channelName = channelName;
+        this.subscribedAt = subscribedAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public LocalDateTime getSubscribedAt() {
+        return subscribedAt;
+    }
+
+    public void setSubscribedAt(LocalDateTime subscribedAt) {
+        this.subscribedAt = subscribedAt;
+    }
 }
+

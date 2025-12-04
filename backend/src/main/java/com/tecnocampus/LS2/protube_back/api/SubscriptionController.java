@@ -5,7 +5,6 @@ import com.tecnocampus.LS2.protube_back.application.dto.subscription.Subscriptio
 import com.tecnocampus.LS2.protube_back.application.subscription.SubscriptionService;
 import com.tecnocampus.LS2.protube_back.application.user.UserService;
 import com.tecnocampus.LS2.protube_back.domain.user.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,11 +15,16 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/subscriptions")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class SubscriptionController {
     private final SubscriptionService subscriptionService;
     private final UserService userService;
+
+    public SubscriptionController(SubscriptionService subscriptionService, UserService userService) {
+        this.subscriptionService = subscriptionService;
+        this.userService = userService;
+
+    }
 
     @PostMapping("")
     public ResponseEntity<SubscriptionResponse> subscribe(
@@ -37,7 +41,8 @@ public class SubscriptionController {
         UUID userId = user.id().value();
 
         SubscriptionResponse response = subscriptionService.subscribe(userId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        ResponseEntity<SubscriptionResponse> aux = ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return aux;
     }
 
     @DeleteMapping("/{channelName}")

@@ -4,9 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class SubscriptionRequest {
     private String channelName;
+
+    public SubscriptionRequest() {
+    }
+    public SubscriptionRequest(String channelName) {
+        this.channelName = channelName;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
 }

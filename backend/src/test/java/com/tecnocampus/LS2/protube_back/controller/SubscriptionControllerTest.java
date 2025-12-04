@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -29,9 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SubscriptionController.class)
-@AutoConfigureMockMvc(addFilters = false) // Disable security filters
+@AutoConfigureMockMvc(addFilters = false)
 public class SubscriptionControllerTest {
-/*
+
     @MockBean
     private SubscriptionService subscriptionService;
 
@@ -48,9 +48,10 @@ public class SubscriptionControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(username = "testUser")
-    void testSubscribeWithAuthenticationAndRequestBody() throws Exception {
-        // Crear el cuerpo de la solicitud
+    void testSubscribe() throws Exception {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn("testUser");
+
         SubscriptionRequest request = new SubscriptionRequest("channelName");
         SubscriptionResponse response = new SubscriptionResponse(
                 1L,
@@ -59,7 +60,6 @@ public class SubscriptionControllerTest {
                 "2023-01-01T12:00:00"
         );
 
-        // Simular el comportamiento del servicio
         when(userService.loadByUsername("testUser"))
                 .thenReturn(Optional.of(new User(
                         new UserId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")),
@@ -68,10 +68,10 @@ public class SubscriptionControllerTest {
                         Role.USER,
                         "test@gmail.com"
                 )));
-        when(subscriptionService.subscribe(any(UUID.class), eq(request))).thenReturn(response);
+        when(subscriptionService.subscribe(any(), any())).thenReturn(response);
 
-        // Realizar la solicitud y verificar el resultado
         mockMvc.perform(post("/api/subscriptions")
+                        .principal(authentication)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -82,46 +82,73 @@ public class SubscriptionControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser")
     void testUnsubscribe() throws Exception {
-        mockMvc.perform(delete("/api/subscriptions/channelName"))
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn("testUser");
+
+        when(userService.loadByUsername("testUser"))
+                .thenReturn(Optional.of(new User(
+                        new UserId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")),
+                        new Username("testUser"),
+                        new Password("ValidPassword1!"),
+                        Role.USER,
+                        "test@gmail.com"
+                )));
+
+        mockMvc.perform(delete("/api/subscriptions/channelName")
+                        .principal(authentication))
                 .andExpect(status().isNoContent());
 
         Mockito.verify(subscriptionService).unsubscribe(any(UUID.class), eq("channelName"));
     }
 
     @Test
-    @WithMockUser(username = "testUser")
-    void testGetUserSubscriptions() throws Exception {
-        SubscriptionResponse response = createSubscriptionResponse();
-
-        when(subscriptionService.getUserSubscriptions(any(UUID.class)))
-                .thenReturn(Collections.singletonList(response));
-
-        mockMvc.perform(get("/api/subscriptions"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].channelName").value("channelName"));
-    }
-
-    @Test
-    @WithMockUser(username = "testUser")
     void testIsSubscribed() throws Exception {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn("testUser");
+
+        when(userService.loadByUsername("testUser"))
+                .thenReturn(Optional.of(new User(
+                        new UserId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")),
+                        new Username("testUser"),
+                        new Password("ValidPassword1!"),
+                        Role.USER,
+                        "test@gmail.com"
+                )));
         when(subscriptionService.isSubscribed(any(UUID.class), eq("channelName"))).thenReturn(true);
 
-        mockMvc.perform(get("/api/subscriptions/check/channelName"))
+        mockMvc.perform(get("/api/subscriptions/check/channelName")
+                        .principal(authentication))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"));
     }
 
-    private SubscriptionResponse createSubscriptionResponse() {
-        return new SubscriptionResponse(
-                1L, // id
-                UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), // userId
-                "exampleChannel", // channelName
-                "2023-01-01T12:00:00" // subscribedAt
+    @Test
+    void testGetUserSubscriptions() throws Exception {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getName()).thenReturn("testUser");
+
+        when(userService.loadByUsername("testUser"))
+                .thenReturn(Optional.of(new User(
+                        new UserId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000")),
+                        new Username("testUser"),
+                        new Password("ValidPassword1!"),
+                        Role.USER,
+                        "test@gmail.com"
+                )));
+
+        SubscriptionResponse response = new SubscriptionResponse(
+                1L,
+                UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
+                "channelName",
+                "2023-01-01T12:00:00"
         );
+        when(subscriptionService.getUserSubscriptions(any(UUID.class)))
+                .thenReturn(Collections.singletonList(response));
+
+        mockMvc.perform(get("/api/subscriptions")
+                        .principal(authentication))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].channelName").value("channelName"));
     }
-
-
- */
 }

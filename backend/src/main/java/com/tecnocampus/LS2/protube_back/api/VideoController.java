@@ -9,7 +9,6 @@ import com.tecnocampus.LS2.protube_back.domain.video.Video;
 
 import com.tecnocampus.LS2.protube_back.domain.video.VideoId;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,12 +23,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/videos")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class VideoController {
 
     private final VideoService videoService;
     private final VideoUploadService videoUploadService;
+
+    public VideoController(VideoService videoService, VideoUploadService videoUploadService) {
+        this.videoService = videoService;
+        this.videoUploadService = videoUploadService;
+    }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Video>> getAllVideos() {

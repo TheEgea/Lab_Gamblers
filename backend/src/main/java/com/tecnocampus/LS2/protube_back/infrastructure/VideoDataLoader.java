@@ -215,7 +215,7 @@ public class VideoDataLoader implements CommandLineRunner {
         return list;
     }
 
-    private List<Comentario> extractComments(JsonNode commentsNode) {
+    public List<Comentario> extractComments(JsonNode commentsNode) {
         List<Comentario> comments = new ArrayList<>();
         if (commentsNode != null && commentsNode.isArray()) {
             commentsNode.forEach(commentNode -> {

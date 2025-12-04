@@ -9,7 +9,6 @@ public final class User {
     private final UserId id;
     private final Username username;
     private Password password;
-    @Setter
     private Role roles;
     private String email;
 
@@ -52,5 +51,8 @@ public final class User {
 
     public void setPassword(String hashedPassword) {
         this.password = new Password(hashedPassword);
+    }
+    public void setRoles(Role newRole) {
+        this.roles = newRole;
     }
 }

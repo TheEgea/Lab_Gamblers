@@ -9,9 +9,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Subscription {
     private SubscriptionId id;
     private UserId userId;
@@ -23,5 +20,32 @@ public class Subscription {
                 userId,
                 channelName,
                 LocalDateTime.now());
+    }
+
+    public Subscription() {
+
+    }
+
+    public Subscription(SubscriptionId id, UserId userId, String channelName, LocalDateTime subscribedAt) {
+        this.id = id;
+        this.userId = userId;
+        this.channelName = channelName;
+        this.subscribedAt = subscribedAt;
+    }
+
+    public SubscriptionId getId() {
+        return id;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public LocalDateTime getSubscribedAt() {
+        return subscribedAt;
     }
 }
